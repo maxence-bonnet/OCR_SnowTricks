@@ -1,0 +1,135 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}{% endblock %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+    <div class="container-fluid hero-bg d-flex justify-content-end align-items-end">
+        <div class="hero-text">
+            <h1>Snowtricks</h1>
+        </div>
+    </div>
+    <div id="tricks" class="container p-4">
+        <h2 class="text-center mb-3">Les figures</h2>
+        <div class="row row-cols-1 row-cols-md-4">
+            <div class="col mb-3">
+                <div class="card h-100 shadow">
+                    <img src="{{ asset('img/static/sven-piek-unsplash.jpg') }}" class="card-img-top" alt="img">
+                    <div class="card-body">
+                        <h5 class="card-title d-flex justify-content-between">
+                            <a href="#" class="text-decoration-none link-dark card-link">User Connected</a>
+                            {% if true %}
+                            <div class="d-flex justify-content-center">
+                                <a href="#" class="text-decoration-none link-dark card-link" title="update"><i class="bx bx-pencil"></i></a>
+                                <a href="#" class="text-decoration-none link-dark card-link" title="update"><i class="bx bx-trash"></i></a>                            
+                            </div>
+                            {% endif %}
+                        </h5>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted text-center">Last updated 3 mins ago</small>
+                    </div>
+                </div>                
+            </div>
+            <div class="col mb-3">
+                <div class="card h-100 shadow">
+                    <img src="{{ asset('img/static/sven-piek-unsplash.jpg') }}" class="card-img-top" alt="img">
+                    <div class="card-body">
+                        <h5 class="card-title d-flex justify-content-between">
+                            <a href="#" class="text-decoration-none link-dark card-link">User not connected</a>
+                            {% if false %}
+                            <div class="d-flex justify-content-center">
+                                <a href="#" class="text-decoration-none link-dark card-link" title="update"><i class="bx bx-pencil"></i></a>
+                                <a href="#" class="text-decoration-none link-dark card-link" title="update"><i class="bx bx-trash"></i></a>                            
+                            </div>
+                            {% endif %}
+                        </h5>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted text-center">Last updated 3 mins ago</small>
+                    </div>
+                </div>                
+            </div>
+            <div class="col mb-3">
+                <div class="card h-100 shadow">
+                    <img src="{{ asset('img/static/sven-piek-unsplash.jpg') }}" class="card-img-top" alt="img">
+                    <div class="card-body">
+                        <h5 class="card-title d-flex justify-content-between">
+                            <a href="#" class="text-decoration-none link-dark card-link">Card title</a>
+                            {% if true %}
+                            <div class="d-flex justify-content-center">
+                                <a href="#" class="text-decoration-none link-dark card-link" title="update"><i class="bx bx-pencil"></i></a>
+                                <a href="#" class="text-decoration-none link-dark card-link" title="update"><i class="bx bx-trash"></i></a>                            
+                            </div>
+                            {% endif %}
+                        </h5>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted text-center">Last updated 3 mins ago</small>
+                    </div>
+                </div>                
+            </div>
+            <div class="col mb-3">
+                <div class="card h-100 shadow">
+                    <img src="{{ asset('img/static/sven-piek-unsplash.jpg') }}" class="card-img-top" alt="img">
+                    <div class="card-body">
+                        <h5 class="card-title d-flex justify-content-between">
+                            <a href="#" class="text-decoration-none link-dark card-link">Card title</a>
+                            {% if false %}
+                            <div class="d-flex justify-content-center">
+                                <a href="#" class="text-decoration-none link-dark card-link" title="update"><i class="bx bx-pencil"></i></a>
+                                <a href="#" class="text-decoration-none link-dark card-link" title="update"><i class="bx bx-trash"></i></a>                            
+                            </div>
+                            {% endif %}
+                        </h5>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted text-center">Last updated 3 mins ago</small>
+                    </div>
+                </div>                
+            </div>
+            <div class="col mb-3">
+                <div class="card h-100 shadow">
+                    <img src="{{ asset('img/static/sven-piek-unsplash.jpg') }}" class="card-img-top" alt="img">
+                    <div class="card-body">
+                        <h5 class="card-title d-flex justify-content-between">
+                            <a href="#" class="text-decoration-none link-dark card-link">Next line</a>
+                            {% if false %}
+                            <div class="d-flex justify-content-center">
+                                <a href="#" class="text-decoration-none link-dark card-link" title="update"><i class="bx bx-pencil"></i></a>
+                                <a href="#" class="text-decoration-none link-dark card-link" title="update"><i class="bx bx-trash"></i></a>                            
+                            </div>
+                            {% endif %}
+                        </h5>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted text-center">Last updated 3 mins ago</small>
+                    </div>
+                </div>                
+            </div>
+            {#  LATER : #}
+            {# {% for trick in tricks %}
+                <div class="col mb-3">
+                    <div class="card h-100 shadow">
+                        <img src="{{ asset('img/static/sven-piek-unsplash.jpg') }}" class="card-img-top" alt="img">
+                        <div class="card-body">
+                            <h5 class="card-title d-flex justify-content-between">
+                                <a href="#" class="text-decoration-none link-dark card-link">Card title</a>
+                                {% if app.user %}
+                                <div class="d-flex justify-content-center">
+                                    <a href="#" class="text-decoration-none link-dark card-link" title="update"><i class="bx bx-pencil"></i></a>
+                                    <a href="#" class="text-decoration-none link-dark card-link" title="update"><i class="bx bx-trash"></i></a>                            
+                                </div>
+                                {% endif %}
+                            </h5>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted text-center">Last updated 3 mins ago</small>
+                        </div>
+                    </div>                
+                </div>
+            {% endfor %} #}
+        </div>  
+    </div>
+{% endblock %}
