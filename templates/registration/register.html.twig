@@ -1,0 +1,20 @@
+{% extends 'base_hero.html.twig' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block content %}
+    {% for flashError in app.flashes('verify_email_error') %}
+    <div class="alert alert-danger" role="alert">{{ flashError }}</div>
+    {% endfor %}
+
+    <h1 class="h3 mb-3 font-weight-normal text-center">Inscription</h1>
+    
+    {{ form_start(registrationForm) }}
+        {{ form_row(registrationForm.email) }}
+        {{ form_row(registrationForm.username) }}
+        {{ form_row(registrationForm.plainPassword) }}
+        <div class="mb-3 text-center">
+            <button class="btn btn-primary" type="submit">Inscription</button>
+        </div>
+    {{ form_end(registrationForm) }}
+{% endblock %}

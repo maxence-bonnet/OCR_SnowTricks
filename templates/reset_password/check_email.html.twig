@@ -1,0 +1,16 @@
+{% extends 'base_hero.html.twig' %}
+
+{% block title %}Réinitialiser le mot de passe{% endblock %}
+
+{% block content %}
+
+    <h1 class="h3 mb-3 font-weight-normal text-center">Réinitialiser le mot de passe</h1>
+    <p>
+        Si votre nom d'utilisateur saisi est valide, un email vous a été envoyé. Il contient un lien qui vous permettra
+        de réinitialiser votre mot de passe. Attention ce lien expirera dans : 
+        {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+    </p>
+    <p>
+        Si vous n'avez pas reçu d'email, regardez dans vos spams ou <a href="{{ path('app_forgot_password_request') }}">réessayez</a>.
+    </p>
+{% endblock %}
