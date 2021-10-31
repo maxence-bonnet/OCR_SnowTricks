@@ -1,0 +1,23 @@
+<h1>Bonjour, confirmez votre adresse mail s'il vous plaît!</h1>
+
+<p>
+    Cet email vous a été envoyé suite à votre inscription sur le site <a href="#">SnowTricks</a>
+</p>
+
+<p>
+    Attention, si vous n'êtes pas à l'origine de cette inscription, vous devez ignorer les insctructions.
+</p>
+
+<br><br>
+
+<p>
+    Veuillez confirmer votre adresse en cliquant sur le lien :
+    <br><br>
+    <a href="{{ signedUrl }}">Confirmer mon adresse email</a>.
+
+    Ce lien expirera dans {{ expiresAtMessageKey|trans(expiresAtMessageData, 'VerifyEmailBundle') }}.
+</p>
+
+<p>
+    Bonne journée !
+</p>

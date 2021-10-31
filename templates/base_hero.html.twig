@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid hero-bg d-flex">
+        <div class="container m-auto">
+            <div class="row">
+                <div class="col-12 col-sm-10 col-md-7 col-lg-6 m-auto">
+                    {% for message in app.flashes('success') %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-sm-10 col-md-6 col-lg-4 m-auto bg-light shadow-lg p-4 rounded">
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

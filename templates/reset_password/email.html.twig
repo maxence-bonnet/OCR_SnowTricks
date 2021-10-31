@@ -1,0 +1,19 @@
+<h1>Bonjour!</h1>
+
+<p>
+    Cet email vous a été envoyé suite à votre demande sur le site <a href="#">SnowTricks</a>
+</p>
+
+<p>
+    Attention, si vous n'êtes pas à l'origine de cette inscription, vous devez ignorer les insctructions.
+</p>
+
+<br>
+
+<p>Pour réinitialiser votre mot de passe, veuillez suivre le lien ci-dessous : </p>
+
+<a href="{{ url('app_reset_password', {token: resetToken.token}) }}">{{ url('app_reset_password', {token: resetToken.token}) }}</a>
+
+<p>Attention, ce lien expirera dans : {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.</p>
+
+<p>Bonne journée !</p>
