@@ -32,7 +32,9 @@ class RegistrationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // encode the plain password
-            $user->setPassword(
+            $user
+                ->setCreatedAt(new \DateTimeImmutable())
+                ->setPassword(
             $userPasswordHasherInterface->hashPassword(
                     $user,
                     $form->get('plainPassword')->getData()
@@ -84,7 +86,7 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/verify/email/confirmed', name: 'app_email_confirmed')]
-    public function emailConfirmed(Request $request): Response
+    public function emailConfirmed(): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 

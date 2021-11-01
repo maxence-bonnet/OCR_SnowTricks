@@ -13,36 +13,19 @@
     
     <div id="tricks" class="container p-4">
         <h2 class="text-center mb-3">Les figures</h2>
-        <div class="row row-cols-1 row-cols-md-4">
-
-            <div class="col mb-3">
-                <div class="card h-100 shadow">
-                    <img src="{{ asset('img/static/sven-piek-unsplash.jpg') }}" class="card-img-top" alt="img">
-                    <div class="card-body">
-                        <h5 class="card-title d-flex justify-content-between">
-                            <a href="#" class="text-decoration-none link-dark card-link">Card title</a>
-                            {% if app.user %}
-                            <div class="d-flex justify-content-center">
-                                <a href="#" class="text-decoration-none link-dark card-link" title="update"><i class="bx bx-pencil"></i></a>
-                                <a href="#" class="text-decoration-none link-dark card-link" title="update"><i class="bx bx-trash"></i></a>                            
-                            </div>
-                            {% endif %}
-                        </h5>
-                    </div>
-                    <div class="card-footer">
-                        <small class="text-muted text-center">Last updated 3 mins ago</small>
-                    </div>
-                </div>                
-            </div>
-
-            {#  LATER : #}
-            {# {% for trick in tricks %}
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
+            {% for trick in tricks %}
                 <div class="col mb-3">
-                    <div class="card h-100 shadow">
-                        <img src="{{ asset('img/static/sven-piek-unsplash.jpg') }}" class="card-img-top" alt="img">
+                    <div class="card shadow">
+                            {% if trick.pictures is not empty %}
+                                {% set picture = trick.getFirstPicture %}
+                                <img src="{{ asset('img/uploads/' ~ picture.source ) }}" class="card-img-top" alt="img">
+                            {% else %}
+                                <img src="{{ asset('img/static/default.jpg') }}" class="card-img-top" alt="default image">
+                            {% endif %}                                
                         <div class="card-body">
                             <h5 class="card-title d-flex justify-content-between">
-                                <a href="#" class="text-decoration-none link-dark card-link">Card title</a>
+                                <a href="{{ path('app_trick_show', {id: trick.id, slug: trick.title |slug('-')|lower}) }}" class="text-decoration-none link-dark card-link">{{ trick.title }}</a>
                                 {% if app.user %}
                                 <div class="d-flex justify-content-center">
                                     <a href="#" class="text-decoration-none link-dark card-link" title="update"><i class="bx bx-pencil"></i></a>
@@ -52,11 +35,17 @@
                             </h5>
                         </div>
                         <div class="card-footer">
-                            <small class="text-muted text-center">Last updated 3 mins ago</small>
+                            <small class="text-muted text-center">
+                                {% if trick.updatedAt %}
+                                    {{ 'Dernière modification le : ' ~ trick.updatedAt |date("d/m/Y") ~ ' à ' ~ trick.updatedAt |date("H:i") }}
+                                {% else %}
+                                    {{ 'Créé le : ' ~ trick.createdAt |date("d/m/Y") ~ ' à ' ~ trick.createdAt |date("H:i") }}
+                                {% endif %}
+                            </small>
                         </div>
                     </div>                
                 </div>
-            {% endfor %} #}
+            {% endfor %}
         </div>  
     </div>
 {% endblock %}
