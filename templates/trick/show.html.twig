@@ -3,5 +3,186 @@
 {% block title %}Trick {{trick.id}}{% endblock %}
 
 {% block body %}
-    <h1>{{ trick.title }}</h1>
+    <div class="container-sm-fluid hero-bg py-md-5">   
+        <div class="row">
+            <div class="col-12 col-sm-10 col-md-7 col-lg-6 m-auto">
+                {% for message in app.flashes('success') %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <article class="container m-sm-auto my-3">
+            <div class="row">
+                <div class="col-12 col-sm-10 m-auto bg-light shadow-lg rounded p-0">
+                    <div class="trick-image-container position-relative">
+                        {% if trick.pictures is not empty %}
+                            {% set picture = trick.getFirstPicture %}
+                            <img src="{{ asset('img/uploads/tricks/' ~ picture.source ) }}" class="trick-image-container__image" alt="img">
+                        {% else %}
+                            <img src="{{ asset('img/static/default.jpg') }}" class="trick-image-container__image" alt="default image">
+                        {% endif %}
+                        {% if app.user %}
+                        <div class="position-absolute top-0 end-0 shadow-lg m-2 rounded">
+                            <a href="{{ path('app_trick_edit', {id: trick.id}) }}" class="text-decoration-none link-dark trick-link mx-1 fs-3"><i class="bx bx-pencil"></i></a>
+                            <a href="{{ path('app_trick_edit', {id: trick.id}) }}" class="text-decoration-none link-dark trick-link mx-1 fs-3"><i class="bx bx-trash"></i></a>
+                        </div>
+                        {% endif %}                        
+                    </div>
+                    <div class="trick-content p-1 p-md-3">
+                        <h2 class="text-center">{{ trick.title }}</h2>
+                        <div class="row trick-medias mb-4">
+                            <div class="col-sm-6 trick-pictures">
+                                <div class="">
+                                    <div class="row">
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card shadow-sm">
+                                            <img class="card-img-top" src="https://mdbootstrap.com/img/Photos/Horizontal/Nature/4-col/img%20(34).jpg"
+                                                alt="">                   
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 col-lg-4 d-none d-md-block">
+                                            <div class="card shadow-sm">
+                                            <img class="card-img-top" src="https://mdbootstrap.com/img/Photos/Horizontal/Nature/4-col/img%20(18).jpg"
+                                                alt="">                
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4 d-none d-lg-block">
+                                            <div class="card shadow-sm">
+                                            <img class="card-img-top" src="https://mdbootstrap.com/img/Photos/Horizontal/Nature/4-col/img%20(35).jpg"
+                                                alt="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 trick-videos">
+                                <div class="">
+                                    <div class="row">
+                                        <div class="col-md-6 col-lg-4">
+                                            <div class="card shadow-sm">
+                                                <iframe  class="card-img-top" src="https://www.youtube.com/embed/egzuLfdanxQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>                 
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 col-lg-4 d-none d-md-block">
+                                            <div class="card shadow-sm">
+                                                <iframe  class="card-img-top" src="https://www.youtube.com/embed/egzuLfdanxQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>              
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4 d-none d-lg-block">
+                                            <div class="card shadow-sm">
+                                                <iframe  class="card-img-top" src="https://www.youtube.com/embed/egzuLfdanxQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="trick__description px-1 px-md-5">
+                            <p>{{ trick.description |nl2br }}</p>
+                        </div>
+                        <div class="trick-meta-data d-flex justify-content-center flex-wrap px-1 px-md-5">
+                            <div class="trick-meta-data__author border shadow-sm my-1 p-1 px-2">
+                                De : {{ trick.author.username }}
+                            </div>
+                            <div class="trick-meta-data__creation-date border shadow-sm my-1 p-1 px-2">
+                                {{ 'Créé le : ' ~ trick.createdAt |date("d/m/Y") ~ ' à ' ~ trick.createdAt |date("H:i") }}
+                            </div>
+                            {% if trick.category is not null %}
+                                <div class="trick-meta-data__category border shadow-sm my-1 p-1 px-2">
+                                    Catégorie : {{ trick.category }}
+                                </div>
+                            {% endif %}
+                            {% if trick.updatedAt is not null %}
+                                <div class="trick-meta-data__update-date border shadow-sm my-1  p-1 px-2">
+                                    {{ 'Dernière modification le : ' ~ trick.updatedAt |date("d/m/Y") ~ ' à ' ~ trick.createdAt |date("H:i") }}
+                                </div>
+                            {% endif %}
+                            <div class="trick-meta-data__comments-number border shadow-sm my-1  p-1 px-2">
+                                Messages : {{ trick.comments |length}}
+                            </div>
+                        </div>
+                        <hr>
+                        {% if app.user %}
+                            {# <div class="trick__comment-form">
+                                <form action="" method="post">
+                                    <div class="form-group mb-3 d-flex p-2">
+                                        <input type="text" class="form-control mx-2">
+                                        <button class="btn btn-sm btn-primary mx-2">commenter</button>
+                                    </div>   
+                                </form>
+                            </div> #}
+                            <div class="trick__comment-form">
+                                {{ form_start(form)}}
+                                    <div class="form-group mb-3 d-flex p-2 justify-content-center">
+                                        {{ form_widget(form.content) }}
+                                        <button class="btn btn-sm btn-primary m-auto mx-2">commenter</button>
+                                    </div>  
+                                {{ form_end(form)}}
+                            </div>
+                        {% else %}
+                            <p class="text-center">Vous devez vous <a href="{{ path('app_login') }}">connecter</a> pour pouvoir poster des messages</p>
+                        {% endif %}
+                        <hr>
+                        <div class="trick-content__comments">
+                            <div class="row d-flex justify-content-center">
+                                <div class="col-11 col-lg-8">
+                                    {% if trick.comments is not empty %}
+                                        {% for comment in trick.comments|reverse %}
+                                            <div class="card comment-card mb-3">
+                                                <div class="row g-0">
+                                                    <div class="col-3 comment-card__author-picture p-sm-1 p-lg-2">
+                                                        <img src="{{ asset('img/uploads/avatar/bernard-tapie.jpg') }}" class="shadow" alt="avatar">
+                                                    </div>
+                                                    <div class="col-9 comment-card__content shadow-sm">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title d-inline-block">{{ comment.author.username }}</h5>
+                                                            <p class="card-text d-inline-block ms-1">
+                                                                <small class="text-muted">{{ 'le : ' ~ comment.createdAt |date("d/m/Y") ~ ' à ' ~ comment.createdAt |date("H:i") }}</small>
+                                                            </p>
+                                                            <p class="card-text">
+                                                                {{ comment.content }}
+                                                            </p>        
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                        {# Commentaires exemples #}
+                                        {# <div class="card comment-card mb-3">
+                                            <div class="row g-0">
+                                                <div class="col-2 comment-card__author-picture p-sm-1 p-lg-2">
+                                                    <img src="{{ asset('img/uploads/avatar/bernard-tapie.jpg') }}" class="shadow" alt="avatar">
+                                                </div>
+                                                <div class="col-9 ms-1 comment-card__content shadow-sm">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title d-inline-block">Joséphine</h5>
+                                                        <p class="card-text d-inline-block ms-1">
+                                                            <small class="text-muted">le 12/12/2012 à 12:12</small>
+                                                        </p>
+                                                        <p class="card-text">
+                                                            This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.
+                                                        </p>        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> #}
+                                        {# Fin Commentaires exemples #}
+                                    {% else %}
+                                        <p class="text-center">Aucun message posté pour ce trick</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
 {% endblock %}

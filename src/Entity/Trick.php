@@ -6,6 +6,7 @@ use App\Repository\TrickRepository;
 use App\Entity\Picture;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -31,13 +32,31 @@ class Trick
     private $updatedAt;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
+    #[Assert\NotBlank(
+        message: 'Le nom du trick ne peut pas être vide.'
+    )]
+    #[Assert\Length(
+        min: 3,
+        max: 32,
+        minMessage: 'Le nom du trick doit avoir au minimum {{ limit }} caractères.',
+        maxMessage: 'Le nom du trick doit avoir au maximum {{ limit }} caractères.'
+    )]
     private $title;
 
     /**
      * @ORM\Column(type="text")
      */
+    #[Assert\NotBlank(
+        message: 'La description du trick ne peut pas être vide.'
+    )]
+    #[Assert\Length(
+        min: 30,
+        max: 1000,
+        minMessage: 'La description du trick doit avoir au minimum {{ limit }} caractères.',
+        maxMessage: 'La description du trick doit avoir au maximum {{ limit }} caractères.'
+    )]
     private $description;
 
     /**

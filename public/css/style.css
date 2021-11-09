@@ -11,7 +11,7 @@ body, html {
     position: relative;
 }
 
-.card-link {
+.trick-link {
     display: inline-block;
 }
 
@@ -21,19 +21,8 @@ body, html {
     object-fit: cover;
 }
 
-.card-img-container {
-    width: 100%;
-    height: 75%;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    position: relative;
-    border-top-left-radius: calc(0.25rem - 1px);
-    border-top-right-radius: calc(0.25rem - 1px);
-}
-
 /* w3schools */
-.card-link:hover {
+.trick-link:hover {
     animation: shake 1s;
     animation-iteration-count: infinite;
 }
@@ -51,3 +40,51 @@ body, html {
 90% { transform: translate(1px, 2px) rotate(0deg); }
 100% { transform: translate(1px, -2px) rotate(-1deg); }
 }
+
+.trick-meta-data__creation-date, .trick-meta-data__update-date, .trick-meta-data__author, .trick-meta-data__comments-number, .trick-meta-data__category {
+    margin: auto;
+    background-color: rgba(0, 0, 0, 0.055);
+    border-radius: 1rem;
+    font-size: 0.9rem;
+}
+
+.trick-image-container__image {
+    width: 100%;
+    max-height: 512px;
+    object-fit: cover;
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+}
+
+.comment-card {
+    border: none;
+    background: none;
+}
+
+.comment-card__content {
+    background-color: rgba(255,255,255,0.9);
+    border : 1px solid var(--bs-gray-300);
+    border-radius: 0.25rem;
+}
+
+.comment-card__author-picture {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.comment-card__author-picture > img {
+    height: 6rem;
+    width: 6rem;
+    object-fit: cover;
+    border : 1px solid var(--bs-gray-300);
+    border-radius: 100%;
+}
+
+@media (max-width: 576px) {
+    .comment-card__author-picture > img {
+        height: 4rem;
+        width: 4rem;
+    }
+}
+
