@@ -6,6 +6,7 @@ use App\Repository\TrickRepository;
 use App\Entity\Picture;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -34,9 +35,7 @@ class Trick
     /**
      * @ORM\Column(type="string", length=255, unique=true)
      */
-    #[Assert\NotBlank(
-        message: 'Le nom du trick ne peut pas être vide.'
-    )]
+    #[Assert\NotBlank(message: 'Le nom du trick ne peut pas être vide.')]
     #[Assert\Length(
         min: 3,
         max: 32,
@@ -76,12 +75,12 @@ class Trick
     private $category;
 
     /**
-     * @ORM\OneToMany(targetEntity=Video::class, mappedBy="trick", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Video::class, mappedBy="trick", orphanRemoval=true, cascade={"persist"})
      */
     private $videos;
 
     /**
-     * @ORM\OneToMany(targetEntity=Picture::class, mappedBy="trick")
+     * @ORM\OneToMany(targetEntity=Picture::class, mappedBy="trick", orphanRemoval=true, cascade={"persist"})
      */
     private $pictures;
 
@@ -90,6 +89,12 @@ class Trick
         $this->comments = new ArrayCollection();
         $this->videos = new ArrayCollection();
         $this->pictures = new ArrayCollection();
+    }
+
+    public function getSlug()
+    {
+        $slugger = new AsciiSlugger();
+        return $slugger->slug(strtolower($this->getTitle()));
     }
 
     public function getId(): ?int

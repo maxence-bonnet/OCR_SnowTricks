@@ -2,6 +2,8 @@
 
 {% block title %}Modification Trick {{trick.id}}{% endblock %}
 
+{% set onEditMode = true %}
+
 {% block body %}
     <div class="container-sm-fluid hero-bg py-md-5">   
         <div class="row">
@@ -16,101 +18,17 @@
         </div>
         <article class="container m-sm-auto my-3">
             <div class="row">
-                <div class="col-12 col-sm-10 m-auto bg-light shadow-lg rounded p-0">
+                <div class="col-12 col-lg-10 m-auto bg-light shadow-lg rounded p-0">
                     <div class="trick-image-container">
-                        {% if trick.pictures is not empty %}
-                            {% set picture = trick.getFirstPicture %}
+                        {% set picture = trick.getFirstPicture %}
+                        {% if picture is not null and picture.source is not null %}
                             <img src="{{ asset('img/uploads/tricks/' ~ picture.source ) }}" class="trick-image-container__image" alt="img">
                         {% else %}
                             <img src="{{ asset('img/static/default.jpg') }}" class="trick-image-container__image" alt="default image">
                         {% endif %} 
                     </div>
                     <div class="trick-content p-1 p-md-3">
-                        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-                        <div class="row trick-medias my-4">
-                            <div class="col-sm-6 trick-pictures">
-                                <div class="">
-                                    <div class="row">
-                                        <div class="col-md-6 col-lg-4">
-                                            <div class="card shadow-sm">
-                                            <img class="card-img-top" src="https://mdbootstrap.com/img/Photos/Horizontal/Nature/4-col/img%20(34).jpg"
-                                                alt="">                   
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6 col-lg-4 d-none d-md-block">
-                                            <div class="card shadow-sm">
-                                            <img class="card-img-top" src="https://mdbootstrap.com/img/Photos/Horizontal/Nature/4-col/img%20(18).jpg"
-                                                alt="">                
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-4 d-none d-lg-block">
-                                            <div class="card shadow-sm">
-                                            <img class="card-img-top" src="https://mdbootstrap.com/img/Photos/Horizontal/Nature/4-col/img%20(35).jpg"
-                                                alt="">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 trick-videos">
-                                <div class="">
-                                    <div class="row">
-                                        <div class="col-md-6 col-lg-4">
-                                            <div class="card shadow-sm">
-                                                <iframe  class="card-img-top" src="https://www.youtube.com/embed/egzuLfdanxQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>                 
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6 col-lg-4 d-none d-md-block">
-                                            <div class="card shadow-sm">
-                                                <iframe  class="card-img-top" src="https://www.youtube.com/embed/egzuLfdanxQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>              
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-4 d-none d-lg-block">
-                                            <div class="card shadow-sm">
-                                                <iframe  class="card-img-top" src="https://www.youtube.com/embed/egzuLfdanxQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        <div class="row d-flex justify-content-center">
-                            <div class="col-sm-11 col-lg-10">
-                                <div class="trick__title px-1 px-md-5 mt-4">
-                                    <div class="col-12 col-sm-8">
-                                    {{ form_row(form.title)}}
-                                    </div>
-                                </div>
-
-                                <div class="trick__description px-1 px-md-5">
-                                    {{ form_row(form.description)}}
-                                </div>
-
-                                <div class="trick-meta-data px-1 px-md-5">
-                                    <div class="col-12 col-sm-6 col-lg-4">
-                                        {{ form_row(form.category)}}
-                                    </div>                           
-                                </div>
-
-                                <div class="trick-form-buttons-container px-1 px-md-5 d-flex justify-content-end">
-                                    <div class="col-12 col-sm-6 col-lg-4 d-flex justify-content-end">
-                                            {# <form action="{{ path('app_trick_delete', {id: trick.id}) }}" method="post" class="ms-3"> #}
-                                                {# <input type="hidden" name="_method" value="DELETE"> #}
-                                                {# <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}"> #}
-                                                {# <a href="" class="text-decoration-none link-dark card-link trick-link" title="delete"><i class="bx bx-trash"></i></a> #}
-                                                <button class="btn btn-danger m-auto"><i class="bx bx-trash"></i>Supprimer le trick</button>
-                                            {# </form> #}
-                                        
-                                        <button class="btn btn-primary m-auto"><i class="bx bx-check"></i>Enregistrer</button>     
-                                    </div>
-                                </div>
-                            </div>                        
-                        </div>
-
-                        {{ form_end(form) }}
+                        {{ include('trick/_form.html.twig', {button_label: 'Enregister'}) }}
                     </div>
                 </div>
             </div>         

@@ -4,72 +4,40 @@ namespace App\Controller;
 
 use App\Entity\Comment;
 use App\Entity\Trick;
+use App\Entity\Picture;
+use App\Entity\Video;
+use App\Service\FileManager;
 use App\Repository\TrickRepository;
+use App\Repository\PictureRepository;
 use App\Form\TrickType;
 use App\Form\CommentType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
-
+#[Route('/trick')]
 class TrickController extends AbstractController
 {
-    /**
-     * @var TrickRepository
-     */
-    private TrickRepository $trickRepository;
-
     /**
      * @var EntityManagerInterface
      */
     private EntityManagerInterface $entityManager;
 
-    public function __construct(TrickRepository $trickRepository, EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        $this->trickRepository = $trickRepository;
         $this->entityManager = $entityManager;
-    }
-
-    /**
-    * @param Trick $trick
-    * @return \Symfony\Component\HttpFoundation\Response
-    */
-    #[Route('/trick/{id}/{slug}', name: 'app_trick_show', methods: ['GET','POST'])]
-    public function show(Trick $trick, Request $request): Response
-    {
-        $comment = new Comment;
-
-        $form = $this->createForm(CommentType::class, $comment);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            $comment
-                ->setCreatedAt(new \DateTimeImmutable())
-                ->setAuthor($this->getUser())
-                ->setTrick($trick);
-
-            $this->entityManager->persist($comment);
-
-            $this->entityManager->flush();
-
-            $this->addflash('success', 'Votre message a bien été ajouté');
-        }        
-     
-        return $this->render('trick/show.html.twig', [
-            'trick' => $trick,
-            'form' => $form->createView()
-        ]);
     }
 
     /**
     * @return \Symfony\Component\HttpFoundation\Response
     */
     #[Route('/new', name: 'app_trick_new')]
-    public function new(Request $request): Response
+    public function new(Request $request, FileManager $fileManager): Response
     {
         $trick = new Trick();
 
@@ -79,18 +47,22 @@ class TrickController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $trick->setCreatedAt(new \DateTimeImmutable());
-            $trick->setAuthor($this->getUser());
+            $trick = $this->manageNewPicturesForms($trick, $form->get('pictures'), $fileManager);
 
+            $trick = $this->manageVideosForms($trick, $form->get('videos'));
+
+            $trick
+                ->setCreatedAt(new \DateTimeImmutable())
+                ->setAuthor($this->getUser());
+ 
             $this->entityManager->persist($trick);
-
             $this->entityManager->flush();
 
             $this->addflash('success', 'Le trick : ' . $trick->getTitle() . ' a bien été créé');
 
             return $this->redirectToRoute('app_trick_show', [
                 'id' => $trick->getId(),
-                'slug' => 'blabla' // @TODO : Ajouter le vrai slug
+                'slug' => $trick->getSlug()
             ]);
         }
 
@@ -106,25 +78,27 @@ class TrickController extends AbstractController
     * @return \Symfony\Component\HttpFoundation\Response
     */
     #[Route('/edit/{id}', name: 'app_trick_edit')]
-    public function edit(Trick $trick, Request $request): Response
+    public function edit(Trick $trick, Request $request, FileManager $fileManager): Response
     {
         $form = $this->createForm(TrickType::class, $trick);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            
+            $trick = $this->manageEditPicturesForms($trick, $form->get('pictures'), $fileManager);
+            $trick = $this->manageVideosForms($trick, $form->get('videos'));
 
             $trick->setUpdatedAt(new \DateTimeImmutable());
 
             $this->entityManager->persist($trick);
-
             $this->entityManager->flush();
 
             $this->addflash('success', 'Le trick : ' . $trick->getTitle() . ' a bien été modifié');
 
             return $this->redirectToRoute('app_trick_show', [
                 'id' => $trick->getId(),
-                'slug' => 'blabla' // @TODO : Ajouter le vrai slug
+                'slug' => $trick->getSlug()
             ]);
         }
 
@@ -135,18 +109,201 @@ class TrickController extends AbstractController
     }
 
     /**
+    * @param Trick $trick
+    * @return \Symfony\Component\HttpFoundation\Response
+    */
+    #[Route('/{id}/{slug}', name: 'app_trick_show', methods: ['GET','POST'])]
+    public function show(Trick $trick, Request $request): Response
+    {
+        $comment = new Comment;
+
+        $form = $this->createForm(CommentType::class, $comment);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $comment
+                ->setCreatedAt(new \DateTimeImmutable())
+                ->setAuthor($this->getUser())
+                ->setTrick($trick);
+            $this->entityManager->persist($comment);
+            $this->entityManager->flush();
+
+            // reseting form
+            $comment = new Comment();
+            $form = $this->createForm(CommentType::class, $comment);
+
+            $this->addflash('success', 'Votre message a bien été ajouté');
+        }        
+     
+        return $this->render('trick/show.html.twig', [ 
+            'trick' => $trick,
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
      * @param Trick $trick
      * @return \Symfony\Component\HttpFoundation\Response
      */
     #[Route('/delete/{id}', name: 'app_trick_delete', methods: ['DELETE'])]
-    public function delete(Trick $trick, Request $request): Response
+    public function delete(Trick $trick, Request $request, FileManager $fileManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $trick->getId(), $request->get('_token'))) {
+
+            $pictures = $trick->getPictures();
+            if ($pictures) {
+                foreach ($pictures as $picture) {
+                    $fileManager->removeFile($picture->getSource());
+                }                
+            }
+
             $this->entityManager->remove($trick);
             $this->entityManager->flush();
 
             $this->addflash('success', 'Le trick : ' . $trick->getTitle() . ' a bien été supprimé');
         }
         return $this->redirectToRoute('app_home');
+    }
+
+    /**
+     * @param Picture $picture
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    #[Route('/picture/delete/{id}', name: 'app_trick_delete_picture', methods: ['DELETE'])]
+    public function deletePicture(Picture $picture, Request $request, FileManager $fileManager): JsonResponse
+    {
+        return $this->deleteCollectionItem($picture, $request, $fileManager);
+    }
+
+    /**
+     * @param Video $video
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    #[Route('/video/delete/{id}', name: 'app_trick_delete_video', methods: ['DELETE'])]
+    public function deleteVideo(Video $video, Request $request): JsonResponse
+    {
+        return $this->deleteCollectionItem($video, $request);
+    }
+
+    /**
+     * @param Video|Picture $collectionItem
+     * @param Request $request
+     * @param FileManager|null $fileManager
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    private function deleteCollectionItem($collectionItem, Request $request, FileManager $fileManager = null): JsonResponse
+    {
+        $tokenName = 'delete_';
+        $removeFunction = 'remove';
+        if (get_class($collectionItem) === Video::class) {
+            $tokenName .= 'video';
+            $removeFunction .= 'Video';
+        } elseif (get_class($collectionItem) === Picture::class) {
+            $tokenName .= 'picture';
+            $removeFunction .= 'Picture';
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        if (array_key_exists('_token', $data) && $this->isCsrfTokenValid($tokenName . $collectionItem->getId(), $data['_token'])) {
+            $trick = $collectionItem->getTrick();
+            if ($trick) {
+                // Commenté pour tester le JS
+                // $trick->$removeFunction($collectionItem);
+                // if (get_class($collectionItem) === Picture::class) {
+                //     $fileManager->removeFile($collectionItem->getSource());
+                // }
+                // $this->entityManager->remove($collectionItem);
+                // $this->entityManager->flush();
+                return new JsonResponse(['success' => 1]);              
+            }
+        }
+        return new JsonResponse(['error' => 'Invalid Token'], 400);
+    }
+
+    /**
+     * @param Trick $trick
+     * @param Form $picturesForms
+     * @param FileManager $fileManager
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    private function manageEditPicturesForms(Trick $trick, Form $picturesForms, FileManager $fileManager): Trick
+    {
+        foreach ($picturesForms as $pictureForm) {
+            // if empty subform
+            if (null === $pictureForm->getData()->getId() && null === $pictureForm->get('file')->getData()) {
+                $trick->removePicture($pictureForm->getData());
+            } else {
+                // if file is recieved
+                if ($pictureForm->get('file')->getData()) {
+                    // if a file already exists -> delete it
+                    if ($pictureForm->getData()->getId()) {
+                        $this->removePictureFile($pictureForm->getData(), $fileManager);
+                    }
+                    // uploading new file
+                    $file = $pictureForm->get('file')->getData();
+                    /** @var UploadedFile $pictureFile */
+                    $newFilename = $fileManager->upload($file);
+                    $pictureForm->getData()->setSource($newFilename);                   
+                }
+                if (!$pictureForm->get('alternateText')->getData()) {
+                    $pictureForm->getData()->setAlternateText('image ' . $trick->getTitle());
+                }                
+            }
+        }
+        return $trick;
+    }
+
+    /**
+     * @param Trick $trick
+     * @param Form $picturesForms
+     * @param FileManager $fileManager
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    private function manageNewPicturesForms(Trick $trick, Form $picturesForms, FileManager $fileManager): Trick
+    {
+        foreach ($picturesForms as $pictureForm) {
+            if (null === $pictureForm->get('file')->getData()) {
+                $trick->removePicture($pictureForm->getData());
+            } else {
+                $file = $pictureForm->get('file')->getData();
+                /** @var UploadedFile $pictureFile */
+                $newFilename = $fileManager->upload($file);   
+                $pictureForm->getData()->setSource($newFilename);
+
+                if (!$pictureForm->get('alternateText')->getData()) {
+                    $pictureForm->getData()->setAlternateText('image ' . $trick->getTitle());
+                }
+            }                   
+        }
+        return $trick;
+    }
+
+    /**
+     * @param Picture $id
+     * @param FileManager $fileManager
+     * @return void
+     */
+    private function removePictureFile(Picture $picture, FileManager $fileManager): void
+    {
+        $oldPicture = $this->entityManager->getRepository(Picture::class)->findOneBy(['id' => $picture->getId()]);
+        $fileManager->removeFile($oldPicture->getSource());
+    }
+
+    /**
+     * @param Trick $trick
+     * @param Form $videosForms
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    private function manageVideosForms(Trick $trick, Form $videosForms): Trick
+    {
+        foreach ($videosForms as $videoForm) {
+            if (null === $videoForm->getData()->getSource()) {
+                $trick->removeVideo($videoForm->getData());
+            }                
+        }
+        return $trick;
     }
 }

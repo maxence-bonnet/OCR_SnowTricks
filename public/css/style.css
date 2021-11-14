@@ -15,6 +15,15 @@ body, html {
     display: inline-block;
 }
 
+.btn-delete, .btn-edit {
+    border: none;
+    background: none;
+}
+
+.media-edit-buttons-container {
+    background-color: rgba(255,255,255,0.5);
+}
+
 .card-img-top {
     height: 10rem;
     width: 100%;
@@ -22,7 +31,7 @@ body, html {
 }
 
 /* w3schools */
-.trick-link:hover {
+.shake:hover {
     animation: shake 1s;
     animation-iteration-count: infinite;
 }
