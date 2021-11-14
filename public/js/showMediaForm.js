@@ -38,6 +38,7 @@ const bindToPictureForm = (button) => {
 const bindToVideoForm = (button) => {
     let sourceInput = document.querySelector('#' + button.dataset.id + '_source');
     let originalSource = sourceInput.value;
+    console.log(originalSource);
     let cancelButton = document.querySelector('#' + button.dataset.id + '_cancel');
     button.addEventListener('click', () => {   
         toggleDisplay();
@@ -53,15 +54,16 @@ const bindToVideoForm = (button) => {
 }
 
 const resetEditPictureForm = (originalSource, originalAlternateText, button) => {
-    let source = document.querySelector('#' + button.dataset.id + '_card > img').src
-    if (source != originalSource) {
-       source = originalSource;
+    if (document.querySelector('#' + button.dataset.id + '_card > img').src !== originalSource) {
+        document.querySelector('#' + button.dataset.id + '_card > img').src  = originalSource;
     }
     document.querySelector('#' + button.dataset.id + '_file').value = '';
     document.querySelector('#' + button.dataset.id + '_alternateText').value = originalAlternateText;
 }
 
 const resetEditVideoForm = (originalSource, button) => {
-    document.querySelector('#' + button.dataset.id + '_card > iframe').src = originalSource;
+    if (document.querySelector('#' + button.dataset.id + '_card > iframe').src !== originalSource) {
+        document.querySelector('#' + button.dataset.id + '_card > iframe').src = originalSource;
+    }
     document.querySelector('#' + button.dataset.id + '_source').value = originalSource;
 }

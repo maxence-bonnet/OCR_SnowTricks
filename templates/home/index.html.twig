@@ -40,10 +40,18 @@
                                 {% if app.user %}
                                 <div class="d-flex justify-content-center">
                                     <a href="{{ path('app_trick_edit', {id: trick.id}) }}" class="text-decoration-none link-dark card-link trick-link shake" title="update"><i class="bx bx-pencil"></i></a>
-                                    <form action="{{ path('app_trick_delete', {id: trick.id}) }}" method="post" class="ms-3">
+                                    <form action="{{ path('app_trick_delete', {id: trick.id}) }}" method="post" class="ms-3" id="{{'trick_' ~ trick.id ~ '_delete_form'}}">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}">
-                                        <button type="submit" class="btn-delete trick-link shake" title="supprimer définitivement"><i class="bx bx-trash"></i></button>
+                                        <button 
+                                            type="button"
+                                            class="btn-delete btn-modal-delete delete-trick trick-link shake"
+                                            data-target="{{'trick_' ~ trick.id ~ '_delete_modal'}}"
+                                            data-action="send-form"
+                                            data-form="{{'trick_' ~ trick.id ~ '_delete_form'}}"
+                                        >
+                                            <i class="bx bx-trash"></i>
+                                        </button>
                                     </form>
                                 </div>
                                 {% endif %}
@@ -68,4 +76,13 @@
             </div>
         </div> 
     </div>
+    {{ include('_modal_template.html.twig') }}
 {% endblock %}
+
+{% block javascripts %}
+    <script>
+        window.onload = () => {
+            loadModalButtons();
+        }
+    </script>
+{% endblock javascripts %}

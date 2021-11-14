@@ -4,7 +4,7 @@
         <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 collectionHolder">
             {% if onEditMode %}
                 {% for picture in form.pictures %}
-                    <div class="collectionItem subform col d-flex flex-column">
+                    <div class="collectionItem subform col d-flex flex-column"  id="{{ picture.vars.id ~ '_item'}}">
                         <div id="{{ picture.vars.id ~ '_card' }}" class="card shadow-sm m-2 m-lg-1">
                             <img
                                 class="card-img-top"
@@ -23,10 +23,12 @@
                                 <button 
                                     type="button"
                                     class="btn btn-modal-delete delete-picture shake"
-                                    data-href="{{ path('app_trick_delete_picture', {id: picture.vars.value.id}) }}"
-                                    data-token="{{ csrf_token('delete_picture' ~ picture.vars.value.id)}}" 
                                     title="Supprimer définitivement"
-                                    data-target="{{picture.vars.id ~ '_modal'}}" 
+                                    data-target="{{picture.vars.id ~ '_modal'}}"
+                                    data-token="{{ csrf_token('delete_picture' ~ picture.vars.value.id)}}"
+                                    data-action="ajax"
+                                    data-href="{{ path('app_trick_delete_picture', {id: picture.vars.value.id}) }}"
+                                    data-element-remove="{{ picture.vars.id ~ '_item'}}"
                                 >
                                     <i class="bx bx-trash"></i>
                                 </button>
@@ -88,7 +90,7 @@
         <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 collectionHolder">
             {% if onEditMode %}
                 {% for video in form.videos %}
-                    <div class="collectionItem subform col d-flex flex-column">
+                    <div class="collectionItem subform col d-flex flex-column" id="{{ video.vars.id ~ '_item'}}">
                         <div id="{{ video.vars.id ~ '_card' }}" class="card shadow-sm m-2 m-lg-1">
                             <iframe  class="card-img-top" src="{{ video.source.vars.value }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                             <div class="position-absolute media-edit-buttons-container bottom-0 end-0 shadow-lg m-2 rounded">
@@ -104,9 +106,11 @@
                                     type="button"
                                     class="btn btn-modal-delete delete-video shake"
                                     title="supprimer définitivement"
+                                    data-target="{{ video.vars.id ~ '_modal'}}"                              
+                                    data-token="{{ csrf_token('delete_video' ~ video.vars.value.id)}}"
+                                    data-action="ajax"
                                     data-href="{{ path('app_trick_delete_video', {id: video.vars.value.id}) }}"
-                                    data-token="{{ csrf_token('delete_video' ~ video.vars.value.id)}}" 
-                                    data-target="{{ video.vars.id ~ '_modal'}}"                                 
+                                    data-element-remove="{{ video.vars.id ~ '_item'}}"
                                 >
                                     <i class="bx bx-trash"></i>
                                 </button>
@@ -171,45 +175,30 @@
         <div class="trick-form-buttons-container px-1 px-md-5 d-flex justify-content-end">
             <div class="col-12 col-sm-6 col-lg-5 d-flex justify-content-end">
                 {% if onEditMode %}
-                {# AJOUTER PROPREMENT LA SUPPRESSION #}
-                <form action="{{ path('app_trick_delete', {id: trick.id}) }}" method="post" class="ms-3">
-                    <input type="hidden" name="_method" value="DELETE">
-                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}">
-                    <button type="button" class="btn btn-danger m-1" data-target="confirmTrickDelete"><i class="bx bx-trash"></i>Supprimer le trick</button>
-                </form>
+                <button 
+                    type="button"
+                    class="btn btn-danger btn-modal-delete delete-trick m-1"
+                    data-target="{{'trick_' ~ trick.id ~ '_delete_modal'}}"
+                    data-action="send-form"
+                    data-form="{{'trick_' ~ trick.id ~ '_delete_form'}}"
+                >
+                    <i class="bx bx-trash"></i> Supprimer le trick
+                </button>
                 {% endif %}
-                <button class="btn btn-primary m-1"><i class="bx bx-check"></i>{{ button_label|default('should not happen')}}</button>
+                <button class="btn btn-primary m-1"><i class="bx bx-check"></i> {{ button_label|default('should not happen')}}</button>
             </div>
         </div>
     </div>
 </div>
 {{ form_end(form) }}
 
-<template id="modalTemplate">
-    <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Confirmer la suppression</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button 
-                        id="confirmButton"
-                        data-bs-dismiss="modal"
-                        type="button"
-                        class="btn btn-primary btn-delete-modal"
-                    >
-                        Confirmer
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</template>
+<form action="{{ path('app_trick_delete', {id: trick.id}) }}" id="{{'trick_' ~ trick.id ~ '_delete_form'}}" method="post" class="ms-3">
+    <input type="hidden" name="_method" value="DELETE">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}">
+</form>
+                
+
+{{ include('_modal_template.html.twig') }}
 
 {% block javascripts %}
     <script>
@@ -222,5 +211,4 @@
     </script>
     <script src="{{ asset('js/addCollectionForm.js')}}"></script>
     <script src="{{ asset('js/showMediaForm.js')}}"></script>
-    <script src="{{ asset('js/createModal.js')}}"></script>
-{% endblock %}
+{% endblock javascripts %}

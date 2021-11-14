@@ -25,9 +25,22 @@
                             <img src="{{ asset('img/static/default.jpg') }}" class="trick-image-container__image" alt="default image">
                         {% endif %}
                         {% if app.user %}
-                        <div class="position-absolute top-0 end-0 shadow-lg m-2 rounded">
+                        <div class="position-absolute trick-edit-buttons-container top-0 end-0 shadow-lg m-2 rounded">
                             <a href="{{ path('app_trick_edit', {id: trick.id}) }}" class="text-decoration-none link-dark trick-link shake mx-1 fs-3"><i class="bx bx-pencil"></i></a>
-                            <a href="{{ path('app_trick_edit', {id: trick.id}) }}" class="text-decoration-none link-dark trick-link shake mx-1 fs-3"><i class="bx bx-trash"></i></a>
+                            
+                            <form action="{{ path('app_trick_delete', {id: trick.id}) }}" method="post" class="trick-link" id="{{'trick_' ~ trick.id ~ '_delete_form'}}">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}">
+                                <button 
+                                    type="button"
+                                    class="btn-delete btn-modal-delete delete-trick trick-link shake fs-3"
+                                    data-target="{{'trick_' ~ trick.id ~ '_delete_modal'}}"
+                                    data-action="send-form"
+                                    data-form="{{'trick_' ~ trick.id ~ '_delete_form'}}"
+                                >
+                                    <i class="bx bx-trash"></i>
+                                </button>
+                            </form>
                         </div>
                         {% endif %}                        
                     </div>
@@ -135,4 +148,13 @@
             </div>
         </article>
     </div>
+    {{ include('_modal_template.html.twig') }}
 {% endblock %}
+
+{% block javascripts %}
+    <script>
+        window.onload = () => {
+            loadModalButtons();
+        }
+    </script>
+{% endblock javascripts %}
