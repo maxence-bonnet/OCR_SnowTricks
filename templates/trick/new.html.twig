@@ -24,7 +24,7 @@
                         {% if picture is not null and picture.source is not null %}
                             <img src="{{ asset('img/uploads/tricks/' ~ picture.source ) }}" class="trick-image-container__image" alt="img">
                         {% else %}
-                            <img src="{{ asset('img/static/default.jpg') }}" class="trick-image-container__image" alt="default image">
+                            <img src="{{ asset('img/static/default-picture.jpg') }}" class="trick-image-container__image" alt="default image">
                         {% endif %} 
                     </div>
                     <div class="trick-content p-1 p-md-3">

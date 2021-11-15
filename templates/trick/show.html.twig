@@ -22,7 +22,7 @@
                             {% set picture = trick.getFirstPicture %}
                             <img src="{{ asset('img/uploads/tricks/' ~ picture.source ) }}" class="trick-image-container__image" alt="img">
                         {% else %}
-                            <img src="{{ asset('img/static/default.jpg') }}" class="trick-image-container__image" alt="default image">
+                            <img src="{{ asset('img/static/default-picture.jpg') }}" class="trick-image-container__image" alt="default image">
                         {% endif %}
                         {% if app.user %}
                         <div class="position-absolute trick-edit-buttons-container top-0 end-0 shadow-lg m-2 rounded">
@@ -78,27 +78,18 @@
                         <div class="trick__description px-1 px-md-5">
                             <p>{{ trick.description |nl2br }}</p>
                         </div>
-                        <div class="trick-meta-data d-flex justify-content-center flex-wrap px-1 px-md-5">
-                            <div class="trick-meta-data__author border shadow-sm my-1 p-1 px-2">
-                                De : {{ trick.author.username }}
-                            </div>
-                            <div class="trick-meta-data__creation-date border shadow-sm m-1 p-1 px-2">
-                                {{ 'Créé le : ' ~ trick.createdAt |date("d/m/Y") ~ ' à ' ~ trick.createdAt |date("H:i") }}
-                            </div>
-                            {% if trick.category is not null %}
-                                <div class="trick-meta-data__category border shadow-sm m-1 p-1 px-2">
-                                    Catégorie : {{ trick.category }}
-                                </div>
-                            {% endif %}
+                        <hr>
+                        <ul class="list-inline text-center">
+                            <li class="list-inline-item">De : <a href="#" class="text-decoration-none">{{ trick.author.username }}</a></li> | 
+                            <li class="list-inline-item">{{ 'Créé le : ' ~ trick.createdAt |date("d/m/Y") ~ ' à ' ~ trick.createdAt |date("H:i") }}</li> | 
                             {% if trick.updatedAt is not null %}
-                                <div class="trick-meta-data__update-date border shadow-sm m-1  p-1 px-2">
-                                    {{ 'Dernière modification le : ' ~ trick.updatedAt |date("d/m/Y") ~ ' à ' ~ trick.createdAt |date("H:i") }}
-                                </div>
+                                <li class="list-inline-item">{{ 'Dernière modification le : ' ~ trick.updatedAt |date("d/m/Y") ~ ' à ' ~ trick.createdAt |date("H:i") }}</li> | 
                             {% endif %}
-                            <div class="trick-meta-data__comments-number border shadow-sm m-1  p-1 px-2">
-                                Messages : {{ trick.comments |length}}
-                            </div>
-                        </div>
+                            {% if trick.category is not null %}
+                                <li class="list-inline-item">{{'Catégorie : ' ~ trick.category }}</li> | 
+                            {% endif %}
+                            <li class="list-inline-item">Messages : {{ trick.comments |length}}</li>
+                        </ul>
                         <hr>
                         {% if app.user %}
                             <div class="trick__comment-form">
@@ -121,7 +112,7 @@
                                             <div class="card comment-card mb-3">
                                                 <div class="row g-0">
                                                     <div class="col-3 comment-card__author-picture p-sm-1 p-lg-2">
-                                                        <img src="{{ asset('img/uploads/avatars/default.jpg') }}" class="shadow" alt="avatar">
+                                                        <img src="{{ asset('img/uploads/avatars/default_avatar.jpg') }}" class="shadow" alt="avatar">
                                                     </div>
                                                     <div class="col-9 comment-card__content shadow-sm">
                                                         <div class="card-body">

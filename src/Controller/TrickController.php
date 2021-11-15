@@ -113,11 +113,18 @@ class TrickController extends AbstractController
     * @return \Symfony\Component\HttpFoundation\Response
     */
     #[Route('/{id}/{slug}', name: 'app_trick_show', methods: ['GET','POST'])]
-    public function show(Trick $trick, Request $request): Response
+    public function show(Trick $trick, string $slug = null, Request $request): Response
     {
         $comment = new Comment;
 
         $form = $this->createForm(CommentType::class, $comment);
+        
+        if ((string)$trick->getSlug() !== $slug) {
+            return $this->redirectToRoute('app_trick_show', [
+                'id' => $trick->getId(),
+                'slug' => $trick->getSlug()
+            ]);
+        }
 
         $form->handleRequest($request);
 
@@ -265,6 +272,7 @@ class TrickController extends AbstractController
     private function manageNewPicturesForms(Trick $trick, Form $picturesForms, FileManager $fileManager): Trick
     {
         foreach ($picturesForms as $pictureForm) {
+            // ignoring empty subforms
             if (null === $pictureForm->get('file')->getData()) {
                 $trick->removePicture($pictureForm->getData());
             } else {

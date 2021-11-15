@@ -5,7 +5,7 @@
 {% block title %}{{ parent() }}Accueil{% endblock %}
 
 {% block body %}
-    <div class="container-fluid hero-bg d-flex justify-content-end align-items-end">
+    <div class="container-fluid hero-bg d-flex position-relative">
         <div class="row position-absolute top-50 start-50 translate-middle">
             <div class="col-12 col-sm-10 m-auto">
                 {% for message in app.flashes('success') %}
@@ -17,65 +17,80 @@
             </div>
         </div>
         <div class="hero-text">
-            <h1>Snowtricks</h1>
+            <h1 >Snowtricks</h1>
+            <p >Trick the way to SnowBoard</p>
+        </div>
+        <div class="position-absolute bottom-0 end-0">
+            <a href="#tricks" class="m-2 link-dark"><i class='bx bxs-down-arrow-square bx-lg bx-flip-horizontal-hover bx-fade-down-hover'></i></a>
         </div>
     </div>
-    <div id="tricks" class="container p-4">
-        <h2 class="text-center mb-3">Les figures</h2>
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
-            {% for trick in tricks %}
-                <div class="col mb-3">
-                    <div class="card shadow">
-                            {% if trick.pictures is not empty %}
-                                {% set picture = trick.getFirstPicture %}
-                                <img src="{{ asset('img/uploads/tricks/' ~ picture.source ) }}" class="card-img-top" alt="img">
-                            {% else %}
-                                <img src="{{ asset('img/static/default.jpg') }}" class="card-img-top" alt="default image">
-                            {% endif %}                                
-                        <div class="card-body">
-                            <h5 class="card-title d-flex justify-content-between">
-                                <a href="{{ path('app_trick_show', {id: trick.id, slug: trick.title |slug('-')|lower}) }}" class="text-decoration-none link-dark card-link trick-link shake">
-                                    {{ trick.title }}
-                                </a>
-                                {% if app.user %}
-                                <div class="d-flex justify-content-center">
-                                    <a href="{{ path('app_trick_edit', {id: trick.id}) }}" class="text-decoration-none link-dark card-link trick-link shake" title="update"><i class="bx bx-pencil"></i></a>
-                                    <form action="{{ path('app_trick_delete', {id: trick.id}) }}" method="post" class="ms-3" id="{{'trick_' ~ trick.id ~ '_delete_form'}}">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}">
-                                        <button 
-                                            type="button"
-                                            class="btn-delete btn-modal-delete delete-trick trick-link shake"
-                                            data-target="{{'trick_' ~ trick.id ~ '_delete_modal'}}"
-                                            data-action="send-form"
-                                            data-form="{{'trick_' ~ trick.id ~ '_delete_form'}}"
-                                        >
-                                            <i class="bx bx-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                                {% endif %}
-                            </h5>
-                        </div>
-                        <div class="card-footer">
-                            <small class="text-muted text-center">
-                                {% if trick.updatedAt %}
-                                    {{ 'Dernière modification le : ' ~ trick.updatedAt |date("d/m/Y") }}
+    <div class="container-fluid position-relative">
+        <div id="tricks" class="container p-4">
+            <h2 class="text-center mb-3">Les figures</h2>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xxl-5">
+                {% for trick in tricks %}
+                    <div class="col mb-3 trick-card-container {{ loop.index > 10 ? 'd-none'}}">
+                        <div class="card shadow h-100">
+                                {% if trick.pictures is not empty %}
+                                    {% set picture = trick.getFirstPicture %}
+                                    <img src="{{ asset('img/uploads/tricks/' ~ picture.source ) }}" class="card-img-top" alt="img">
                                 {% else %}
-                                    {{ 'Créé le : ' ~ trick.createdAt |date("d/m/Y") ~ ' à ' ~ trick.createdAt |date("H:i") }}
-                                {% endif %}
-                            </small>
-                        </div>
-                    </div>                
-                </div>
-            {% endfor %}
-        </div>
-        <div class="row">
-            <div class="col-12 d-flex justify-content-center">
-                <button type="button" class="btn btn-primary">Afficher plus</button>
+                                    <img src="{{ asset('img/static/default-picture.jpg') }}" class="card-img-top" alt="default image">
+                                {% endif %}                                
+                            <div class="card-body">
+                                <h5 class="card-title d-flex justify-content-between">
+                                    <a href="{{ path('app_trick_show', {id: trick.id, slug: trick.title |slug('-')|lower}) }}" class="text-decoration-none link-dark card-link trick-link shake">
+                                        {{ trick.title }}
+                                    </a>
+                                    {% if app.user %}
+                                    <div class="d-flex justify-content-center">
+                                        <a href="{{ path('app_trick_edit', {id: trick.id}) }}" class="text-decoration-none link-dark card-link trick-link shake" title="update"><i class="bx bx-pencil"></i></a>
+                                        <form action="{{ path('app_trick_delete', {id: trick.id}) }}" method="post" class="ms-3" id="{{'trick_' ~ trick.id ~ '_delete_form'}}">
+                                            <input type="hidden" name="_method" value="DELETE">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}">
+                                            <button 
+                                                type="button"
+                                                class="btn-delete btn-modal-delete delete-trick trick-link shake"
+                                                data-target="{{'trick_' ~ trick.id ~ '_delete_modal'}}"
+                                                data-action="send-form"
+                                                data-form="{{'trick_' ~ trick.id ~ '_delete_form'}}"
+                                            >
+                                                <i class="bx bx-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                    {% endif %}
+                                </h5>
+                            </div>
+                            <div class="card-footer">
+                                <small class="text-muted text-center">
+                                    {% if trick.updatedAt %}
+                                        {{ 'Dernière modification le : ' ~ trick.updatedAt |date("d/m/Y") }}
+                                    {% else %}
+                                        {{ 'Créé le : ' ~ trick.createdAt |date("d/m/Y") ~ ' à ' ~ trick.createdAt |date("H:i") }}
+                                    {% endif %}
+                                </small>
+                            </div>
+                        </div>                
+                    </div>
+                {% endfor %}
             </div>
-        </div> 
+            <div class="row">
+                <div class="col-12 d-flex justify-content-center">
+                    <button type="button" id="showMore" class="btn btn-primary mx-2">Afficher plus <i class='bx bx-add-to-queue'></i></button>
+                    <button type="button" id="showLess" class="btn btn-primary mx-2 d-none">Afficher moins <i class='bx bx-hide' ></i></button>
+                </div>
+            </div>
+            <div class="position-absolute bottom-0 end-0">
+                <a href="#tricks" class="m-2 link-dark d-none"><i class='bx bxs-up-arrow-square bx-lg bx-flip-horizontal-hover bx-fade-down-hover'></i></a>
+            </div>
+        </div>
+        <div class="position-absolute bottom-0 end-0">
+            {# add javascript listenner on load more button : condition : if (tricks number > 16) {class="d-block"} else {class="d-none"} #}
+            <a href="#tricks" class="m-2 link-dark"><i class='bx bxs-up-arrow-square bx-lg bx-flip-horizontal-hover bx-fade-down-hover'></i></a>
+        </div>    
     </div>
+
     {{ include('_modal_template.html.twig') }}
 {% endblock %}
 
@@ -83,6 +98,8 @@
     <script>
         window.onload = () => {
             loadModalButtons();
+            loadShowButtons();
         }
     </script>
+    <script src="{{ asset('js/showButtons.js')}}"></script>
 {% endblock javascripts %}
