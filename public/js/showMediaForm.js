@@ -1,3 +1,7 @@
+const initShowMediaForm = () => {
+    loadEditButtons();
+}
+
 const loadEditButtons = () => {
     let editButtons = document.querySelectorAll('.btn-edit');
 
@@ -5,6 +9,8 @@ const loadEditButtons = () => {
         bindToForm(button);
     }
 }
+
+window.addEventListener('load', loadEditButtons);
 
 const bindToForm = (button) => {
     if (button.classList.contains('edit-picture')) {
@@ -38,7 +44,6 @@ const bindToPictureForm = (button) => {
 const bindToVideoForm = (button) => {
     let sourceInput = document.querySelector('#' + button.dataset.id + '_source');
     let originalSource = sourceInput.value;
-    console.log(originalSource);
     let cancelButton = document.querySelector('#' + button.dataset.id + '_cancel');
     button.addEventListener('click', () => {   
         toggleDisplay();

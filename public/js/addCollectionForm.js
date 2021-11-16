@@ -1,3 +1,11 @@
+const initAddCollectionForm = () => {
+    loadAddSubformButtons();
+    loadEditItemPreview();
+    loadModalButtons();
+}
+
+window.addEventListener('load', initAddCollectionForm);
+
 const loadAddSubformButtons = () => {
     let addFormButtons = document.querySelectorAll('.addSubformButton');
     for (button of addFormButtons) {

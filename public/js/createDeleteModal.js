@@ -11,7 +11,9 @@ const loadModalButtons = () => {
     }
 }
 
-// requires several button attributs : 
+window.addEventListener('load', loadModalButtons);
+
+// requires several button attributes : 
 // data-action="{actionToPerform}"
 // data-form="{modalId}" or data-href="{url}" depending on action
 // data-target="{modalId}"

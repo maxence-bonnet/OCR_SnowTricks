@@ -5,7 +5,7 @@ if ('undefined' === typeof(maxToggleSteps)) {
     var maxToggleSteps = 5;
 }
 if ('undefined' === typeof(defaultStepTimer)) {
-    var defaultStepTimer = 300; // (ms)
+    var defaultStepTimer = 200; // (ms)
 }
 
 const loadShowButtons = () => {
@@ -26,6 +26,8 @@ const loadShowButtons = () => {
     });
     updateShowButtons(getHiddenTricks().length, tricksNumber, showMoreButton, showLessButton);
 }
+
+window.addEventListener('load', loadShowButtons);
 
 const getTricks = () => {
     return document.querySelectorAll('.trick-card-container');
@@ -49,7 +51,6 @@ async function showMoreTricks (hiddenTricks) {
  
 async function showLessTricks (tricks, hiddenTricks, tricksNumber) {
     let hiddenTricksNumber = hiddenTricks.length;
-
     let shownTricksNumber = tricksNumber - hiddenTricksNumber;
     for (let i = 1; i <= maxToggleSteps; i++) {
         if ((tricksNumber - hiddenTricksNumber) <= minTricksShown) {
@@ -62,9 +63,9 @@ async function showLessTricks (tricks, hiddenTricks, tricksNumber) {
 }
 
 const updateShowButtons = (hiddenTricksNumber, tricksNumber, showMoreButton, showLessButton) => {
-    // if (there are still hidden tricks and [showMoreButton] button is hidden)
-    // or (there are no more hidden tricks and the [showMoreButton] button is displayed)
-    // then toggle [showMoreButton] button
+    // if (there are still hidden tricks and [showMoreButton] is hidden)
+    // or (there are no more hidden tricks and the [showMoreButton] is displayed)
+    // then toggle [showMoreButton]
     updateButtonDisplay(
         showMoreButton, (
             (hiddenTricksNumber > 0 && showMoreButton.classList.contains('d-none'))
@@ -72,9 +73,9 @@ const updateShowButtons = (hiddenTricksNumber, tricksNumber, showMoreButton, sho
             (hiddenTricksNumber === 0 && !showMoreButton.classList.contains('d-none'))
         )
     );
-    // if (number of tricks displayed equals or is less than {minTricksShown} and the [showLessButton] button is displayed)
-    // or (there are more than {minTricksShown} tricks displayed and the [showLessButton] button is hidden)
-    // then toggle [showLessButton] button
+    // if (number of tricks displayed equals or is less than {minTricksShown} and the [showLessButton] is displayed)
+    // or (there are more than {minTricksShown} tricks displayed and the [showLessButton] is hidden)
+    // then toggle [showLessButton]
     updateButtonDisplay(
         showLessButton, (
             (tricksNumber - hiddenTricksNumber <= minTricksShown && !showLessButton.classList.contains('d-none'))
@@ -93,19 +94,19 @@ const updateButtonDisplay = (button, toggleCondidition) => {
 async function toggleElement (element = null) {
     if (null !== element) {
         if (element.classList.contains('d-none')) {
-            // smooth show
             element.classList.toggle('d-none');
             await timer(defaultStepTimer);
-            element.classList.toggle('smooth-show');           
+            element.classList.toggle('smooth-show');
+            return 'shown';          
         } else {
-            // smooth hide
             element.classList.toggle('smooth-show');
             await timer(defaultStepTimer);
-            element.classList.toggle('d-none'); 
+            element.classList.toggle('d-none');
+            return 'hidden';
         }
     }
 }
 
-async function timer(ms = 1000) {
+async function timer(ms = 500) {
     return new Promise(resolve => setTimeout(resolve, ms))
 }

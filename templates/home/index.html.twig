@@ -8,7 +8,7 @@
     {% set displayParameters = {
             'minTricksShown': 10,
             'maxToggleSteps': 5,
-            'defaultStepTimer': 100
+            'defaultStepTimer': 200
         } 
     %}
 {% endif %}
@@ -75,7 +75,7 @@
                             <div class="card-footer">
                                 <small class="text-muted text-center">
                                     {% if trick.updatedAt %}
-                                        {{ 'Dernière modification le : ' ~ trick.updatedAt |date("d/m/Y") }}
+                                        {{ 'Mis à jour le : ' ~ trick.updatedAt |date("d/m/Y") }}
                                     {% else %}
                                         {{ 'Créé le : ' ~ trick.createdAt |date("d/m/Y") ~ ' à ' ~ trick.createdAt |date("H:i") }}
                                     {% endif %}
@@ -97,7 +97,7 @@
         </div>    
     </div>
 
-    {{ include('_modal_template.html.twig') }}
+    {{ include('_modal_delete_template.html.twig') }}
 {% endblock %}
 
 {% block javascripts %}
@@ -105,10 +105,6 @@
         var minTricksShown = {{ displayParameters.minTricksShown }};
         var maxToggleSteps = {{ displayParameters.maxToggleSteps }};
         var defaultStepTimer = {{ displayParameters.defaultStepTimer }};
-        window.onload = () => {
-            loadModalButtons();
-            loadShowButtons();
-        }
     </script>
     <script src="{{ asset('js/showButtons.js')}}"></script>
 {% endblock javascripts %}

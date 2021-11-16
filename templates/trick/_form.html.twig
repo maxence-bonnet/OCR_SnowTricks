@@ -181,17 +181,9 @@
     </form>
 {% endif %}
 
-{{ include('_modal_template.html.twig') }}
+{{ include('_modal_delete_template.html.twig') }}
 
 {% block javascripts %}
-    <script>
-        window.onload = () => {
-            loadEditButtons();
-            loadAddSubformButtons();
-            loadEditItemPreview();
-            loadModalButtons();
-        }
-    </script>
     <script src="{{ asset('js/addCollectionForm.js')}}"></script>
     <script src="{{ asset('js/showMediaForm.js')}}"></script>
 {% endblock javascripts %}

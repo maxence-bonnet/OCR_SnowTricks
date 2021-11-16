@@ -121,7 +121,6 @@ body, html {
 
 .collectionHolder iframe {
     background-image: url('../img/static/default-video.jpg');
-    height: 100%;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -145,5 +144,14 @@ body, html {
     
     .hero-text p {
         font-size: 2rem;
+    }
+
+    .collectionItem {
+        opacity: 0;
+        transition: opacity .3s ease-in-out;
+    }
+
+    .card-img-top {
+        height: auto;
     }
 }
