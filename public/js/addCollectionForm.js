@@ -1,7 +1,7 @@
 const loadAddSubformButtons = () => {
     let addFormButtons = document.querySelectorAll('.addSubformButton');
     for (button of addFormButtons) {
-        initialize(button);
+        initializeAddSubFormButton(button);
     }
 }
 
@@ -12,12 +12,15 @@ const loadEditItemPreview = () => {
         index = 0;
         for (editForm of itemsCollection) {
             initializePreview(collectionHolder.parentNode.id, index, editForm);
+            if (editForm.classList.contains('errorSubForm')) {
+                initializeSubformRemove(editForm);
+            }
             index++;
         }
     }
 }
 
-const initialize = (button) => {
+const initializeAddSubFormButton = (button) => {
     let subFormPrototype = getSubformPrototype(button.dataset.target);
     let collectionHolder = getCollectionHolder(button.dataset.target);
     collectionHolder.data = {index: getCollectionLength(collectionHolder)};
@@ -56,10 +59,10 @@ const createNewSubform = (index, subFormPrototype) => {
     return newForm;
 }
 
-const initializePreview = (target, index, subform) => {
-    if (target === 'trick-pictures') {
+const initializePreview = (relatedWith, index, subform) => {
+    if (relatedWith === 'trick-pictures') {
         initializePicturePreview(index, subform);
-    } else if (target === 'trick-videos') {
+    } else if (relatedWith === 'trick-videos') {
         initializeVideoPreview(index, subform);
     }
 }
@@ -102,7 +105,7 @@ const buildYoutubeURL = (string) => {
         }
     }
     if (string.match(/https:\/\/youtu.be/)) {
-        return string.replace(/youtu.be/,'youtube.com\/embed\/')
+        return string.replace(/youtu.be\//,'youtube.com\/embed\/')
     }
     return '';
 }

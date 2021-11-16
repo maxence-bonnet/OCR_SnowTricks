@@ -4,73 +4,59 @@
             <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 collectionHolder">
                 {% if onEditMode %}
                     {% for picture in form.pictures %}
-                        <div class="collectionItem subform col d-flex flex-column"  id="{{ picture.vars.id ~ '_item'}}">
-                            <div id="{{ picture.vars.id ~ '_card' }}" class="card shadow-sm m-2 m-lg-1">
-                                <img
-                                    class="card-img-top"
-                                    src="{{ asset('img/uploads/tricks/' ~ picture.source.vars.value) }}"
-                                    alt="{{ picture.alternateText |default(trick.title ~ 'picture') }}"
-                                >
-                                <div class="position-absolute media-edit-buttons-container bottom-0 end-0 shadow-lg m-2 rounded">
-                                    <button 
-                                        type="button"
-                                        data-id="{{ picture.vars.id }}"
-                                        class="btn btn-edit edit-picture shake"
-                                        title="modifier"
+                        {% if picture.vars.value.id is not null %} {# original pictures only #}
+                            <div class="collectionItem subform col d-flex flex-column"  id="{{ picture.vars.id ~ '_item'}}">
+                                <div id="{{ picture.vars.id ~ '_card' }}" class="card shadow-sm m-2 m-lg-1">
+                                    <img
+                                        class="card-img-top"
+                                        src="{{ asset('img/uploads/tricks/' ~ picture.source.vars.value) }}"
+                                        alt="{{ picture.alternateText |default(trick.title ~ 'picture') }}"
                                     >
-                                        <i class="bx bx-pencil"></i>
-                                    </button>
-                                    <button 
-                                        type="button"
-                                        class="btn btn-modal-delete delete-picture shake"
-                                        title="Supprimer définitivement"
-                                        data-target="{{picture.vars.id ~ '_modal'}}"
-                                        data-token="{{ csrf_token('delete_picture' ~ picture.vars.value.id)}}"
-                                        data-action="ajax"
-                                        data-href="{{ path('app_trick_delete_picture', {id: picture.vars.value.id}) }}"
-                                        data-element-remove="{{ picture.vars.id ~ '_item'}}"
-                                    >
-                                        <i class="bx bx-trash"></i>
-                                    </button>
+                                    <div class="position-absolute media-edit-buttons-container bottom-0 end-0 shadow-lg m-2 rounded">
+                                        <button 
+                                            type="button"
+                                            data-id="{{ picture.vars.id }}"
+                                            class="btn btn-edit edit-picture shake"
+                                            title="modifier"
+                                        >
+                                            <i class="bx bx-pencil"></i>
+                                        </button>
+                                        <button 
+                                            type="button"
+                                            class="btn btn-modal-delete delete-picture shake"
+                                            title="Supprimer définitivement"
+                                            data-target="{{picture.vars.id ~ '_modal'}}"
+                                            data-token="{{ csrf_token('delete_picture' ~ picture.vars.value.id)}}"
+                                            data-action="ajax"
+                                            data-href="{{ path('app_trick_delete_picture', {id: picture.vars.value.id}) }}"
+                                            data-element-remove="{{ picture.vars.id ~ '_item'}}"
+                                        >
+                                            <i class="bx bx-trash"></i>
+                                        </button>
+                                    </div>
                                 </div>
+                                {{ form_row(picture.source) }}
+                                {{ form_row(picture.alternateText, {'row_attr': {'class': 'mb-3 d-none form-row'}}) }}
+                                {{ form_row(picture.file, {'row_attr': {'class': 'mb-3 d-none form-row'}}) }}
+                                <button type="button" id="{{ picture.vars.id ~ '_cancel' }}" class='btn btn-danger m-auto mb-1 d-none'>Annuler <i class='bx bx-x bx-fw'></i></button>
                             </div>
-                            {{ form_row(picture.source) }}
-                            {{ form_row(picture.alternateText, {'row_attr': {'class': 'mb-3 d-none form-row'}}) }}
-                            {{ form_row(picture.file, {'row_attr': {'class': 'mb-3 d-none form-row'}}) }}
-                            <button type="button" id="{{ picture.vars.id ~ '_cancel' }}" class='btn btn-danger m-auto mb-1 d-none'>Annuler <i class='bx bx-x bx-fw'></i></button>
-                        </div>
+                        {% else %} {# if error feedback : error subforms + other valid new subforms sent #}
+                            <div class="collectionItem subform errorSubForm col d-flex flex-column"  id="{{ 'trick_pictures_' ~ loop.index0 ~ '_item'}}">
+                                <div id="{{ 'trick_pictures_' ~ loop.index0 ~ '_card' }}" class="card shadow-sm m-2 m-lg-1">
+                                    <img
+                                        class="card-img-top"
+                                        src="{{ asset('img/static/default-image-error.png') }}"
+                                        alt="file error"
+                                    >
+                                </div>
+                                {{ form_row(picture.source) }}
+                                {{ form_row(picture.alternateText, {'row_attr': {'class': 'mb-3 form-row'}}) }}
+                                {{ form_row(picture.file, {'row_attr': {'class': 'mb-3 form-row'}}) }}
+                                <button type="button" class='btn btn-danger m-auto mb-1'>Annuler <i class='bx bx-x bx-fw'></i></button>
+                            </div>                        
+                        {% endif %}
                     {% endfor %}
                 {% endif %}
-                {# A COMPLETER #}
-                {# {% if form.pictures.vars.valid == false %}
-                <div class="collectionItem col d-flex flex-column">
-                    <div id="" class="card shadow-sm m-2 m-lg-1">
-                        <img
-                            class="card-img-top"
-                            src="{{ asset('img/static/default-image-error.png') }}"
-                            alt="file error"
-                        >
-                        <div class="position-absolute media-edit-buttons-container bottom-0 end-0 shadow-lg m-2 rounded">
-                            <button 
-                                type="button" 
-                                class="btn btn-edit edit-picture shake" 
-                                title="modifier"
-                            >
-                                <i class="bx bx-pencil"></i>
-                            </button>
-                            <button 
-                                type="button"
-                                class="btn btn-delete shake"
-                                title="supprimer définitivement"
-                            >
-                                <i class="bx bx-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                    {{ form_end(form.pictures) }}
-                    <button type="button" id="" class='btn btn-danger m-auto mb-1'>Annuler <i class='bx bx-x bx-fw'></i></button>
-                </div>
-                {% endif %} #}
             </div>
             <hr>
             <div class="d-flex justify-content-center">
@@ -90,9 +76,10 @@
             <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 collectionHolder">
                 {% if onEditMode %}
                     {% for video in form.videos %}
+                        {% if video.vars.value.id is not null %} {# original videos only #}
                         <div class="collectionItem subform col d-flex flex-column" id="{{ video.vars.id ~ '_item'}}">
                             <div id="{{ video.vars.id ~ '_card' }}" class="card shadow-sm m-2 m-lg-1">
-                                <iframe  class="card-img-top" src="{{ video.source.vars.value }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                <iframe  class="card-img-top" src="{{ video.source.vars.value }}" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                                 <div class="position-absolute media-edit-buttons-container bottom-0 end-0 shadow-lg m-2 rounded">
                                     <button 
                                         type="button"
@@ -119,22 +106,17 @@
                             {{ form_row(video.source, {'row_attr': {'class': 'mb-3 d-none'}}) }}
                             <button type="button" id="{{ video.vars.id ~ '_cancel' }}" class='btn btn-danger m-auto mb-1 d-none'>Annuler <i class='bx bx-x bx-fw'></i></button>
                         </div>
+                        {% else %}
+                            <div class="collectionItem subform errorSubForm col d-flex flex-column"  id="{{ 'trick_videos_' ~ loop.index0 ~ '_item'}}">
+                                <div id="{{ 'trick_videos_' ~ loop.index0 ~ '_card' }}" class="card shadow-sm m-2 m-lg-1">
+                                    <iframe  class="card-img-top" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                </div>
+                                {{ form_row(video.source, {'row_attr': {'class': 'mb-3'}}) }}
+                                <button type="button" class='btn btn-danger m-auto mb-1'>Annuler <i class='bx bx-x bx-fw'></i></button>
+                            </div>
+                        {% endif %}
                     {% endfor %}
                 {% endif %}
-                {# A COMPLETER #}
-                {# {% if form.videos.vars.valid == false %}
-                        <div class="collectionItem col d-flex flex-column">
-                            <div id="" class="card shadow-sm m-2 m-lg-1">
-                                <iframe  class="card-img-top" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                <div class="position-absolute media-edit-buttons-container bottom-0 end-0 shadow-lg m-2 rounded">
-                                    <button type="button" data-id="" class="btn btn-edit edit-video shake" title="modifier"><i class="bx bx-pencil"></i></button>
-                                    <button type="button" class="btn btn-delete shake" title="supprimer définitivement"><i class="bx bx-trash"></i></button>
-                                </div>
-                            </div>
-                            {{ form_errors(form.videos) }}
-                            <button type="button" id="" class='btn btn-danger m-auto mb-1 d-none'>Annuler <i class='bx bx-x bx-fw'></i></button>
-                        </div>            
-                {% endif %} #}
             </div>
             <hr>
             <div class="d-flex justify-content-center">

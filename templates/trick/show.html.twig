@@ -18,8 +18,8 @@
             <div class="row">
                 <div class="col-12 col-sm-10 m-auto bg-light shadow-lg rounded p-0">
                     <div class="trick-image-container position-relative">
-                        {% if trick.pictures is not empty %}
-                            {% set picture = trick.getFirstPicture %}
+                        {% if trick.mainPicture is not null %}
+                            {% set picture = trick.mainPicture %}
                             <img src="{{ asset('img/uploads/tricks/' ~ picture.source ) }}" class="trick-image-container__image" alt="img">
                         {% else %}
                             <img src="{{ asset('img/static/default-picture.jpg') }}" class="trick-image-container__image" alt="default image">

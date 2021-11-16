@@ -40,7 +40,7 @@ class Trick
         min: 3,
         max: 32,
         minMessage: 'Le nom du trick doit avoir au minimum {{ limit }} caractères.',
-        maxMessage: 'Le nom du trick doit avoir au maximum {{ limit }} caractères.'
+        maxMessage: 'Le nom du trick doit avoir au maximum {{ limit }} caractères.',
     )]
     private $title;
 
@@ -75,14 +75,19 @@ class Trick
     private $category;
 
     /**
-     * @ORM\OneToMany(targetEntity=Video::class, mappedBy="trick", orphanRemoval=true, cascade={"persist"})
+     * @ORM\OneToMany(targetEntity=Video::class, mappedBy="trick", orphanRemoval=true, cascade={"persist", "remove"})
      */
     private $videos;
 
     /**
-     * @ORM\OneToMany(targetEntity=Picture::class, mappedBy="trick", orphanRemoval=true, cascade={"persist"})
+     * @ORM\OneToMany(targetEntity=Picture::class, mappedBy="trick", orphanRemoval=true, cascade={"persist", "remove"})
      */
     private $pictures;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Picture::class, cascade={"persist", "remove"})
+     */
+    private $mainPicture;
 
     public function __construct()
     {
@@ -273,5 +278,17 @@ class Trick
             return null;
         }
         return $this->pictures->first();
+    }
+
+    public function getMainPicture(): ?Picture
+    {
+        return $this->mainPicture ?: $this->getFirstPicture();
+    }
+
+    public function setMainPicture(?Picture $mainPicture): self
+    {
+        $this->mainPicture = $mainPicture;
+
+        return $this;
     }
 }

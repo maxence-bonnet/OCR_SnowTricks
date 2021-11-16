@@ -4,6 +4,16 @@
 
 {% block title %}{{ parent() }}Accueil{% endblock %}
 
+{% if displayParameters is not defined %}
+    {% set displayParameters = {
+            'minTricksShown': 10,
+            'maxToggleSteps': 5,
+            'defaultStepTimer': 100
+        } 
+    %}
+{% endif %}
+
+
 {% block body %}
     <div class="container-fluid hero-bg d-flex position-relative">
         <div class="row position-absolute top-50 start-50 translate-middle">
@@ -29,7 +39,7 @@
             <h2 class="text-center mb-3">Les figures</h2>
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xxl-5">
                 {% for trick in tricks %}
-                    <div class="col mb-3 trick-card-container {{ loop.index > 10 ? 'd-none'}}">
+                    <div class="col mb-3 trick-card-container {{ loop.index > displayParameters.minTricksShown|default(10) ? 'd-none' : 'smooth-show'}}">
                         <div class="card shadow h-100">
                                 {% if trick.pictures is not empty %}
                                     {% set picture = trick.getFirstPicture %}
@@ -78,15 +88,11 @@
             <div class="row">
                 <div class="col-12 d-flex justify-content-center">
                     <button type="button" id="showMore" class="btn btn-primary mx-2">Afficher plus <i class='bx bx-add-to-queue'></i></button>
-                    <button type="button" id="showLess" class="btn btn-primary mx-2 d-none">Afficher moins <i class='bx bx-hide' ></i></button>
+                    <button type="button" id="showLess" class="btn btn-primary mx-2 smooth-hide d-none">Afficher moins <i class='bx bx-hide' ></i></button>
                 </div>
-            </div>
-            <div class="position-absolute bottom-0 end-0">
-                <a href="#tricks" class="m-2 link-dark d-none"><i class='bx bxs-up-arrow-square bx-lg bx-flip-horizontal-hover bx-fade-down-hover'></i></a>
             </div>
         </div>
         <div class="position-absolute bottom-0 end-0">
-            {# add javascript listenner on load more button : condition : if (tricks number > 16) {class="d-block"} else {class="d-none"} #}
             <a href="#tricks" class="m-2 link-dark"><i class='bx bxs-up-arrow-square bx-lg bx-flip-horizontal-hover bx-fade-down-hover'></i></a>
         </div>    
     </div>
@@ -96,6 +102,9 @@
 
 {% block javascripts %}
     <script>
+        var minTricksShown = {{ displayParameters.minTricksShown }};
+        var maxToggleSteps = {{ displayParameters.maxToggleSteps }};
+        var defaultStepTimer = {{ displayParameters.defaultStepTimer }};
         window.onload = () => {
             loadModalButtons();
             loadShowButtons();

@@ -31,6 +31,14 @@ body, html {
     font-size: 3rem;
 }
 
+.smooth-show{
+    opacity: 1 !important; 
+}
+
+.trick-card-container {
+    opacity: 0;
+    transition: opacity .3s ease-in-out;
+}
 
 .trick-link {
     display: inline-block;

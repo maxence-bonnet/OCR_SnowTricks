@@ -15,11 +15,18 @@ class HomeController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function home(TrickRepository $repository): Response
     {
+        $displayParameters = [
+            'minTricksShown' => 10,
+            'maxToggleSteps' => 5,
+            'defaultStepTimer' => 300 // (ms)
+        ];
+
         $tricks = $repository->findAllJoinPictures();
         
         return $this->render('home/index.html.twig', [
             'current_nav' => 'home',
-            'tricks' => $tricks
+            'tricks' => $tricks,
+            'displayParameters' => $displayParameters
         ]);
     }
 }

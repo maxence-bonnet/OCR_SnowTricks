@@ -28,16 +28,22 @@ class TrickController extends AbstractController
      */
     private EntityManagerInterface $entityManager;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    /**
+     * @var FileManager
+     */
+    private FileManager $fileManager;
+
+    public function __construct(EntityManagerInterface $entityManager, FileManager $fileManager)
     {
         $this->entityManager = $entityManager;
+        $this->fileManager = $fileManager;
     }
 
     /**
     * @return \Symfony\Component\HttpFoundation\Response
     */
     #[Route('/new', name: 'app_trick_new')]
-    public function new(Request $request, FileManager $fileManager): Response
+    public function new(Request $request): Response
     {
         $trick = new Trick();
 
@@ -47,7 +53,7 @@ class TrickController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $trick = $this->manageNewPicturesForms($trick, $form->get('pictures'), $fileManager);
+            $trick = $this->manageNewPicturesForms($trick, $form->get('pictures'), $this->fileManager);
 
             $trick = $this->manageVideosForms($trick, $form->get('videos'));
 
@@ -78,7 +84,7 @@ class TrickController extends AbstractController
     * @return \Symfony\Component\HttpFoundation\Response
     */
     #[Route('/edit/{id}', name: 'app_trick_edit')]
-    public function edit(Trick $trick, Request $request, FileManager $fileManager): Response
+    public function edit(Trick $trick, Request $request): Response
     {
         $form = $this->createForm(TrickType::class, $trick);
 
@@ -86,7 +92,7 @@ class TrickController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             
-            $trick = $this->manageEditPicturesForms($trick, $form->get('pictures'), $fileManager);
+            $trick = $this->manageEditPicturesForms($trick, $form->get('pictures'), $this->fileManager);
             $trick = $this->manageVideosForms($trick, $form->get('videos'));
 
             $trick->setUpdatedAt(new \DateTimeImmutable());
@@ -155,19 +161,19 @@ class TrickController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\Response
      */
     #[Route('/delete/{id}', name: 'app_trick_delete', methods: ['DELETE'])]
-    public function delete(Trick $trick, Request $request, FileManager $fileManager): Response
+    public function delete(Trick $trick, Request $request): Response
     {
         if ($this->isCsrfTokenValid('delete' . $trick->getId(), $request->get('_token'))) {
             // Commenté pour tester le JS
-            // $pictures = $trick->getPictures();
-            // if ($pictures) {
-            //     foreach ($pictures as $picture) {
-            //         $fileManager->removeFile($picture->getSource());
-            //     }                
-            // }
+            $pictures = $trick->getPictures();
+            if ($pictures) {
+                foreach ($pictures as $picture) {
+                    $this->fileManager->removeFile($picture->getSource());
+                }                
+            }
 
-            // $this->entityManager->remove($trick);
-            // $this->entityManager->flush();
+            $this->entityManager->remove($trick);
+            $this->entityManager->flush();
 
             $this->addflash('success', 'Le trick : ' . $trick->getTitle() . ' a bien été supprimé');
         }
@@ -179,9 +185,9 @@ class TrickController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\Response
      */
     #[Route('/picture/delete/{id}', name: 'app_trick_delete_picture', methods: ['DELETE'])]
-    public function deletePicture(Picture $picture, Request $request, FileManager $fileManager): JsonResponse
+    public function deletePicture(Picture $picture, Request $request): JsonResponse
     {
-        return $this->deleteCollectionItem($picture, $request, $fileManager);
+        return $this->deleteCollectionItem($picture, $request, $this->fileManager);
     }
 
     /**
@@ -197,10 +203,9 @@ class TrickController extends AbstractController
     /**
      * @param Video|Picture $collectionItem
      * @param Request $request
-     * @param FileManager|null $fileManager
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    private function deleteCollectionItem($collectionItem, Request $request, FileManager $fileManager = null): JsonResponse
+    private function deleteCollectionItem($collectionItem, Request $request): JsonResponse
     {
         $tokenName = 'delete_';
         $removeFunction = 'remove';
@@ -218,12 +223,12 @@ class TrickController extends AbstractController
             $trick = $collectionItem->getTrick();
             if ($trick) {
                 // Commenté pour tester le JS
-                // $trick->$removeFunction($collectionItem);
-                // if (get_class($collectionItem) === Picture::class) {
-                //     $fileManager->removeFile($collectionItem->getSource());
-                // }
-                // $this->entityManager->remove($collectionItem);
-                // $this->entityManager->flush();
+                $trick->$removeFunction($collectionItem);
+                if (get_class($collectionItem) === Picture::class) {
+                    $this->fileManager->removeFile($collectionItem->getSource());
+                }
+                $this->entityManager->remove($collectionItem);
+                $this->entityManager->flush();
                 return new JsonResponse(['success' => 1]);              
             }
         }
@@ -233,10 +238,9 @@ class TrickController extends AbstractController
     /**
      * @param Trick $trick
      * @param Form $picturesForms
-     * @param FileManager $fileManager
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    private function manageEditPicturesForms(Trick $trick, Form $picturesForms, FileManager $fileManager): Trick
+    private function manageEditPicturesForms(Trick $trick, Form $picturesForms): Trick
     {
         foreach ($picturesForms as $pictureForm) {
             // if empty subform
@@ -247,12 +251,12 @@ class TrickController extends AbstractController
                 if ($pictureForm->get('file')->getData()) {
                     // if a file already exists -> delete it
                     if ($pictureForm->getData()->getId()) {
-                        $this->removePictureFile($pictureForm->getData(), $fileManager);
+                        $this->removePictureFile($pictureForm->getData(), $this->fileManager);
                     }
                     // uploading new file
                     $file = $pictureForm->get('file')->getData();
                     /** @var UploadedFile $pictureFile */
-                    $newFilename = $fileManager->upload($file);
+                    $newFilename = $this->fileManager->upload($file);
                     $pictureForm->getData()->setSource($newFilename);                   
                 }
                 if (!$pictureForm->get('alternateText')->getData()) {
@@ -266,10 +270,9 @@ class TrickController extends AbstractController
     /**
      * @param Trick $trick
      * @param Form $picturesForms
-     * @param FileManager $fileManager
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    private function manageNewPicturesForms(Trick $trick, Form $picturesForms, FileManager $fileManager): Trick
+    private function manageNewPicturesForms(Trick $trick, Form $picturesForms): Trick
     {
         foreach ($picturesForms as $pictureForm) {
             // ignoring empty subforms
@@ -278,7 +281,7 @@ class TrickController extends AbstractController
             } else {
                 $file = $pictureForm->get('file')->getData();
                 /** @var UploadedFile $pictureFile */
-                $newFilename = $fileManager->upload($file);   
+                $newFilename = $this->fileManager->upload($file);   
                 $pictureForm->getData()->setSource($newFilename);
 
                 if (!$pictureForm->get('alternateText')->getData()) {
@@ -291,13 +294,12 @@ class TrickController extends AbstractController
 
     /**
      * @param Picture $id
-     * @param FileManager $fileManager
      * @return void
      */
-    private function removePictureFile(Picture $picture, FileManager $fileManager): void
+    private function removePictureFile(Picture $picture): void
     {
         $oldPicture = $this->entityManager->getRepository(Picture::class)->findOneBy(['id' => $picture->getId()]);
-        $fileManager->removeFile($oldPicture->getSource());
+        $this->fileManager->removeFile($oldPicture->getSource());
     }
 
     /**
