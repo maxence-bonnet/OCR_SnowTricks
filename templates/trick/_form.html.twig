@@ -5,12 +5,15 @@
                 {% if onEditMode %}
                     {% for picture in form.pictures %}
                         {% if picture.vars.value.id is not null %} {# original pictures only #}
-                            <div class="collectionItem subform col d-flex flex-column"  id="{{ picture.vars.id ~ '_item'}}">
+                            <div 
+                                id="{{ picture.vars.id ~ '_item'}}"
+                                class="collectionItem {{ trick.mainPicture is not null and trick.mainPicture.id is same as(picture.vars.value.id) ? 'main-picture-subform' }} subform col d-flex flex-column"
+                            >
                                 <div id="{{ picture.vars.id ~ '_card' }}" class="card shadow-sm m-2 m-lg-1 position-relative">
                                     <img
                                         class="card-img-top"
                                         src="{{ asset('img/uploads/tricks/' ~ picture.source.vars.value) }}"
-                                        alt="{{ picture.alternateText |default(trick.title ~ 'picture') }}"
+                                        alt="{{ picture.alternateText.vars.value|default(trick.title ~ 'picture') }}"
                                         data-modal="{{ 'picture_' ~ picture.vars.value.id ~ '_modal' }}"
                                     >
                                     <div class="position-absolute media-edit-buttons-container bottom-0 end-0 shadow-lg m-2 d-flex rounded">
@@ -26,7 +29,7 @@
                                                 })
                                             }}
                                         {% endif %}
-                                        <button 
+                                        <button
                                             type="button"
                                             data-id="{{ picture.vars.id }}"
                                             class="btn btn-edit edit-picture shake"

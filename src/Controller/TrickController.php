@@ -163,15 +163,15 @@ class TrickController extends AbstractController
     public function delete(Trick $trick, Request $request): Response
     {
         if ($this->isCsrfTokenValid('delete' . $trick->getId(), $request->get('_token'))) {
-            // $pictures = $trick->getPictures();
-            // if ($pictures) {
-            //     foreach ($pictures as $picture) {
-            //         $this->fileManager->removeFile($picture->getSource());
-            //     }                
-            // }
+            $pictures = $trick->getPictures();
+            if ($pictures) {
+                foreach ($pictures as $picture) {
+                    $this->fileManager->removeFile($picture->getSource());
+                }                
+            }
 
-            // $this->entityManager->remove($trick);
-            // $this->entityManager->flush();
+            $this->entityManager->remove($trick);
+            $this->entityManager->flush();
 
             $this->addflash('success', 'Le trick : ' . $trick->getTitle() . ' a bien été supprimé');
         }
@@ -220,12 +220,12 @@ class TrickController extends AbstractController
         if (array_key_exists('_token', $data) && $this->isCsrfTokenValid($tokenName . $collectionItem->getId(), $data['_token'])) {
             $trick = $collectionItem->getTrick();
             if ($trick) {
-                // $trick->$removeFunction($collectionItem);
-                // if (get_class($collectionItem) === Picture::class) {
-                //     $this->fileManager->removeFile($collectionItem->getSource());
-                // }
-                // $this->entityManager->remove($collectionItem);
-                // $this->entityManager->flush();
+                $trick->$removeFunction($collectionItem);
+                if (get_class($collectionItem) === Picture::class) {
+                    $this->fileManager->removeFile($collectionItem->getSource());
+                }
+                $this->entityManager->remove($collectionItem);
+                $this->entityManager->flush();
                 return new JsonResponse(['success' => 1]);              
             }
         }

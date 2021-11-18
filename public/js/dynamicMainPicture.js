@@ -16,6 +16,7 @@ const bindRadioToMainPicture = (radio, mainPictureImage) => {
     radio.addEventListener('change', function() {
         if (this.checked) {
             updateMainPicture(radioRelatedPicture.src, mainPictureImage);
+            updateMainPictureSubform(this);
         }
     })
 
@@ -31,6 +32,11 @@ const bindRadioToMainPicture = (radio, mainPictureImage) => {
         attributes: true,
         attributeFilter: ['src']
     });
+}
+
+const updateMainPictureSubform = (radio) => {
+    document.querySelector('.main-picture-subform').classList.remove('main-picture-subform');
+    radio.closest('.subform').classList.add('main-picture-subform');
 }
 
 window.addEventListener('load', loadPicturesRadios());

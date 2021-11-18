@@ -10,12 +10,7 @@
             <div class="row">
                 <div class="col-12 col-lg-10 m-auto bg-light shadow-lg rounded p-0">
                     <div class="trick-main-picture-container">
-                        {% if trick.mainPicture is not null %}
-                            {% set picture = trick.mainPicture %}
-                            <img id="mainPicture" src="{{ asset('img/uploads/tricks/' ~ picture.source ) }}" class="trick-image-container__image" alt="{{ picture.alternateText }}">
-                        {% else %}
-                            <img id="mainPicture" src="{{ asset('img/static/default-picture.jpg') }}" class="trick-image-container__image" alt="default image">
-                        {% endif %} 
+                        <img id="mainPicture" src="{{ asset('img/static/default-picture.jpg') }}" class="trick-image-container__image" alt="default image">
                     </div>
                     <div class="trick-content p-1 p-md-3">
                         {{ include('trick/_form.html.twig', {button_label: 'Créer'}) }}

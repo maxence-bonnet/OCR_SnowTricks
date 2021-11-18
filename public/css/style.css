@@ -49,13 +49,13 @@ body, html {
     display: inline-block;
 }
 
-.btn-delete, .btn-edit {
+.btn-delete, .btn-edit, .main-picture-button {
     border: none;
     background: none;
 }
 
 .media-edit-buttons-container, .trick-edit-buttons-container {
-    background-color: rgba(255,255,255,0.5);
+    background-color: rgba(255,255,255,0.8);
 }
 
 .card-img-top {
@@ -64,7 +64,7 @@ body, html {
     object-fit: cover;
 }
 
-.btn-modal-delete, .btn-edit {
+.btn-modal-delete, .btn-edit, .main-picture-button {
     padding: .3rem .3rem;
 }
 

@@ -20,7 +20,7 @@
                     <div class="trick-main-picture-container position-relative">
                         {% if trick.mainPicture is not null %}
                             {% set picture = trick.mainPicture %}
-                            <img src="{{ asset('img/uploads/tricks/' ~ picture.source ) }}" class="trick-image-container__image" alt="img">
+                            <img src="{{ asset('img/uploads/tricks/' ~ trick.mainPicture.source ) }}" class="trick-image-container__image" alt="{{ trick.mainPicture.alternateText }}">
                         {% else %}
                             <img src="{{ asset('img/static/default-picture.jpg') }}" class="trick-image-container__image" alt="default image">
                         {% endif %}

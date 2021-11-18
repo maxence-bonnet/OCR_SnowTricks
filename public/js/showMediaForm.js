@@ -6,6 +6,16 @@ function loadEditButtons() {
     }
 }
 
+function loadMainPictureButtons() {
+    let mainPictureButtons = document.querySelectorAll('.main-picture-button');
+    for (button of mainPictureButtons) {
+        button.addEventListener('click', function() {
+            let target = findmainPictureSubform(this);
+            target.click();
+        });        
+    }
+}
+
 const bindToForm = (button) => {
     if (button.classList.contains('edit-picture')) {
         bindToPictureForm(button);
@@ -67,4 +77,19 @@ const resetEditVideoForm = (originalSource, button) => {
     document.querySelector('#' + button.dataset.id + '_source').value = originalSource;
 }
 
-window.addEventListener('load', loadEditButtons());
+const findmainPictureSubform = (button) => {
+    let mainPictureSubform = document.querySelector('.main-picture-subform');
+    if (null !== mainPictureSubform) {
+        if ("edit" === button.dataset.role) {
+            return mainPictureSubform.querySelector('.edit-picture');
+        } else if ("delete" === button.dataset.role) {
+            return mainPictureSubform.querySelector('.delete-picture');
+        }
+    }
+    // return null;
+}
+
+window.addEventListener('load', function() {
+    loadEditButtons();
+    loadMainPictureButtons();
+});
