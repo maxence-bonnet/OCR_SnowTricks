@@ -1,19 +1,17 @@
-const initAddCollectionForm = () => {
+function initAddCollectionForm() {
     loadAddSubformButtons();
     loadEditItemPreview();
-    loadModalButtons();
+    loadModalButtons(); // createDeleteModal.js dependency
 }
 
-window.addEventListener('load', initAddCollectionForm);
-
-const loadAddSubformButtons = () => {
+function loadAddSubformButtons() {
     let addFormButtons = document.querySelectorAll('.addSubformButton');
     for (button of addFormButtons) {
         initializeAddSubFormButton(button);
     }
 }
 
-const loadEditItemPreview = () => {
+function loadEditItemPreview() {
     let collectionHolders = document.querySelectorAll('.collectionHolder');
     for (collectionHolder of collectionHolders) {
         let itemsCollection = collectionHolder.querySelectorAll('.collectionItem');
@@ -77,6 +75,7 @@ const initializePreview = (relatedWith, index, subform) => {
 
 const initializePicturePreview = (index, form) => {
     let img = form.querySelector('#trick_pictures_' + index + '_card > img');
+    initializeImageModal(img); // createImageModal.js dependency
     let input = form.querySelector('input[type="file"]');
     input.onchange = () => {
         const [file] = input.files;
@@ -117,3 +116,5 @@ const buildYoutubeURL = (string) => {
     }
     return '';
 }
+
+window.addEventListener('load', initAddCollectionForm());

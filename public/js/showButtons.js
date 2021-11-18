@@ -5,10 +5,10 @@ if ('undefined' === typeof(maxToggleSteps)) {
     var maxToggleSteps = 5;
 }
 if ('undefined' === typeof(defaultStepTimer)) {
-    var defaultStepTimer = 200; // (ms)
+    var defaultStepTimer = 300; // (ms)
 }
 
-const loadShowButtons = () => {
+function loadShowButtons() {
     let showMoreButton = document.querySelector('#showMore');
     let showLessButton = document.querySelector('#showLess');
     let tricks = getTricks();
@@ -27,13 +27,11 @@ const loadShowButtons = () => {
     updateShowButtons(getHiddenTricks().length, tricksNumber, showMoreButton, showLessButton);
 }
 
-window.addEventListener('load', loadShowButtons);
-
-const getTricks = () => {
+function getTricks() {
     return document.querySelectorAll('.trick-card-container');
 }
 
-const getHiddenTricks = () => {
+function getHiddenTricks() {
     return document.querySelectorAll('.trick-card-container.d-none');
 }
 
@@ -91,22 +89,26 @@ const updateButtonDisplay = (button, toggleCondidition) => {
     }
 }
 
-async function toggleElement (element = null) {
+// doublon avec showMediasButton.js
+async function toggleElement (element = null, stepTimer = defaultStepTimer) {
     if (null !== element) {
         if (element.classList.contains('d-none')) {
             element.classList.toggle('d-none');
-            await timer(defaultStepTimer);
+            await timer(stepTimer);
             element.classList.toggle('smooth-show');
             return 'shown';          
         } else {
             element.classList.toggle('smooth-show');
-            await timer(defaultStepTimer);
+            await timer(stepTimer);
             element.classList.toggle('d-none');
             return 'hidden';
         }
     }
 }
 
-async function timer(ms = 500) {
+// doublon avec showMediasButton.js
+async function timer(ms = defaultStepTimer) {
     return new Promise(resolve => setTimeout(resolve, ms))
 }
+
+window.addEventListener('load', loadShowButtons);

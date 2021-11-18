@@ -1,16 +1,10 @@
-const initShowMediaForm = () => {
-    loadEditButtons();
-}
-
-const loadEditButtons = () => {
+function loadEditButtons() {
     let editButtons = document.querySelectorAll('.btn-edit');
 
     for (button of editButtons) {
         bindToForm(button);
     }
 }
-
-window.addEventListener('load', loadEditButtons);
 
 const bindToForm = (button) => {
     if (button.classList.contains('edit-picture')) {
@@ -72,3 +66,5 @@ const resetEditVideoForm = (originalSource, button) => {
     }
     document.querySelector('#' + button.dataset.id + '_source').value = originalSource;
 }
+
+window.addEventListener('load', loadEditButtons());

@@ -1,0 +1,19 @@
+<template id="modalImageTemplate">
+    <div class="modal fade" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <span class="modal-img-close" data-bs-dismiss="modal">&times;</span>
+        <div class="modal-dialog modal-img-dialog modal-dialog-centered d-flex flex-column">
+            <div class="modal-media">
+                <img
+                    class="modal-img"
+                    src=""
+                    alt=""
+                >
+                <div class="modal-img-text"></div>                                                    
+            </div>
+        </div>
+    </div>
+</template>
+
+{% block javascripts %}
+<script src="{{ asset('js/createImageModal.js')}}"></script>
+{% endblock javascripts %}

@@ -54,7 +54,6 @@ class TrickController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $trick = $this->manageNewPicturesForms($trick, $form->get('pictures'), $this->fileManager);
-
             $trick = $this->manageVideosForms($trick, $form->get('videos'));
 
             $trick
@@ -164,16 +163,15 @@ class TrickController extends AbstractController
     public function delete(Trick $trick, Request $request): Response
     {
         if ($this->isCsrfTokenValid('delete' . $trick->getId(), $request->get('_token'))) {
-            // Commenté pour tester le JS
-            $pictures = $trick->getPictures();
-            if ($pictures) {
-                foreach ($pictures as $picture) {
-                    $this->fileManager->removeFile($picture->getSource());
-                }                
-            }
+            // $pictures = $trick->getPictures();
+            // if ($pictures) {
+            //     foreach ($pictures as $picture) {
+            //         $this->fileManager->removeFile($picture->getSource());
+            //     }                
+            // }
 
-            $this->entityManager->remove($trick);
-            $this->entityManager->flush();
+            // $this->entityManager->remove($trick);
+            // $this->entityManager->flush();
 
             $this->addflash('success', 'Le trick : ' . $trick->getTitle() . ' a bien été supprimé');
         }
@@ -222,13 +220,12 @@ class TrickController extends AbstractController
         if (array_key_exists('_token', $data) && $this->isCsrfTokenValid($tokenName . $collectionItem->getId(), $data['_token'])) {
             $trick = $collectionItem->getTrick();
             if ($trick) {
-                // Commenté pour tester le JS
-                $trick->$removeFunction($collectionItem);
-                if (get_class($collectionItem) === Picture::class) {
-                    $this->fileManager->removeFile($collectionItem->getSource());
-                }
-                $this->entityManager->remove($collectionItem);
-                $this->entityManager->flush();
+                // $trick->$removeFunction($collectionItem);
+                // if (get_class($collectionItem) === Picture::class) {
+                //     $this->fileManager->removeFile($collectionItem->getSource());
+                // }
+                // $this->entityManager->remove($collectionItem);
+                // $this->entityManager->flush();
                 return new JsonResponse(['success' => 1]);              
             }
         }
@@ -238,7 +235,7 @@ class TrickController extends AbstractController
     /**
      * @param Trick $trick
      * @param Form $picturesForms
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Trick
      */
     private function manageEditPicturesForms(Trick $trick, Form $picturesForms): Trick
     {
@@ -270,7 +267,7 @@ class TrickController extends AbstractController
     /**
      * @param Trick $trick
      * @param Form $picturesForms
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Trick
      */
     private function manageNewPicturesForms(Trick $trick, Form $picturesForms): Trick
     {
@@ -305,7 +302,7 @@ class TrickController extends AbstractController
     /**
      * @param Trick $trick
      * @param Form $videosForms
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Trick
      */
     private function manageVideosForms(Trick $trick, Form $videosForms): Trick
     {

@@ -6,25 +6,15 @@
 
 {% block body %}
     <div class="container-sm-fluid hero-bg py-md-5">   
-        <div class="row">
-            <div class="col-12 col-sm-10 col-md-7 col-lg-6 m-auto">
-                {% for message in app.flashes('success') %}
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
         <article class="container m-sm-auto my-3">
             <div class="row">
                 <div class="col-12 col-lg-10 m-auto bg-light shadow-lg rounded p-0">
-                    <div class="trick-image-container">
-                        {% set picture = trick.getFirstPicture %}
-                        {% if picture is not null and picture.source is not null %}
-                            <img src="{{ asset('img/uploads/tricks/' ~ picture.source ) }}" class="trick-image-container__image" alt="img">
+                    <div class="trick-main-picture-container">
+                        {% if trick.mainPicture is not null %}
+                            {% set picture = trick.mainPicture %}
+                            <img id="mainPicture" src="{{ asset('img/uploads/tricks/' ~ picture.source ) }}" class="trick-image-container__image" alt="{{ picture.alternateText }}">
                         {% else %}
-                            <img src="{{ asset('img/static/default-picture.jpg') }}" class="trick-image-container__image" alt="default image">
+                            <img id="mainPicture" src="{{ asset('img/static/default-picture.jpg') }}" class="trick-image-container__image" alt="default image">
                         {% endif %} 
                     </div>
                     <div class="trick-content p-1 p-md-3">

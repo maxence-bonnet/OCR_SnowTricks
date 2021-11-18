@@ -16,9 +16,14 @@ body, html {
     position: relative;
 }
 
+.alert-row {
+    z-index: 1;
+}
+
 .hero-text {
     font-family: 'boycott';
     position: absolute;
+    z-index: 0;
     top: 40%;
     left: 10%;
 }
@@ -57,6 +62,10 @@ body, html {
     height: 10rem;
     width: 100%;
     object-fit: cover;
+}
+
+.btn-modal-delete, .btn-edit {
+    padding: .3rem .3rem;
 }
 
 /* w3schools */
@@ -119,6 +128,10 @@ body, html {
     border-radius: 100%;
 }
 
+.collectionHolder {
+    --bs-gutter-x: 0;
+}
+
 .collectionHolder iframe {
     background-image: url('../img/static/default-video.jpg');
     background-position: center;
@@ -126,6 +139,122 @@ body, html {
     background-size: cover;
 }
 
+/* Custom radio */
+.form-check {
+    padding: 0;
+    margin: 0;
+    min-height: 0;
+}
+
+.form-check .mainPicture-radio {
+    float: none;
+    margin: .3rem;
+}
+
+.mainPicture-radio {
+    font-family: 'Roboto', sans-serif;
+    height: 1.5rem;
+    width: 1.5rem;
+    background: #cbd1d8;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    border: 0;
+    box-shadow: 0 1px 1px 1px rgba(82, 78, 78, 0.658);
+    transition: all .4s ease-out 0s;
+}
+
+.mainPicture-radio:hover {
+    background: #9faab7;
+    box-shadow: inset 0 1px 1px 1px rgba(82, 78, 78, 0.658);
+    transition: all .4s ease-out 0s;
+}
+
+.mainPicture-radio:checked[type="radio"] {
+    background: #e0a040;
+    box-shadow: inset 0 0px 1px 1px rgba(116, 113, 113, 0.658);
+    background-image: none;
+    border: 0;
+    transition: all .4s ease-out 0s;
+}
+
+.mainPicture-radio:focus {
+    box-shadow: inset 0 0px 1px 1px rgba(82, 78, 78, 0.658);
+    transition: all .4s ease-out 0s;
+}
+
+.mainPicture-radio:checked::before {
+    height: 1.5rem;
+    width: 1.5rem;
+    content: '✔';
+    display: inline-block;
+    font-size: 1rem;
+    text-align: center;
+    line-height: 1.5rem;
+}
+
+.mainPicture-radio:checked::after {
+    background: #40e0d0;
+    content: '';
+    display: block;
+    position: relative;
+}
+/* end custom radio*/
+
+
+.collectionItem img {
+    cursor: pointer;
+    transition: all .3s ease-out;
+}
+
+.collectionItem img:hover {
+    opacity: 0.9;
+}
+
+/* modal img */
+.modal-img-dialog {
+    max-width: none;
+}
+
+.modal-media {
+    margin: auto;
+    width: 80%;
+    max-width: 700px;
+}
+.modal-img {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.modal-img-text {
+    text-align: center;
+    width:100%;
+    padding: .25rem .5rem;
+    background: rgba(0, 0, 0, 0.8);
+    color: var(--bs-gray-300);
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.modal-img-close {
+    position: absolute;
+    top: 1rem;
+    right: 3rem;
+    color: #f1f1f1;
+    font-size: 4rem;
+    font-weight: bold;
+    transition: 0.3s;
+}
+  
+.modal-img-close:hover, .modal-img-close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+/* media queries */
 @media (max-width: 576px) {
     .comment-card__author-picture > img {
         height: 4rem;
@@ -146,7 +275,7 @@ body, html {
         font-size: 2rem;
     }
 
-    .collectionItem {
+    .collectionItem.dynamic-show {
         opacity: 0;
         transition: opacity .3s ease-in-out;
     }

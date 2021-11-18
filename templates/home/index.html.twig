@@ -16,7 +16,7 @@
 
 {% block body %}
     <div class="container-fluid hero-bg d-flex position-relative">
-        <div class="row position-absolute top-50 start-50 translate-middle">
+        <div class="row alert-row position-absolute top-50 start-50 translate-middle">
             <div class="col-12 col-sm-10 m-auto">
                 {% for message in app.flashes('success') %}
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -41,8 +41,8 @@
                 {% for trick in tricks %}
                     <div class="col mb-3 trick-card-container {{ loop.index > displayParameters.minTricksShown|default(10) ? 'd-none' : 'smooth-show'}}">
                         <div class="card shadow h-100">
-                                {% if trick.pictures is not empty %}
-                                    {% set picture = trick.getFirstPicture %}
+                            {% if trick.mainPicture is not null %}
+                                {% set picture = trick.mainPicture %}
                                     <img src="{{ asset('img/uploads/tricks/' ~ picture.source ) }}" class="card-img-top" alt="img">
                                 {% else %}
                                     <img src="{{ asset('img/static/default-picture.jpg') }}" class="card-img-top" alt="default image">
@@ -54,14 +54,14 @@
                                     </a>
                                     {% if app.user %}
                                     <div class="d-flex justify-content-center">
-                                        <a href="{{ path('app_trick_edit', {id: trick.id}) }}" class="text-decoration-none link-dark card-link trick-link shake" title="update"><i class="bx bx-pencil"></i></a>
-                                        <form action="{{ path('app_trick_delete', {id: trick.id}) }}" method="post" class="ms-3" id="{{'trick_' ~ trick.id ~ '_delete_form'}}">
+                                        <a href="{{ path('app_trick_edit', {id: trick.id}) }}" class="btn-edit link-dark card-link trick-link shake ms-1 ms-xl-2" title="update"><i class="bx bx-pencil"></i></a>
+                                        <form action="{{ path('app_trick_delete', {id: trick.id}) }}" method="post" class="ms-1 ms-xl-2" id="{{'trick_' ~ trick.id ~ '_delete_form'}}">
                                             <input type="hidden" name="_method" value="DELETE">
                                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}">
                                             <button 
                                                 type="button"
                                                 class="btn-delete btn-modal-delete delete-trick trick-link shake"
-                                                data-target="{{'trick_' ~ trick.id ~ '_delete_modal'}}"
+                                                data-modal="{{'trick_' ~ trick.id ~ '_delete_modal'}}"
                                                 data-action="send-form"
                                                 data-form="{{'trick_' ~ trick.id ~ '_delete_form'}}"
                                             >

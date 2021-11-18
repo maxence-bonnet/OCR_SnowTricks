@@ -4,8 +4,10 @@ namespace App\Form;
 
 use App\Entity\Trick;
 use App\Entity\Category;
+use App\Entity\Picture;
 use App\Form\PictureType;
 use App\Form\VideoType;
+use App\Repository\PictureRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -18,14 +20,24 @@ class TrickType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+
+        $trick = $builder->getData();
         $builder
+            ->add('mainPicture', EntityType::class, [
+                'class' => Picture::class,
+                'choices' => $trick->getPictures(),
+                'multiple' => false,
+                'expanded' => true,
+                'label' => false,
+                'choice_label' => false
+            ])
             ->add('pictures', CollectionType::class, [
                 'entry_type' => PictureType::class,
                 'label' => false,
                 'entry_options' => ['label' => false],
                 'allow_add' => true,
                 'allow_delete' => true,
-                'by_reference' => false // use addPicture instead of setPicture
+                'by_reference' => false
             ])
             ->add('videos', CollectionType::class, [
                 'entry_type' => VideoType::class,
@@ -33,7 +45,7 @@ class TrickType extends AbstractType
                 'entry_options' => ['label' => false],
                 'allow_add' => true,
                 'allow_delete' => true,
-                'by_reference' => false // use addVideo instead of setVideo
+                'by_reference' => false
             ])
             ->add('title', TextType::class, [
                 'label' => 'Nom du trick'
@@ -54,6 +66,7 @@ class TrickType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Trick::class,
+            'trick' => null
         ]);
     }
 }

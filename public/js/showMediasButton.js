@@ -1,6 +1,6 @@
-var defaultStepTimer = 1000;
+var defaultStepTimer = 300;
 
-const loadShowButtons = () => {
+function loadShowButtons() {
     let showMediasButton = document.querySelector('#showMedias');
     let mediasList = document.querySelectorAll('.collectionItem');
 
@@ -10,8 +10,6 @@ const loadShowButtons = () => {
         });
     }
 }
-
-window.addEventListener('load', loadShowButtons);
 
 const updateButtonText = (button, mediasStatus) => {
     if (mediasStatus === 'hidden') {
@@ -32,16 +30,15 @@ async function toggleMedias (mediasList) {
     return mediasStatus;
 }
 
+// doublon avec showButtons.js
 async function toggleElement (element = null, stepTimer = defaultStepTimer) {
     if (null !== element) {
         if (element.classList.contains('d-none')) {
-            // smooth show
             element.classList.toggle('d-none');
             await timer(stepTimer);
             element.classList.toggle('smooth-show');
             return 'shown';          
         } else {
-            // smooth hide
             element.classList.toggle('smooth-show');
             await timer(stepTimer);
             element.classList.toggle('d-none');
@@ -50,6 +47,9 @@ async function toggleElement (element = null, stepTimer = defaultStepTimer) {
     }
 }
 
-async function timer(ms = 1000) {
+// doublon avec showButtons.js
+async function timer(ms = defaultStepTimer) {
     return new Promise(resolve => setTimeout(resolve, ms))
 }
+
+window.addEventListener('load', loadShowButtons);

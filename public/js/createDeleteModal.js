@@ -1,39 +1,39 @@
-const modalTemplate = document.querySelector('#modalTemplate');
+const modalDeleteTemplate = document.querySelector('#modalDeleteTemplate');
 
 const modalText = 'Attention, vous êtes sur le point de supprimer définitivement ';
 
-const loadModalButtons = () => {
-    if (null !== modalTemplate) {
+function loadModalButtons() {
+    if (null !== modalDeleteTemplate) {
         let modalButtons = document.querySelectorAll('.btn-modal-delete');
         for (button of modalButtons) {
-            initializeModal(button);
+            initializeDeleteModal(button);
         }       
     }
 }
 
-window.addEventListener('load', loadModalButtons);
-
 // requires several button attributes : 
 // data-action="{actionToPerform}"
 // data-form="{modalId}" or data-href="{url}" depending on action
-// data-target="{modalId}"
+// data-modal="{modalId}"
 // data-token="{csrfToken}"
-const initializeModal = (button) => {
-    button.addEventListener('click', function() {
+const initializeDeleteModal = (button) => {
+    button.addEventListener('click', async function() {
         if ("object" !== typeof(this.modal)) {
-            let modalSkeleton = createModalSkeleton(this);
-            let modalConfirmButton = modalSkeleton.querySelector('#confirmButton')
-            bindModalAction(modalConfirmButton, button);
+            let modalSkeleton = createModalSkeleton(this, modalDeleteTemplate);
+            this.confirmButton = modalSkeleton.querySelector('#confirmButton')
             document.body.append(modalSkeleton);
-            this.modal = new bootstrap.Modal(document.querySelector('#' + button.dataset.target));
+            this.modal = new bootstrap.Modal(document.querySelector('#' + button.dataset.modal));
         }
         this.modal.show();
-    })
+        if ('confirmed' === await modalConfirm(this.confirmButton)) {
+            executeButtonAction(button);
+        }
+    });
 }
 
-const createModalSkeleton = (button) => {
-    let clone = document.importNode(modalTemplate.content, true);
-    clone.querySelector('.modal').setAttribute('id', button.dataset.target);
+const createModalSkeleton = (button, template) => {
+    let clone = document.importNode(template.content, true);
+    clone.querySelector('.modal').setAttribute('id', button.dataset.modal);
     let modalBody = clone.querySelector('.modal-body');
 
     if (button.classList.contains('delete-picture')) {
@@ -46,42 +46,45 @@ const createModalSkeleton = (button) => {
     return clone;
 }
 
-// elementToRemove (default null) is being removed if delete is successfull
-const bindModalAction = (modalConfirmButton, button) => {
+async function modalConfirm(confirmButton) {
+    return new Promise(function(resolve) {
+        confirmButton.addEventListener('click', () => {
+            resolve('confirmed');
+        });
+    });
+}
+
+const executeButtonAction = (button) => {
     let elementToRemove = null;
     if (button.dataset.elementRemove) {
         elementToRemove = document.querySelector('#' + button.dataset.elementRemove)
     }
 
     if (button.dataset.action === 'send-form') {
-        bindSendForm(modalConfirmButton, button.dataset.form);
-    } else if (button.dataset.action === 'ajax') {
-        bindAjaxDelete(modalConfirmButton, button.dataset.href, button.dataset.token, elementToRemove);
+        sendForm(button.dataset.form);
+    } else if (button.dataset.action === 'ajax-delete') {
+        ajaxDelete(button.dataset.href, button.dataset.token, elementToRemove);
     }
 }
 
-const bindSendForm = (button, formId) => {
+const sendForm = (formId) => {
     let form = document.querySelector('#' + formId);
-    button.addEventListener('click', () => {
-        if (null !== form) {
-            form.submit();
-        }
-    })
+    if (null !== form) {
+        form.submit();
+    }
 }
 
-const bindAjaxDelete = (button, href, token, elementToRemove = null) => {
-    button.addEventListener('click', async function() {
-        let result = await ajaxDelete(href, token);
-        if (result === 1 && null !== elementToRemove) {
-            elementToRemove.remove();
-        }
-    })
+async function ajaxDelete(href, token, elementToRemove = null) {
+    let result = await ajaxRequest(href, token, 'DELETE');
+    if (result === 1 && null !== elementToRemove) {
+        elementToRemove.remove();
+    }
 }
 
-async function ajaxDelete (href, token, contenType = 'application/json') {
+async function ajaxRequest(href, token, method, contenType = 'application/json') {
     return new Promise(function(resolve, reject){
         fetch(href, {
-            method: 'DELETE',
+            method: method,
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
                 'Content-type': contenType
@@ -103,3 +106,5 @@ async function ajaxDelete (href, token, contenType = 'application/json') {
         })        
     })
 }
+
+window.addEventListener('load', loadModalButtons);

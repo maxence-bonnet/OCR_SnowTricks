@@ -6,13 +6,26 @@
                     {% for picture in form.pictures %}
                         {% if picture.vars.value.id is not null %} {# original pictures only #}
                             <div class="collectionItem subform col d-flex flex-column"  id="{{ picture.vars.id ~ '_item'}}">
-                                <div id="{{ picture.vars.id ~ '_card' }}" class="card shadow-sm m-2 m-lg-1">
+                                <div id="{{ picture.vars.id ~ '_card' }}" class="card shadow-sm m-2 m-lg-1 position-relative">
                                     <img
                                         class="card-img-top"
                                         src="{{ asset('img/uploads/tricks/' ~ picture.source.vars.value) }}"
                                         alt="{{ picture.alternateText |default(trick.title ~ 'picture') }}"
+                                        data-modal="{{ 'picture_' ~ picture.vars.value.id ~ '_modal' }}"
                                     >
-                                    <div class="position-absolute media-edit-buttons-container bottom-0 end-0 shadow-lg m-2 rounded">
+                                    <div class="position-absolute media-edit-buttons-container bottom-0 end-0 shadow-lg m-2 d-flex rounded">
+                                        {# custom integration of main picture choice #}
+                                        {% if picture.vars.value.id in form.mainPicture|keys %}
+                                            {{ form_row(form.mainPicture[picture.vars.value.id], {
+                                                'row_attr': {'class': 'd-inline-block'},
+                                                'label_attr': {'class': 'd-none'}, 
+                                                'attr': {
+                                                    'class': 'mainPicture-radio',
+                                                    'title': 'désigner cette image "à la une"'
+                                                    }
+                                                })
+                                            }}
+                                        {% endif %}
                                         <button 
                                             type="button"
                                             data-id="{{ picture.vars.id }}"
@@ -25,9 +38,9 @@
                                             type="button"
                                             class="btn btn-modal-delete delete-picture shake"
                                             title="Supprimer définitivement"
-                                            data-target="{{picture.vars.id ~ '_modal'}}"
+                                            data-modal="{{picture.vars.id ~ '_modal'}}"
                                             data-token="{{ csrf_token('delete_picture' ~ picture.vars.value.id)}}"
-                                            data-action="ajax"
+                                            data-action="ajax-delete"
                                             data-href="{{ path('app_trick_delete_picture', {id: picture.vars.value.id}) }}"
                                             data-element-remove="{{ picture.vars.id ~ '_item'}}"
                                         >
@@ -63,8 +76,8 @@
                 <span
                     id="trick-pictures-form-prototype"
                     data-prototype=
-                        "<div id='trick_pictures___name___card' class='card shadow-sm m-2 m-lg-1'>
-                            <img class='card-img-top' src='{{ asset('img/static/default-upload.png') }}' alt='waiting for file input'>
+                        "<div id='trick_pictures___name___card' class='card shadow-sm m-2 m-lg-1 position-relative'>
+                            <img class='card-img-top' src='{{ asset('img/static/default-upload.png') }}' alt='waiting for file input' data-modal='trick_pictures___name___modal'>
                         </div>
                         {{ form_row(form.pictures.vars.prototype)|e('html_attr') }}
                         <button type='button' class='btn btn-danger m-auto mb-1'>Annuler <i class='bx bx-x bx-fw'></i></button>"
@@ -93,9 +106,9 @@
                                         type="button"
                                         class="btn btn-modal-delete delete-video shake"
                                         title="supprimer définitivement"
-                                        data-target="{{ video.vars.id ~ '_modal'}}"                              
+                                        data-modal="{{ video.vars.id ~ '_modal'}}"                              
                                         data-token="{{ csrf_token('delete_video' ~ video.vars.value.id)}}"
-                                        data-action="ajax"
+                                        data-action="ajax-delete"
                                         data-href="{{ path('app_trick_delete_video', {id: video.vars.value.id}) }}"
                                         data-element-remove="{{ video.vars.id ~ '_item'}}"
                                     >
@@ -160,7 +173,7 @@
                     <button 
                         type="button"
                         class="btn btn-danger btn-modal-delete delete-trick m-1"
-                        data-target="{{'trick_' ~ trick.id ~ '_delete_modal'}}"
+                        data-modal="{{'trick_' ~ trick.id ~ '_delete_modal'}}"
                         data-action="send-form"
                         data-form="{{'trick_' ~ trick.id ~ '_delete_form'}}"
                     >
@@ -182,8 +195,10 @@
 {% endif %}
 
 {{ include('_modal_delete_template.html.twig') }}
+{{ include('_modal_image_template.twig') }}
 
 {% block javascripts %}
     <script src="{{ asset('js/addCollectionForm.js')}}"></script>
     <script src="{{ asset('js/showMediaForm.js')}}"></script>
+    <script src="{{ asset('js/dynamicMainPicture.js')}}"></script>
 {% endblock javascripts %}

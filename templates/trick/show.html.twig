@@ -4,7 +4,7 @@
 
 {% block body %}
     <div class="container-sm-fluid hero-bg py-md-5">   
-        <div class="row">
+        <div class="row alert-row">
             <div class="col-12 col-sm-10 col-md-7 col-lg-6 m-auto">
                 {% for message in app.flashes('success') %}
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -17,7 +17,7 @@
         <article class="container m-sm-auto my-3">
             <div class="row">
                 <div class="col-12 col-sm-10 m-auto bg-light shadow-lg rounded p-0">
-                    <div class="trick-image-container position-relative">
+                    <div class="trick-main-picture-container position-relative">
                         {% if trick.mainPicture is not null %}
                             {% set picture = trick.mainPicture %}
                             <img src="{{ asset('img/uploads/tricks/' ~ picture.source ) }}" class="trick-image-container__image" alt="img">
@@ -34,7 +34,7 @@
                                 <button 
                                     type="button"
                                     class="btn-delete btn-modal-delete delete-trick trick-link shake fs-3"
-                                    data-target="{{'trick_' ~ trick.id ~ '_delete_modal'}}"
+                                    data-modal="{{'trick_' ~ trick.id ~ '_delete_modal'}}"
                                     data-action="send-form"
                                     data-form="{{'trick_' ~ trick.id ~ '_delete_form'}}"
                                 >
@@ -50,12 +50,13 @@
                             <div id="trick-pictures" class="col-sm-6">
                                 <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 collectionHolder"> 
                                     {% for picture in trick.pictures %}
-                                        <div class="collectionItem d-none d-sm-flex col flex-column">
+                                        <div class="collectionItem dynamic-show d-none d-sm-flex col flex-column">
                                             <div id="{{ 'picture_' ~ picture.id ~ '_card' }}" class="card shadow-sm m-2 m-lg-1">
                                                 <img
                                                     class="card-img-top"
                                                     src="{{ asset('img/uploads/tricks/' ~ picture.source) }}"
                                                     alt="{{ picture.alternateText |default(trick.title ~ 'picture') }}"
+                                                    data-modal="{{ 'picture_' ~ picture.id ~ '_modal' }}"
                                                 >
                                             </div>
                                         </div>
@@ -65,7 +66,7 @@
                             <div id="trick-videos" class="col-sm-6">
                                 <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 collectionHolder">
                                     {% for video in trick.videos %}
-                                        <div class="collectionItem d-none d-sm-flex col flex-column">
+                                        <div class="collectionItem dynamic-show d-none d-sm-flex col flex-column">
                                             <div id="{{ 'video_' ~ video.id ~ '_card' }}" class="card shadow-sm m-2 m-lg-1">
                                                 <iframe  class="card-img-top" src="{{ video.source }}" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                                             </div>
@@ -155,6 +156,7 @@
         </article>
     </div>
     {{ include('_modal_delete_template.html.twig') }}
+    {{ include('_modal_image_template.twig') }}
 {% endblock %}
 
 {% block javascripts %}

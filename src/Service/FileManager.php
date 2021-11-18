@@ -17,6 +17,13 @@ class FileManager
         $this->slugger = $slugger;
     }
 
+    /**
+     * Moves given uploaded file to the target directory (defined in services.yaml) 
+     * then returns its safe filename
+     * 
+     * @param UploadedFile $file
+     * @return string $filename
+     */
     public function upload(UploadedFile $file): string
     {
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
@@ -32,6 +39,12 @@ class FileManager
         return $fileName;
     }
 
+    /**
+     * Removes given filename if the file does exist
+     * 
+     * @param $filename
+     * @return void
+     */
     public function removeFile(string $filename): void
     {
         if (file_exists($this->getTargetDirectory() . DIRECTORY_SEPARATOR . $filename)) {
