@@ -32,7 +32,9 @@ class RegistrationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // encode the plain password
-            $user->setPassword(
+            $user
+                ->setCreatedAt(new \DateTimeImmutable())
+                ->setPassword(
             $userPasswordHasherInterface->hashPassword(
                     $user,
                     $form->get('plainPassword')->getData()
@@ -78,14 +80,13 @@ class RegistrationController extends AbstractController
             return $this->redirectToRoute('app_register');
         }
 
-        // @TODO Change the redirect on success and handle or remove the flash message in your templates
         $this->addFlash('success', 'Votre adresse email a bien été confirmée, vous pouvez désormais utiliser le site à son plein potentiel !');
 
         return $this->redirectToRoute('app_email_confirmed');
     }
 
     #[Route('/verify/email/confirmed', name: 'app_email_confirmed')]
-    public function emailConfirmed(Request $request): Response
+    public function emailConfirmed(): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 

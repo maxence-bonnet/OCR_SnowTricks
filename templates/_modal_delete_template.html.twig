@@ -1,0 +1,29 @@
+<template id="modalDeleteTemplate">
+    <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Confirmer la suppression</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button 
+                        id="confirmButton"
+                        data-bs-dismiss="modal"
+                        type="button"
+                        class="btn btn-primary btn-delete-modal"
+                    >
+                        Confirmer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+{% block javascripts %}
+<script src="{{ asset('js/createDeleteModal.js')}}"></script>
+{% endblock javascripts %}
