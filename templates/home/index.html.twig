@@ -57,7 +57,7 @@
                                         <a href="{{ path('app_trick_edit', {id: trick.id}) }}" class="btn-edit link-dark card-link trick-link shake ms-1 ms-xl-2" title="update"><i class="bx bx-pencil"></i></a>
                                         <form action="{{ path('app_trick_delete', {id: trick.id}) }}" method="post" class="ms-1 ms-xl-2" id="{{'trick_' ~ trick.id ~ '_delete_form'}}">
                                             <input type="hidden" name="_method" value="DELETE">
-                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ trick.id) }}">
                                             <button 
                                                 type="button"
                                                 class="btn-delete btn-modal-delete delete-trick trick-link shake"
