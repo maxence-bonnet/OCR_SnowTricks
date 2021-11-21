@@ -31,18 +31,9 @@ class Comment
     /**
      * @ORM\Column(type="text")
      */
-    #[Assert\NotBlank(
-        message: 'Le message ne peut pas être vide.'
-    )]
-    #[Assert\NotNull(
-        message: 'Le message ne peut pas être vide.'
-    )]
-    #[Assert\Length(
-        min: 2,
-        max: 500,
-        minMessage: 'Le message doit avoir au minimum {{ limit }} caractères.',
-        maxMessage: 'Le message trick doit avoir au maximum {{ limit }} caractères.'
-    )]
+    #[Assert\NotBlank(message: 'Le message ne peut pas être vide.')]
+    #[Assert\NotNull(message: 'Le message ne peut pas être vide.')]
+    #[Assert\Length(min: 2, max: 500, minMessage: 'Le message doit avoir au minimum {{ limit }} caractères.', maxMessage: 'Le message trick doit avoir au maximum {{ limit }} caractères.')]
     private $content;
 
     /**

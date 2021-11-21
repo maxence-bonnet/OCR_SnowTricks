@@ -29,12 +29,7 @@
                                                 })
                                             }}
                                         {% endif %}
-                                        <button
-                                            type="button"
-                                            data-id="{{ picture.vars.id }}"
-                                            class="btn btn-edit edit-picture shake"
-                                            title="modifier"
-                                        >
+                                        <button type="button" data-id="{{ picture.vars.id }}" class="btn btn-edit edit-picture shake" title="modifier">
                                             <i class="bx bx-pencil"></i>
                                         </button>
                                         <button 
@@ -97,12 +92,7 @@
                             <div id="{{ video.vars.id ~ '_card' }}" class="card shadow-sm m-2 m-lg-1">
                                 <iframe  class="card-img-top" src="{{ video.source.vars.value }}" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                                 <div class="position-absolute media-edit-buttons-container bottom-0 end-0 shadow-lg m-2 rounded">
-                                    <button 
-                                        type="button"
-                                        data-id="{{ video.vars.id }}"
-                                        class="btn btn-edit edit-video shake"
-                                        title="modifier"
-                                    >
+                                    <button type="button" data-id="{{ video.vars.id }}" class="btn btn-edit edit-video shake" title="modifier">
                                         <i class="bx bx-pencil"></i>
                                     </button>
                                     <button
@@ -136,14 +126,13 @@
             </div>
             <hr>
             <div class="d-flex justify-content-center">
-                <span
-                    id="trick-videos-form-prototype"
-                    data-prototype=
-                        "<div id='trick_videos___name___card' class='card shadow-sm m-2 m-lg-1'>
-                                <iframe class='card-img-top bg-dark' src='' title='YouTube video player' frameborder='0' allowfullscreen></iframe>
-                        </div>
-                        {{ form_row(form.videos.vars.prototype)|e('html_attr') }}
-                        <button type='button' class='btn btn-danger m-auto mb-1'>Annuler <i class='bx bx-x bx-fw'></i></button>"
+                <span id="trick-videos-form-prototype"
+                      data-prototype=
+                          "<div id='trick_videos___name___card' class='card shadow-sm m-2 m-lg-1'>
+                              <iframe class='card-img-top bg-dark' src='' title='YouTube video player' frameborder='0' allowfullscreen></iframe>
+                          </div>
+                          {{ form_row(form.videos.vars.prototype)|e('html_attr') }}
+                          <button type='button' class='btn btn-danger m-auto mb-1'>Annuler <i class='bx bx-x bx-fw'></i></button>"
                 ></span>
                 <button type="button" data-target="trick-videos" class="btn btn-primary addSubformButton" title="url de la vidéo youtube (exemple : https://www.youtube.com/watch?v=DT_qdbMdJeU)">
                     Ajouter une vidéo
@@ -159,17 +148,14 @@
                 {{ form_row(form.title) }}
                 </div>
             </div>
-
             <div class="trick__description px-1 px-md-5">
                 {{ form_row(form.description) }}
             </div>
-
             <div class="trick-meta-data px-1 px-md-5">
                 <div class="col-12 col-sm-6 col-lg-4">
                     {{ form_row(form.category) }}
                 </div>
             </div>
-
             <div class="trick-form-buttons-container px-1 px-md-5 d-flex justify-content-end">
                 <div class="col-12 col-sm-6 col-lg-5 d-flex justify-content-end">
                     {% if onEditMode %}
@@ -189,7 +175,6 @@
         </div>
     </div>
 {{ form_end(form) }}
-
 {% if onEditMode %}
     <form action="{{ path('app_trick_delete', {id: trick.id}) }}" id="{{'trick_' ~ trick.id ~ '_delete_form'}}" method="post" class="ms-3">
         <input type="hidden" name="_method" value="DELETE">
