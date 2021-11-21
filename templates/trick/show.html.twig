@@ -30,7 +30,7 @@
                             
                             <form action="{{ path('app_trick_delete', {id: trick.id}) }}" method="post" class="trick-link" id="{{'trick_' ~ trick.id ~ '_delete_form'}}">
                                 <input type="hidden" name="_method" value="DELETE">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ trick.id) }}">
                                 <button 
                                     type="button"
                                     class="btn-delete btn-modal-delete delete-trick trick-link shake fs-3"
@@ -104,7 +104,7 @@
                             {% if trick.category is not null %}
                                 <li class="list-inline-item">{{'Catégorie : ' ~ trick.category }}</li> | 
                             {% endif %}
-                            <li class="list-inline-item">Messages : {{ trick.comments |length}}</li>
+                            <li class="list-inline-item">Messages : {{ trick.comments |length}} <small>{{ pages > 1 ? '(page ' ~ page ~ ' sur ' ~ pages ~ ')' }}</small></li>
                         </ul>
                         <hr>
                         {% if app.user %}
@@ -123,8 +123,8 @@
                         <div class="trick-content__comments">
                             <div class="row d-flex justify-content-center">
                                 <div class="col-11 col-lg-8">
-                                    {% if trick.comments is not empty %}
-                                        {% for comment in trick.comments|reverse %}
+                                    {% if comments is not empty %}
+                                        {% for comment in comments %}
                                             <div class="card comment-card mb-3">
                                                 <div class="row g-0">
                                                     <div class="col-3 comment-card__author-picture p-sm-1 p-lg-2">
@@ -144,12 +144,66 @@
                                                 </div>
                                             </div>
                                         {% endfor %}
-                                    {% else %}
+                                    {% elseif trick.comments is empty %}
                                         <p class="text-center">Aucun message posté pour ce trick</p>
                                     {% endif %}
                                 </div>
                             </div>
-                        </div>
+                            <div class="trick-content__comments-pagination row mt-3">
+                                <nav aria-label="navigation example">
+                                    <ul class="pagination justify-content-center">
+                                        {% if pages < 7 %} {# few pages#}
+                                            {% if page > 1 %}
+                                                <li class="page-item">
+                                                    <a class="page-link link-dark" href="{{ '?page=' ~ (page - 1) }}"><i class='bx bxs-left-arrow bx-fade-left-hover'></i></a>
+                                                </li>
+                                            {% endif %}
+                                            {% for pageNumber in 1..pages %}
+                                                <li class="page-item {{ pageNumber == page ? 'active'}}">
+                                                    <a class="page-link" href="{{ '?page=' ~ pageNumber}}">{{ pageNumber }}</a>
+                                                </li>
+                                            {% endfor %}
+                                            {% if page < pages %}
+                                                <li class="page-item">
+                                                    <a class="page-link link-dark" href="{{ '?page=' ~ (page + 1) }}"><i class='bx bxs-right-arrow bx-fade-right-hover'></i></a>
+                                                </li>
+                                            {% endif %}
+                                        {% else %} {# many pages #}
+                                            {% if page > 1 %}
+                                                <li class="page-item">
+                                                    <a class="page-link link-dark" href="?page=1"><i class='bx bxs-chevrons-left bx-fade-left-hover'></i></a>
+                                                </li>
+                                                {% if page > 2 %}
+                                                    <li class="page-item disabled">
+                                                        <a class="page-link" href="">...</a>
+                                                    </li>
+                                                {% endif %}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="{{ '?page=' ~ (page - 1) }}">{{ page - 1 }}</a>
+                                                </li>
+                                            {% endif %}
+                                                <li class="page-item active">
+                                                    <a class="page-link" href="{{ '?page=' ~ page }}">{{ page }}</a>
+                                                </li>
+                                            {% if page < pages %}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="{{ '?page=' ~ (page + 1) }}">{{ page + 1 }}</a>
+                                                </li>
+                                                {% if page + 1 < pages %}
+                                                    <li class="page-item disabled">
+                                                        <a class="page-link" href="">...</a>
+                                                    </li>
+                                                {% endif %}
+                                                <li class="page-item">
+                                                    <a class="page-link link-dark" href="{{ '?page=' ~ pages }}"><i class='bx bxs-chevrons-right bx-fade-right-hover'></i></a>
+                                                </li>
+                                            {% endif %}
+                                        {% endif %}                                    
+                                    </ul>
+                                </nav>                            
+                            </div>
+
+                        </div>                        
                     </div>
                 </div>
             </div>

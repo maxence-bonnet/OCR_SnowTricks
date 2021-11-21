@@ -8,6 +8,7 @@ use App\Entity\Picture;
 use App\Entity\Video;
 use App\Service\FileManager;
 use App\Repository\TrickRepository;
+use App\Repository\CommentRepository;
 use App\Repository\PictureRepository;
 use App\Form\TrickType;
 use App\Form\CommentType;
@@ -118,7 +119,7 @@ class TrickController extends AbstractController
     * @return \Symfony\Component\HttpFoundation\Response
     */
     #[Route('/{id}/{slug}', name: 'app_trick_show', methods: ['GET','POST'])]
-    public function show(Trick $trick, string $slug = null, Request $request): Response
+    public function show(Trick $trick, string $slug = null, Request $request, CommentRepository $commentRepository): Response
     {
         $comment = new Comment;
 
@@ -147,10 +148,20 @@ class TrickController extends AbstractController
             $form = $this->createForm(CommentType::class, $comment);
 
             $this->addflash('success', 'Votre message a bien été ajouté');
-        }        
-     
+        }
+
+        $limit = 10;
+        $page = (int)$request->get('page', 1) ?: 1;
+        $comments = $commentRepository->getPaginatedComments($page, $limit, $trick);
+        $commentsCount = $trick->getComments()->count();
+        $pages = (int)ceil($commentsCount / $limit);
+
         return $this->render('trick/show.html.twig', [ 
             'trick' => $trick,
+            'comments' => $comments,
+            'commentsCount' => $commentsCount,
+            'page' => $page,
+            'pages' => $pages,
             'form' => $form->createView()
         ]);
     }
@@ -162,7 +173,7 @@ class TrickController extends AbstractController
     #[Route('/delete/{id}', name: 'app_trick_delete', methods: ['DELETE'])]
     public function delete(Trick $trick, Request $request): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $trick->getId(), $request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete_' . $trick->getId(), $request->get('_token'))) {
             $pictures = $trick->getPictures();
             if ($pictures) {
                 foreach ($pictures as $picture) {
@@ -307,6 +318,7 @@ class TrickController extends AbstractController
     private function manageVideosForms(Trick $trick, Form $videosForms): Trick
     {
         foreach ($videosForms as $videoForm) {
+            // ignoring empty subforms
             if (null === $videoForm->getData()->getSource()) {
                 $trick->removeVideo($videoForm->getData());
             }                

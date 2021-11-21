@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Comment;
+use App\Entity\Trick;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,4 +20,23 @@ class CommentRepository extends ServiceEntityRepository
         parent::__construct($registry, Comment::class);
     }
 
+    /**
+     * @param int $page
+     * @param int $limit
+     * @param Trick $trick
+     * @return Comment[]
+     */
+    public function getPaginatedComments(int $page, int $limit, Trick $trick)
+    {
+        $comments = $this->createQueryBuilder('c')
+            ->where('c.trick = :trick')
+            ->setParameter('trick', $trick)
+            ->orderBy('c.createdAt', 'DESC')
+            ->setFirstResult(($page * $limit) - $limit)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult()
+        ;
+        return $comments;
+    }
 }

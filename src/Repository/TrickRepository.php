@@ -20,27 +20,6 @@ class TrickRepository extends ServiceEntityRepository
         parent::__construct($registry, Trick::class);
     }
 
-    // /**
-    //  * @return Trick[] Returns an array of Trick objects
-    //  * Useless
-    //  */
-    // public function findAllWithFirstPicture()
-    // {
-    //     $tricks = $this->createQueryBuilder('t')
-    //         ->getQuery()
-    //         ->getResult();
-
-    //     $pictures = $this->getEntityManager()->getRepository(Picture::class)->findForTricks($tricks);
-
-    //     foreach ($tricks as $trick) {
-    //         if ($pictures->containsKey($trick->getId())) {
-    //             $trick->addPicture($pictures->get($trick->getId()));
-    //         }
-    //     }
-
-    //     return $tricks;
-    // }
-
     /**
      * @return Trick[] Returns an array of Trick objects
      * Useless

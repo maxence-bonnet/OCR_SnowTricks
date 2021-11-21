@@ -193,7 +193,7 @@
 {% if onEditMode %}
     <form action="{{ path('app_trick_delete', {id: trick.id}) }}" id="{{'trick_' ~ trick.id ~ '_delete_form'}}" method="post" class="ms-3">
         <input type="hidden" name="_method" value="DELETE">
-        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ trick.id) }}">
     </form>
 {% endif %}
 

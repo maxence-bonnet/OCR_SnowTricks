@@ -19,26 +19,4 @@ class PictureRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Picture::class);
     }
-
-
-    // /**
-    //  * @param Trick[] $tricks
-    //  * @return ArrayCollection
-    //  * Useless 
-    //  */
-    // public function findForTricks(array $tricks): ArrayCollection
-    // {
-    //     $pictures = $this->createQueryBuilder('p')
-    //         ->select('p')
-    //         ->where('p.trick IN (:tricks)')
-    //         ->getQuery()
-    //         ->setParameter('tricks', $tricks)
-    //         ->getResult();
-    //     // rebuilding ArrayCollection so that keys are Tricks Id, values are Pictures
-    //     $pictures = array_reduce($pictures, function (array $accumulator, Picture $picture) {
-    //         $accumulator[$picture->getTrick()->getId()] = $picture;
-    //         return $accumulator;
-    //     }, []);
-    //     return new ArrayCollection($pictures);
-    // }
 }
