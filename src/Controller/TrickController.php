@@ -259,7 +259,7 @@ class TrickController extends AbstractController
                 if ($pictureForm->get('file')->getData()) {
                     // if a file already exists -> delete it
                     if ($pictureForm->getData()->getId()) {
-                        $this->removePictureFile($pictureForm->getData(), $this->fileManager);
+                        $this->removePictureFile($pictureForm->getData());
                     }
                     // uploading new file
                     $file = $pictureForm->get('file')->getData();

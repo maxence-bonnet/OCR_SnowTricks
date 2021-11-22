@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Trick {{trick.id}}{% endblock %}
+{% block title %}Trick {{ trick.id }}{% endblock %}
 
 {% block body %}
     <div class="container-sm-fluid hero-bg py-md-5">   
@@ -96,15 +96,29 @@
                         </div>
                         <hr>
                         <ul class="list-inline text-center">
-                            <li class="list-inline-item">De : <a href="#" class="text-decoration-none">{{ trick.author.username }}</a></li> | 
-                            <li class="list-inline-item">{{ 'Créé le : ' ~ trick.createdAt |date("d/m/Y") ~ ' à ' ~ trick.createdAt |date("H:i") }}</li> | 
+                            <li class="list-inline-item">
+                                De : 
+                                <a href="{{ path('app_user_profile', {username: trick.author.username}) }}" class="text-decoration-none">
+                                    {{ trick.author.username }}
+                                </a>
+                            </li> | 
+                            <li class="list-inline-item">
+                                {{ 'Créé le : ' ~ trick.createdAt |date("d/m/Y") ~ ' à ' ~ trick.createdAt |date("H:i") }}
+                            </li> | 
                             {% if trick.updatedAt is not null %}
-                                <li class="list-inline-item">{{ 'Dernière modification le : ' ~ trick.updatedAt |date("d/m/Y") ~ ' à ' ~ trick.createdAt |date("H:i") }}</li> | 
+                                <li class="list-inline-item">
+                                    {{ 'Dernière modification le : ' ~ trick.updatedAt |date("d/m/Y") ~ ' à ' ~ trick.createdAt |date("H:i") }}
+                                </li> | 
                             {% endif %}
                             {% if trick.category is not null %}
-                                <li class="list-inline-item">{{'Catégorie : ' ~ trick.category }}</li> | 
+                                <li class="list-inline-item">
+                                    {{'Catégorie : ' ~ trick.category }}
+                                </li> | 
                             {% endif %}
-                            <li class="list-inline-item">Messages : {{ trick.comments |length}} <small>{{ pages > 1 ? '(page ' ~ page ~ ' sur ' ~ pages ~ ')' }}</small></li>
+                            <li class="list-inline-item">
+                                Messages : 
+                                {{ trick.comments |length}} <small>{{ pages > 1 ? '(page ' ~ page ~ ' sur ' ~ pages ~ ')' }}</small>
+                            </li>
                         </ul>
                         <hr>
                         {% if app.user %}
@@ -128,11 +142,21 @@
                                             <div class="card comment-card mb-3">
                                                 <div class="row g-0">
                                                     <div class="col-3 comment-card__author-picture p-sm-1 p-lg-2">
-                                                        <img src="{{ asset('img/uploads/avatars/default_avatar.jpg') }}" class="shadow" alt="avatar">
+                                                        <a href="{{ path('app_user_profile', {username: trick.author.username}) }}" class="text-decoration-none">
+                                                            {% if comment.author.avatar is not null %}
+                                                                <img src="{{ asset('img/uploads/avatars/' ~ comment.author.avatar.source) }}" class="shadow" alt="{{ comment.author.avatar.alternateText }}">
+                                                            {% else %}
+                                                                <img src="{{ asset('img/uploads/avatars/default_avatar.jpg') }}" class="shadow" alt="default avatar">
+                                                            {% endif %}
+                                                        </a>
                                                     </div>
                                                     <div class="col-9 comment-card__content shadow-sm">
                                                         <div class="card-body">
-                                                            <h5 class="card-title d-inline-block">{{ comment.author.username }}</h5>
+                                                            <h5 class="card-title d-inline-block">
+                                                                <a href="{{ path('app_user_profile', {username: trick.author.username}) }}" class="text-decoration-none link-dark">
+                                                                    {{ comment.author.username }}
+                                                                </a>
+                                                            </h5>
                                                             <p class="card-text d-inline-block ms-1">
                                                                 <small class="text-muted">{{ 'le : ' ~ comment.createdAt |date("d/m/Y") ~ ' à ' ~ comment.createdAt |date("H:i") }}</small>
                                                             </p>
@@ -150,7 +174,9 @@
                                 </div>
                             </div>
                             <div class="trick-content__comments-pagination row mt-3">
-                                {{ include('trick/_pagination.html.twig') }}
+                                {% if pages > 1 %}
+                                    {{ include('trick/_pagination.html.twig') }}
+                                {% endif %}
                             </div>
                         </div>                        
                     </div>

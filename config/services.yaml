@@ -25,6 +25,7 @@ services:
             
     App\Service\FileManager:
         arguments:
-            $targetDirectory: '%tricks_pictures_directory%'
+            $picturesDirectory: '%tricks_pictures_directory%'
+            $avatarsDirectory: '%users_avatars_directory%'
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

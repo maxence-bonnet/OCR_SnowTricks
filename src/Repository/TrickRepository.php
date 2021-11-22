@@ -3,7 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Trick;
-use App\Entity\Picture;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -22,7 +22,6 @@ class TrickRepository extends ServiceEntityRepository
 
     /**
      * @return Trick[] Returns an array of Trick objects
-     * Useless
      */
     public function findAllJoinPictures()
     {
@@ -35,4 +34,20 @@ class TrickRepository extends ServiceEntityRepository
         return $tricks;
     }
 
+    /**
+     * @return Trick[] Returns an array of Trick objects
+     * 
+     */
+    public function findAllFromUserJoinPictures(User $user)
+    {
+        $tricks = $this->createQueryBuilder('t')
+            ->select('t', 'p')
+            ->where('t.author = :user')
+            ->setParameter('user', $user)
+            ->leftJoin('t.pictures', 'p')
+            ->getQuery()
+            ->getResult();
+
+        return $tricks;
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Comment;
 use App\Entity\Trick;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -34,6 +35,24 @@ class CommentRepository extends ServiceEntityRepository
             ->orderBy('c.createdAt', 'DESC')
             ->setFirstResult(($page * $limit) - $limit)
             ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult()
+        ;
+        return $comments;
+    }
+
+    /**
+     * @param int $number number of comments requested
+     * @param User $user
+     * @return Comment[]
+     */
+    public function findLastsFromUser(int $number, User $user)
+    {
+        $comments = $this->createQueryBuilder('c')
+            ->where('c.author = :user')
+            ->setParameter('user', $user)
+            ->orderBy('c.createdAt', 'DESC')
+            ->setMaxResults($number)
             ->getQuery()
             ->getResult()
         ;

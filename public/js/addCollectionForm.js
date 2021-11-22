@@ -67,16 +67,16 @@ const createNewSubform = (index, subFormPrototype) => {
 
 const initializePreview = (relatedWith, index, subform) => {
     if (relatedWith === 'trick-pictures') {
-        initializePicturePreview(index, subform);
+        let img = subform.querySelector('#trick_pictures_' + index + '_card > img');
+        let input = subform.querySelector('input[type="file"]');
+        initializeImageModal(img); // createImageModal.js dependency
+        initializePicturePreview(img, input);
     } else if (relatedWith === 'trick-videos') {
         initializeVideoPreview(index, subform);
     }
 }
 
-const initializePicturePreview = (index, form) => {
-    let img = form.querySelector('#trick_pictures_' + index + '_card > img');
-    initializeImageModal(img); // createImageModal.js dependency
-    let input = form.querySelector('input[type="file"]');
+const initializePicturePreview = (img, input) => {
     input.onchange = () => {
         const [file] = input.files;
         if (file) {
