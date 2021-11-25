@@ -71,7 +71,7 @@
                                     {% if user.avatar is not null %}
                                         <img src="{{ asset('img/uploads/avatars/' ~ user.avatar.source) }}" class="shadow" alt="{{ user.avatar.alternateText }}">
                                     {% else %}
-                                        <img src="{{ asset('img/uploads/avatars/default_avatar.jpg') }}" class="shadow" alt="default avatar">
+                                        <img src="{{ asset('img/static/default-avatar.jpg') }}" class="shadow" alt="default avatar">
                                     {% endif %}
                                 </div>
                                 {% if myProfile %}

@@ -1,31 +1,3 @@
-function initAddCollectionForm() {
-    loadAddSubformButtons();
-    loadEditItemPreview();
-    loadModalButtons(); // createDeleteModal.js dependency
-}
-
-function loadAddSubformButtons() {
-    let addFormButtons = document.querySelectorAll('.addSubformButton');
-    for (button of addFormButtons) {
-        initializeAddSubFormButton(button);
-    }
-}
-
-function loadEditItemPreview() {
-    let collectionHolders = document.querySelectorAll('.collectionHolder');
-    for (collectionHolder of collectionHolders) {
-        let itemsCollection = collectionHolder.querySelectorAll('.collectionItem');
-        index = 0;
-        for (editForm of itemsCollection) {
-            initializePreview(collectionHolder.parentNode.id, index, editForm);
-            if (editForm.classList.contains('errorSubForm')) {
-                initializeSubformRemove(editForm);
-            }
-            index++;
-        }
-    }
-}
-
 const initializeAddSubFormButton = (button) => {
     let subFormPrototype = getSubformPrototype(button.dataset.target);
     let collectionHolder = getCollectionHolder(button.dataset.target);
@@ -117,4 +89,22 @@ const buildYoutubeURL = (string) => {
     return '';
 }
 
-window.addEventListener('load', initAddCollectionForm());
+window.addEventListener('load', () => {
+    let addFormButtons = document.querySelectorAll('.addSubformButton');
+    for (button of addFormButtons) {
+        initializeAddSubFormButton(button);
+    }
+    
+    let collectionHolders = document.querySelectorAll('.collectionHolder');
+    for (collectionHolder of collectionHolders) {
+        let itemsCollection = collectionHolder.querySelectorAll('.collectionItem');
+        index = 0;
+        for (editForm of itemsCollection) {
+            initializePreview(collectionHolder.parentNode.id, index, editForm);
+            if (editForm.classList.contains('errorSubForm')) {
+                initializeSubformRemove(editForm);
+            }
+            index++;
+        }
+    }
+});

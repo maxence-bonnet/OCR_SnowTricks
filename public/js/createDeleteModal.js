@@ -2,20 +2,9 @@ const modalDeleteTemplate = document.querySelector('#modalDeleteTemplate');
 
 const modalText = 'Attention, vous êtes sur le point de supprimer définitivement ';
 
-function loadModalButtons() {
-    if (null !== modalDeleteTemplate) {
-        let modalButtons = document.querySelectorAll('.btn-modal-delete');
-        for (button of modalButtons) {
-            initializeDeleteModal(button);
-        }       
-    }
-}
-
 // requires several button attributes : 
-// data-action="{actionToPerform}"
-// data-form="{modalId}" or data-href="{url}" depending on action
+// data-form="{formId}" for trick deletion OR data-element-remove="{{elementId}} for collection item remove
 // data-modal="{modalId}"
-// data-token="{csrfToken}"
 const initializeDeleteModal = (button) => {
     button.addEventListener('click', async function() {
         if ("object" !== typeof(this.modal)) {
@@ -55,56 +44,18 @@ async function modalConfirm(confirmButton) {
 }
 
 const executeButtonAction = (button) => {
-    let elementToRemove = null;
     if (button.dataset.elementRemove) {
-        elementToRemove = document.querySelector('#' + button.dataset.elementRemove)
-    }
-
-    if (button.dataset.action === 'send-form') {
-        sendForm(button.dataset.form);
-    } else if (button.dataset.action === 'ajax-delete') {
-        ajaxDelete(button.dataset.href, button.dataset.token, elementToRemove);
+        document.querySelector('#' + button.dataset.elementRemove).remove();
+    } else if (button.dataset.form) {
+        document.querySelector('#' + button.dataset.form).submit(); 
     }
 }
 
-const sendForm = (formId) => {
-    let form = document.querySelector('#' + formId);
-    if (null !== form) {
-        form.submit();
+window.addEventListener('load', () => {
+    if (null !== modalDeleteTemplate) {
+        let modalButtons = document.querySelectorAll('.btn-modal-delete');
+        for (button of modalButtons) {
+            initializeDeleteModal(button);
+        }       
     }
-}
-
-async function ajaxDelete(href, token, elementToRemove = null) {
-    let result = await ajaxRequest(href, token, 'DELETE');
-    if (result === 1 && null !== elementToRemove) {
-        elementToRemove.remove();
-    }
-}
-
-async function ajaxRequest(href, token, method, contenType = 'application/json') {
-    return new Promise(function(resolve, reject){
-        fetch(href, {
-            method: method,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Content-type': contenType
-            },
-            body: JSON.stringify({'_token': token})
-        })
-        .then((response) => {
-                return response.json()
-        })
-        .then((json) => {
-            if (json.success) {
-                resolve(json.success);
-            } else if (json.error) {
-                reject(json.error);
-            }
-        })
-        .catch((error) => {
-            reject(error);
-        })        
-    })
-}
-
-window.addEventListener('load', loadModalButtons);
+});

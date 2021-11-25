@@ -35,7 +35,6 @@
                                     type="button"
                                     class="btn-delete btn-modal-delete delete-trick trick-link shake fs-3"
                                     data-modal="{{'trick_' ~ trick.id ~ '_delete_modal'}}"
-                                    data-action="send-form"
                                     data-form="{{'trick_' ~ trick.id ~ '_delete_form'}}"
                                 >
                                     <i class="bx bx-trash"></i>
@@ -112,7 +111,7 @@
                             {% endif %}
                             {% if trick.category is not null %}
                                 <li class="list-inline-item">
-                                    {{'Catégorie : ' ~ trick.category }}
+                                    {{'Catégorie : ' ~ trick.category.name }}
                                 </li> | 
                             {% endif %}
                             <li class="list-inline-item">
@@ -146,7 +145,7 @@
                                                             {% if comment.author.avatar is not null %}
                                                                 <img src="{{ asset('img/uploads/avatars/' ~ comment.author.avatar.source) }}" class="shadow" alt="{{ comment.author.avatar.alternateText }}">
                                                             {% else %}
-                                                                <img src="{{ asset('img/uploads/avatars/default_avatar.jpg') }}" class="shadow" alt="default avatar">
+                                                                <img src="{{ asset('img/static/default-avatar.jpg') }}" class="shadow" alt="default avatar">
                                                             {% endif %}
                                                         </a>
                                                     </div>

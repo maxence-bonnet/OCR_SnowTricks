@@ -5,21 +5,18 @@ namespace App\Controller;
 use App\Entity\Comment;
 use App\Entity\Trick;
 use App\Entity\Picture;
-use App\Entity\Video;
 use App\Service\FileManager;
-use App\Repository\TrickRepository;
 use App\Repository\CommentRepository;
-use App\Repository\PictureRepository;
 use App\Form\TrickType;
 use App\Form\CommentType;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\Form;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/trick')]
 class TrickController extends AbstractController
@@ -54,7 +51,7 @@ class TrickController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $trick = $this->manageNewPicturesForms($trick, $form->get('pictures'), $this->fileManager);
+            $trick = $this->manageNewPicturesForms($trick, $form->get('pictures'));
             $trick = $this->manageVideosForms($trick, $form->get('videos'));
 
             $trick
@@ -86,13 +83,25 @@ class TrickController extends AbstractController
     #[Route('/edit/{id}', name: 'app_trick_edit')]
     public function edit(Trick $trick, Request $request): Response
     {
+        // customized pictures tracking to ensure file deletion
+        $originalPictures = new ArrayCollection();
+        foreach ($trick->getPictures() as $picture) {
+            $originalPictures->add($picture);
+        }
+
         $form = $this->createForm(TrickType::class, $trick);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             
-            $trick = $this->manageEditPicturesForms($trick, $form->get('pictures'), $this->fileManager);
+            foreach ($originalPictures as $picture) {
+                if (false === $trick->getPictures()->contains($picture)) {
+                    $this->fileManager->removeFile($picture->getSource());
+                }
+            }
+
+            $trick = $this->manageEditPicturesForms($trick, $form->get('pictures'));
             $trick = $this->manageVideosForms($trick, $form->get('videos'));
 
             $trick->setUpdatedAt(new \DateTimeImmutable());
@@ -190,60 +199,6 @@ class TrickController extends AbstractController
     }
 
     /**
-     * @param Picture $picture
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    #[Route('/picture/delete/{id}', name: 'app_trick_delete_picture', methods: ['DELETE'])]
-    public function deletePicture(Picture $picture, Request $request): JsonResponse
-    {
-        return $this->deleteCollectionItem($picture, $request, $this->fileManager);
-    }
-
-    /**
-     * @param Video $video
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    #[Route('/video/delete/{id}', name: 'app_trick_delete_video', methods: ['DELETE'])]
-    public function deleteVideo(Video $video, Request $request): JsonResponse
-    {
-        return $this->deleteCollectionItem($video, $request);
-    }
-
-    /**
-     * @param Video|Picture $collectionItem
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     */
-    private function deleteCollectionItem($collectionItem, Request $request): JsonResponse
-    {
-        $tokenName = 'delete_';
-        $removeFunction = 'remove';
-        if (get_class($collectionItem) === Video::class) {
-            $tokenName .= 'video';
-            $removeFunction .= 'Video';
-        } elseif (get_class($collectionItem) === Picture::class) {
-            $tokenName .= 'picture';
-            $removeFunction .= 'Picture';
-        }
-
-        $data = json_decode($request->getContent(), true);
-
-        if (array_key_exists('_token', $data) && $this->isCsrfTokenValid($tokenName . $collectionItem->getId(), $data['_token'])) {
-            $trick = $collectionItem->getTrick();
-            if ($trick) {
-                $trick->$removeFunction($collectionItem);
-                if (get_class($collectionItem) === Picture::class) {
-                    $this->fileManager->removeFile($collectionItem->getSource());
-                }
-                $this->entityManager->remove($collectionItem);
-                $this->entityManager->flush();
-                return new JsonResponse(['success' => 1]);              
-            }
-        }
-        return new JsonResponse(['error' => 'Invalid Token'], 400);
-    }
-
-    /**
      * @param Trick $trick
      * @param Form $picturesForms
      * @return Trick
@@ -301,16 +256,6 @@ class TrickController extends AbstractController
     }
 
     /**
-     * @param Picture $id
-     * @return void
-     */
-    private function removePictureFile(Picture $picture): void
-    {
-        $oldPicture = $this->entityManager->getRepository(Picture::class)->findOneBy(['id' => $picture->getId()]);
-        $this->fileManager->removeFile($oldPicture->getSource());
-    }
-
-    /**
      * @param Trick $trick
      * @param Form $videosForms
      * @return Trick
@@ -324,5 +269,15 @@ class TrickController extends AbstractController
             }                
         }
         return $trick;
+    }
+
+    /**
+     * @param Picture $picture
+     * @return void
+     */
+    private function removePictureFile(Picture $picture): void
+    {
+        $oldPicture = $this->entityManager->getRepository(Picture::class)->findOneBy(['id' => $picture->getId()]);
+        $this->fileManager->removeFile($oldPicture->getSource());
     }
 }
