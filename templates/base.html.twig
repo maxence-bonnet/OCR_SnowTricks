@@ -43,7 +43,7 @@
                                     </a>
                                 </li>                           
                                 <li class="nav-item ms-md-auto">
-                                    <a class="nav-link {{ current_nav is defined and current_nav is same as('my_profile') ? 'active' }}" href="#"><i class="bx bx-user"></i> {{ app.user.username }}</a>
+                                    <a class="nav-link {{ current_nav is defined and current_nav is same as('my_profile') ? 'active' }}" href="{{ path('app_user_myprofile')}}"><i class="bx bx-user"></i> {{ app.user.username }}</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link {{ false ? 'active' }}" href="{{ path('app_logout') }}"><i class="bx bx-log-out-circle"></i> Déconnexion</a>
@@ -68,11 +68,11 @@
         <footer class="py-4 bg-dark footer mt-auto">
             <div class="container d-flex">
                 <div class="col-sm-3">
-                    <a href="https://github.com/maxence-bonnet/OCR_SnowTricks" class="p-2 link-light"><i class='bx bxl-github fs-3'></i></a>
-                    <a href="https://www.linkedin.com/in/maxence-bonnet-b28a32203/" class="p-2 link-light"><i class='bx bxl-linkedin-square fs-3' ></i></a>
+                    <a href="https://github.com/maxence-bonnet/OCR_SnowTricks" class="p-2 link-light" target="_blank"><i class='bx bxl-github fs-3'></i></a>
+                    <a href="https://www.linkedin.com/in/maxence-bonnet-b28a32203/" class="p-2 link-light" target="_blank"><i class='bx bxl-linkedin-square fs-3' ></i></a>
                 </div>
                 <div class="col-sm-6 text-center">
-                    <a href="#" class="p-2 link-light text-decoration-none">Copyright <i class='bx-fw bx bx-copyright bx-fw'></i> 2021</a>
+                    <a class="p-2 link-light text-decoration-none">Copyright <i class='bx-fw bx bx-copyright bx-fw'></i> 2021</a>
                 </div>
                 <div class="col-sm-3">
                 </div>         

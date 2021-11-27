@@ -8,30 +8,39 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 
 class FileManager
 {
-    private $targetDirectory;
+    private $picturesDirectory;
+    private $avatarsDirectory;
     private $slugger;
 
-    public function __construct($targetDirectory, SluggerInterface $slugger)
+    public function __construct($picturesDirectory, $avatarsDirectory, SluggerInterface $slugger)
     {
-        $this->targetDirectory = $targetDirectory;
+        $this->picturesDirectory = $picturesDirectory;
+        $this->avatarsDirectory = $avatarsDirectory;
         $this->slugger = $slugger;
     }
 
     /**
-     * Moves given uploaded file to the target directory (defined in services.yaml) 
-     * then returns its safe filename
+     * Moves given uploaded file to the target directory (defined in services.yaml)
+     * then returns its safe filename. Specify option 'avatar' for users avatar uploads
      * 
      * @param UploadedFile $file
+     * @param string $purpose option to separate user avatar and trick pictures
      * @return string $filename
      */
-    public function upload(UploadedFile $file): string
+    public function upload(UploadedFile $file, ?string $purpose = null): string
     {
+        $directory = $this->picturesDirectory;
+
+        if ($purpose === 'avatar') {
+            $directory = $this->avatarsDirectory;
+        }
+
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $safeFilename = $this->slugger->slug($originalFilename);
         $fileName = $safeFilename . '-' . md5(uniqid()) . '.' . $file->guessExtension();
 
         try {
-            $file->move($this->getTargetDirectory(), $fileName);
+            $file->move($directory, $fileName);
         } catch (FileException $e) {
             return "error-moving-" . $fileName;
         }
@@ -40,20 +49,22 @@ class FileManager
     }
 
     /**
-     * Removes given filename if the file does exist
+     * Removes given filename if the file does exist. Specify option 'avatar' for users avatar
      * 
      * @param $filename
+     * @param string $purpose option to separate user avatar and trick pictures
      * @return void
      */
-    public function removeFile(string $filename): void
+    public function removeFile(string $filename, ?string $purpose = null): void
     {
-        if (file_exists($this->getTargetDirectory() . DIRECTORY_SEPARATOR . $filename)) {
-            unlink($this->getTargetDirectory() . DIRECTORY_SEPARATOR . $filename);
-        }      
-    }
+        $directory = $this->picturesDirectory;
 
-    public function getTargetDirectory()
-    {
-        return $this->targetDirectory;
+        if ($purpose === 'avatar') {
+            $directory = $this->avatarsDirectory;
+        }
+
+        if (file_exists($directory . DIRECTORY_SEPARATOR . $filename)) {
+            unlink($directory . DIRECTORY_SEPARATOR . $filename);
+        }      
     }
 }

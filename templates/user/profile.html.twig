@@ -1,0 +1,189 @@
+{% extends 'base.html.twig' %}
+
+{% if myProfile is defined %}
+    {% set myProfile = true %}
+{% else %}
+    {% set myProfile = false %}
+{% endif %}
+
+{% set displayParameters = {
+        'minTricksShown': 4,
+        'maxToggleSteps': 2,
+        'defaultStepTimer': 200
+    } 
+%}
+
+{% block title %}{{ myProfile ? 'Mon profil' : 'Profil de' ~ user.username }}{% endblock %}
+
+{% block body %}
+    <div class="container-sm-fluid hero-bg py-md-5">   
+        <article class="container m-sm-auto my-3">
+            <div class="row">
+                <div class="col-12 col-lg-10 m-auto bg-light shadow-lg rounded p-2">
+                    <h1 class="text-center">{{ myProfile ? 'Mon profil' : 'Profil de' ~ user.username }}</h1> {# modifié #}
+                    {% if myProfile %}
+                        <div class="col-12 col-sm-10 m-auto">
+                            {% for message in app.flashes('success') %}
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <div class="user-informations">
+                        <div class="row p-1 p-sm-3">
+                            <div class="col-12 col-md-6">
+                                <h2 class="text-center text-md-start">Informations :</h2>
+                                <table class="table table-borderless table-striped">
+                                    <tbody>
+                                        <tr>
+                                            <td>Nom d'utilisateur : </td>
+                                            <td class="text-center">{{ user.username }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Inscrit le : </td>
+                                            <td class="text-center">{{ user.createdAt |date("d/m/Y") }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Rôle : </td>
+                                            <td class="text-center">
+                                                {% if user.roles.0 == 'ROLE_VERIFIED_USER' %}
+                                                    <i class='bx bx-user bx-fw'></i> Utilisateur vérifié
+                                                {% elseif user.roles.0 == 'ROLE_ADMIN' %}
+                                                    <i class='bx bx-crown bx-fw'></i> Administrateur
+                                                {% else %}
+                                                    <i class='bx bx-mask bx-fw'></i> Utilisateur non vérifié
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                {% if myProfile %}
+                                    <div class="text-center mt-3">
+                                        <a class="btn btn-primary">Modifier mon mot de passe</a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-12 col-md-6 d-flex flex-column align-items-center mt-3 mt-md-0">
+                                <h2 class="text-center text-md-start">Photo de profil :</h2>
+                                <div class="col-3 user-picture p-sm-1 p-lg-2">
+                                    {% if user.avatar is not null %}
+                                        <img src="{{ asset('img/uploads/avatars/' ~ user.avatar.source) }}" class="shadow" alt="{{ user.avatar.alternateText }}">
+                                    {% else %}
+                                        <img src="{{ asset('img/static/default-avatar.jpg') }}" class="shadow" alt="default avatar">
+                                    {% endif %}
+                                </div>
+                                {% if myProfile %}
+                                    <div class="user-picture-form d-flex flex-column align-items-center m-1">
+                                        {% for error in form.file.vars.errors %} 
+                                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                                {{ error.message }}
+                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                            </div>                                    
+                                        {% endfor %}
+                                        {{ form_start(form) }}
+                                        {{ form_label(form.file, null, {'label_attr': {'class': 'btn btn-primary m-1'}}) }}
+                                        {{ form_widget(form.file, {'attr': {'class': 'd-none'}} )}}
+                                        <button id="submitChanges" class="btn btn-success m-1 d-none" title="confirmer le changement"><i class="bx bx-check bx-fw"></i></button>
+                                        <button type="button" id="cancelChanges" class="btn btn-danger m-1 d-none" title="annuler"><i class="bx bx-x bx-fw"></i></button>
+                                        {{ form_end(form) }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    <h1 class="text-center">Activités</h1>
+                    <div class="user-activity">
+                        <div class="row p-1 p-sm-3">
+                            <div class="col-12 col-lg-6">
+                                <h2 class="text-center text-md-start">Contributions ({{ user.tricks|length }}) :</h2>
+                                <div class="row row-cols-1 row-cols-sm-2">
+                                    {% for trick in user.tricks %}
+                                        <div class="col mb-3 trick-card-container {{ loop.index > displayParameters.minTricksShown|default(4) ? 'd-none' : 'smooth-show'}}">
+                                            <div class="card shadow h-100">
+                                                {% if trick.mainPicture is not null %}
+                                                    {% set picture = trick.mainPicture %}
+                                                        <img src="{{ asset('img/uploads/tricks/' ~ picture.source ) }}" class="card-img-top" alt="img">
+                                                    {% else %}
+                                                        <img src="{{ asset('img/static/default-picture.jpg') }}" class="card-img-top" alt="default image">
+                                                    {% endif %}                                
+                                                <div class="card-body">
+                                                    <h5 class="card-title d-flex justify-content-between">
+                                                        <a href="{{ path('app_trick_show', {id: trick.id, slug: trick.title |slug('-')|lower}) }}" class="text-decoration-none link-dark card-link trick-link shake">
+                                                            {{ trick.title }}
+                                                        </a>
+                                                    </h5>
+                                                </div>
+                                                <div class="card-footer">
+                                                    <small class="text-muted text-center">
+                                                        {% if trick.updatedAt %}
+                                                            {{ 'Mis à jour le : ' ~ trick.updatedAt |date("d/m/Y") }}
+                                                        {% else %}
+                                                            {{ 'Créé le : ' ~ trick.createdAt |date("d/m/Y") ~ ' à ' ~ trick.createdAt |date("H:i") }}
+                                                        {% endif %}
+                                                    </small>
+                                                </div>
+                                            </div>                
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                {% if user.tricks|length > displayParameters.minTricksShown|default(4) %}
+                                <div class="row">
+                                    <div class="col-12 d-flex justify-content-center">
+                                        <button type="button" id="showMore" class="btn btn-primary mx-2">Afficher plus <i class='bx bx-add-to-queue'></i></button>
+                                        <button type="button" id="showLess" class="btn btn-primary mx-2 smooth-hide d-none">Afficher moins <i class='bx bx-hide' ></i></button>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-12 col-lg-6 mt-3 mt-lg-0">
+                                <h2 class="text-center text-md-start">Derniers commentaires :</h2>
+                                <table class="table table-hover table-striped text-center shadow">
+                                    <thead>
+                                        <tr>
+                                            <th>Date :</th>
+                                            <th>Pour le trick</th>                                    
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for comment in comments %}      
+                                            <tr>
+                                                <td>
+                                                    {{ comment.createdAt |date("d/m/Y") ~ ' à ' ~ comment.createdAt |date("H:i") }}
+                                                </td>
+                                                <td>
+                                                    <a 
+                                                        href="{{ path('app_trick_show', {id: comment.trick.id, slug: comment.trick.title |slug('-')|lower}) }}" 
+                                                        class="text-decoration-none link-dark"
+                                                    >
+                                                        {{ comment.trick.title }}
+                                                    </a>
+                                                </td>
+                                            </tr>                        
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>                        
+                    </div>                    
+                </div>
+            </div>         
+        </article>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {% if myProfile %}
+        <script src="{{ asset('js/profilePicturePreview.js')}}"></script>
+    {% endif %}
+    {% if user.tricks|length > displayParameters.minTricksShown|default(4) %}
+    <script>
+        var minTricksShown = {{ displayParameters.minTricksShown }};
+        var maxToggleSteps = {{ displayParameters.maxToggleSteps }};
+        var defaultStepTimer = {{ displayParameters.defaultStepTimer }};
+    </script>
+    <script src="{{ asset('js/showButtons.js')}}"></script>
+    {% endif %}
+{% endblock javascripts %}

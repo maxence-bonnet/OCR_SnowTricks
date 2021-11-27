@@ -1,31 +1,3 @@
-function initAddCollectionForm() {
-    loadAddSubformButtons();
-    loadEditItemPreview();
-    loadModalButtons(); // createDeleteModal.js dependency
-}
-
-function loadAddSubformButtons() {
-    let addFormButtons = document.querySelectorAll('.addSubformButton');
-    for (button of addFormButtons) {
-        initializeAddSubFormButton(button);
-    }
-}
-
-function loadEditItemPreview() {
-    let collectionHolders = document.querySelectorAll('.collectionHolder');
-    for (collectionHolder of collectionHolders) {
-        let itemsCollection = collectionHolder.querySelectorAll('.collectionItem');
-        index = 0;
-        for (editForm of itemsCollection) {
-            initializePreview(collectionHolder.parentNode.id, index, editForm);
-            if (editForm.classList.contains('errorSubForm')) {
-                initializeSubformRemove(editForm);
-            }
-            index++;
-        }
-    }
-}
-
 const initializeAddSubFormButton = (button) => {
     let subFormPrototype = getSubformPrototype(button.dataset.target);
     let collectionHolder = getCollectionHolder(button.dataset.target);
@@ -67,16 +39,16 @@ const createNewSubform = (index, subFormPrototype) => {
 
 const initializePreview = (relatedWith, index, subform) => {
     if (relatedWith === 'trick-pictures') {
-        initializePicturePreview(index, subform);
+        let img = subform.querySelector('#trick_pictures_' + index + '_card > img');
+        let input = subform.querySelector('input[type="file"]');
+        initializeImageModal(img); // createImageModal.js dependency
+        initializePicturePreview(img, input);
     } else if (relatedWith === 'trick-videos') {
         initializeVideoPreview(index, subform);
     }
 }
 
-const initializePicturePreview = (index, form) => {
-    let img = form.querySelector('#trick_pictures_' + index + '_card > img');
-    initializeImageModal(img); // createImageModal.js dependency
-    let input = form.querySelector('input[type="file"]');
+const initializePicturePreview = (img, input) => {
     input.onchange = () => {
         const [file] = input.files;
         if (file) {
@@ -117,4 +89,22 @@ const buildYoutubeURL = (string) => {
     return '';
 }
 
-window.addEventListener('load', initAddCollectionForm());
+window.addEventListener('load', () => {
+    let addFormButtons = document.querySelectorAll('.addSubformButton');
+    for (button of addFormButtons) {
+        initializeAddSubFormButton(button);
+    }
+    
+    let collectionHolders = document.querySelectorAll('.collectionHolder');
+    for (collectionHolder of collectionHolders) {
+        let itemsCollection = collectionHolder.querySelectorAll('.collectionItem');
+        index = 0;
+        for (editForm of itemsCollection) {
+            initializePreview(collectionHolder.parentNode.id, index, editForm);
+            if (editForm.classList.contains('errorSubForm')) {
+                initializeSubformRemove(editForm);
+            }
+            index++;
+        }
+    }
+});
