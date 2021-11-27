@@ -141,7 +141,7 @@
                                             <div class="card comment-card mb-3">
                                                 <div class="row g-0">
                                                     <div class="col-3 comment-card__author-picture p-sm-1 p-lg-2">
-                                                        <a href="{{ path('app_user_profile', {username: trick.author.username}) }}" class="text-decoration-none">
+                                                        <a href="{{ path('app_user_profile', {username: comment.author.username}) }}" class="text-decoration-none">
                                                             {% if comment.author.avatar is not null %}
                                                                 <img src="{{ asset('img/uploads/avatars/' ~ comment.author.avatar.source) }}" class="shadow" alt="{{ comment.author.avatar.alternateText }}">
                                                             {% else %}
@@ -152,7 +152,7 @@
                                                     <div class="col-9 comment-card__content shadow-sm">
                                                         <div class="card-body">
                                                             <h5 class="card-title d-inline-block">
-                                                                <a href="{{ path('app_user_profile', {username: trick.author.username}) }}" class="text-decoration-none link-dark">
+                                                                <a href="{{ path('app_user_profile', {username: comment.author.username}) }}" class="text-decoration-none link-dark">
                                                                     {{ comment.author.username }}
                                                                 </a>
                                                             </h5>

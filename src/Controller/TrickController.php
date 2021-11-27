@@ -16,7 +16,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Form\Form;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Form\FormInterface;
 
 #[Route('/trick')]
 class TrickController extends AbstractController
@@ -41,6 +42,7 @@ class TrickController extends AbstractController
     * @return \Symfony\Component\HttpFoundation\Response
     */
     #[Route('/new', name: 'app_trick_new')]
+    #[IsGranted('ROLE_VERIFIED_USER', statusCode: 403, message: 'Vous devez être connecté et avoir une adresse email vérifiée pour accéder à cette page')]
     public function new(Request $request): Response
     {
         $trick = new Trick();
@@ -81,6 +83,7 @@ class TrickController extends AbstractController
     * @return \Symfony\Component\HttpFoundation\Response
     */
     #[Route('/edit/{id}', name: 'app_trick_edit')]
+    #[IsGranted('ROLE_VERIFIED_USER', statusCode: 403, message: 'Vous devez être connecté et avoir une adresse email vérifiée pour accéder à cette page')]
     public function edit(Trick $trick, Request $request): Response
     {
         // customized pictures tracking to ensure file deletion
@@ -180,6 +183,7 @@ class TrickController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\Response
      */
     #[Route('/delete/{id}', name: 'app_trick_delete', methods: ['DELETE'])]
+    #[IsGranted('ROLE_VERIFIED_USER', statusCode: 403, message: 'Vous devez être connecté et avoir une adresse email vérifiée pour accéder à cette page')]
     public function delete(Trick $trick, Request $request): Response
     {
         if ($this->isCsrfTokenValid('delete_' . $trick->getId(), $request->get('_token'))) {
@@ -200,10 +204,10 @@ class TrickController extends AbstractController
 
     /**
      * @param Trick $trick
-     * @param Form $picturesForms
+     * @param FormInterface $picturesForms
      * @return Trick
      */
-    private function manageEditPicturesForms(Trick $trick, Form $picturesForms): Trick
+    private function manageEditPicturesForms(Trick $trick, FormInterface $picturesForms): Trick
     {
         foreach ($picturesForms as $pictureForm) {
             // if empty subform
@@ -232,10 +236,10 @@ class TrickController extends AbstractController
 
     /**
      * @param Trick $trick
-     * @param Form $picturesForms
+     * @param FormInterface $picturesForms
      * @return Trick
      */
-    private function manageNewPicturesForms(Trick $trick, Form $picturesForms): Trick
+    private function manageNewPicturesForms(Trick $trick, FormInterface $picturesForms): Trick
     {
         foreach ($picturesForms as $pictureForm) {
             // ignoring empty subforms
@@ -257,10 +261,10 @@ class TrickController extends AbstractController
 
     /**
      * @param Trick $trick
-     * @param Form $videosForms
+     * @param FormInterface $videosForms
      * @return Trick
      */
-    private function manageVideosForms(Trick $trick, Form $videosForms): Trick
+    private function manageVideosForms(Trick $trick, FormInterface $videosForms): Trick
     {
         foreach ($videosForms as $videoForm) {
             // ignoring empty subforms

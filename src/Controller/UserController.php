@@ -13,6 +13,7 @@ use App\Service\FileManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 #[Route('/user')]
 class UserController extends AbstractController
@@ -31,6 +32,7 @@ class UserController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\Response
      */
     #[Route('/myprofile', name: 'app_user_myprofile')]
+    #[IsGranted('ROLE_USER', statusCode: 403, message: 'Vous devez être connecté pour accéder à cette page')]
     public function myProfile(Request $request, FileManager $fileManager): Response
     {
         $user = $this->getUser();
