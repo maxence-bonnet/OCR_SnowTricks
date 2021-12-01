@@ -5,18 +5,20 @@
 {% set onEditMode = false %}
 
 {% block body %}
-    <div class="container-sm-fluid hero-bg py-md-5">   
-        <article class="container m-sm-auto my-3">
-            <div class="row">
-                <div class="col-12 col-lg-10 m-auto bg-light shadow-lg rounded p-0">
-                    <div class="trick-main-picture-container">
-                        <img id="mainPicture" src="{{ asset('img/static/default-picture.jpg') }}" class="trick-image-container__image" alt="default image">
+    <div class="container-sm-fluid hero-bg py-md-5">
+        <div class="my-5">
+            <article class="container m-sm-auto my-3">
+                <div class="row">
+                    <div class="col-12 col-lg-10 m-auto bg-light shadow-lg rounded p-0">
+                        <div class="trick-main-picture-container">
+                            <img id="mainPicture" src="{{ asset('img/static/default-picture.jpg') }}" class="trick-image-container__image" alt="default image">
+                        </div>
+                        <div class="trick-content p-1 p-md-3">
+                            {{ include('trick/_form.html.twig', {button_label: 'Créer'}) }}
+                        </div>
                     </div>
-                    <div class="trick-content p-1 p-md-3">
-                        {{ include('trick/_form.html.twig', {button_label: 'Créer'}) }}
-                    </div>
-                </div>
-            </div>         
-        </article>
-    </div>
+                </div>         
+            </article>
+        </div>
+    {# </div> #}
 {% endblock %}

@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Trick {{ trick.id }}{% endblock %}
+{% block title %}Trick {{ trick.title }}{% endblock %}
 
 {% block body %}
     <div class="container-sm-fluid hero-bg py-md-5">   
@@ -14,177 +14,180 @@
                 {% endfor %}
             </div>
         </div>
-        <article class="container m-sm-auto my-3">
-            <div class="row">
-                <div class="col-12 col-sm-10 m-auto bg-light shadow-lg rounded p-0">
-                    <div class="trick-main-picture-container position-relative">
-                        {% if trick.mainPicture is not null %}
-                            {% set picture = trick.mainPicture %}
-                            <img src="{{ asset('img/uploads/tricks/' ~ trick.mainPicture.source ) }}" class="trick-image-container__image" alt="{{ trick.mainPicture.alternateText }}">
-                        {% else %}
-                            <img src="{{ asset('img/static/default-picture.jpg') }}" class="trick-image-container__image" alt="default image">
-                        {% endif %}
-                        {% if app.user %}
-                        <div class="position-absolute trick-edit-buttons-container top-0 end-0 shadow-lg m-2 rounded">
-                            <a href="{{ path('app_trick_edit', {id: trick.id}) }}" class="text-decoration-none link-dark trick-link shake mx-1 fs-3"><i class="bx bx-pencil"></i></a>
-                            
-                            <form action="{{ path('app_trick_delete', {id: trick.id}) }}" method="post" class="trick-link" id="{{'trick_' ~ trick.id ~ '_delete_form'}}">
-                                <input type="hidden" name="_method" value="DELETE">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ trick.id) }}">
-                                <button 
-                                    type="button"
-                                    class="btn-delete btn-modal-delete delete-trick trick-link shake fs-3"
-                                    data-modal="{{'trick_' ~ trick.id ~ '_delete_modal'}}"
-                                    data-form="{{'trick_' ~ trick.id ~ '_delete_form'}}"
-                                >
-                                    <i class="bx bx-trash"></i>
-                                </button>
-                            </form>
-                        </div>
-                        {% endif %}                        
-                    </div>
-                    <div class="trick-content p-1 p-md-3">
-                        <h2 class="text-center">{{ trick.title }}</h2>
-                        <div class="row trick-medias my-4">
-                            <div id="trick-pictures" class="col-sm-6">
-                                <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 collectionHolder"> 
-                                    {% for picture in trick.pictures %}
-                                        <div class="collectionItem dynamic-show d-none d-sm-flex col flex-column">
-                                            <div id="{{ 'picture_' ~ picture.id ~ '_card' }}" class="card shadow-sm m-2 m-lg-1">
-                                                <img
-                                                    class="card-img-top"
-                                                    src="{{ asset('img/uploads/tricks/' ~ picture.source) }}"
-                                                    alt="{{ picture.alternateText |default(trick.title ~ 'picture') }}"
-                                                    data-modal="{{ 'picture_' ~ picture.id ~ '_modal' }}"
-                                                >
-                                            </div>
-                                        </div>
-                                    {% endfor %}
-                                </div>   
-                            </div>
-                            <div id="trick-videos" class="col-sm-6">
-                                <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 collectionHolder">
-                                    {% for video in trick.videos %}
-                                        <div class="collectionItem dynamic-show d-none d-sm-flex col flex-column">
-                                            <div id="{{ 'video_' ~ video.id ~ '_card' }}" class="card shadow-sm m-2 m-lg-1">
-                                                <iframe  class="card-img-top" src="{{ video.source }}" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                            </div>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        </div>
-                        {% if trick.pictures is not empty or trick.videos is not empty %}
-                            <div class="row d-flex d-sm-none">
-                                <hr>
-                                <div class="col-12 d-flex justify-content-center">
-                                    <button type="button" id="showMedias" class="btn btn-primary mx-2">Afficher les médias</button>
-                                </div>
-                            </div>
-                        {% else %}
-                            <div class="row">
-                                <hr>
-                                <div class="col-12 d-flex justify-content-center">
-                                    <span>Aucun média n'est associé à ce trick pour le momement <i class='bx bx-sad bx-fw'></i></span>
-                                </div>
-                            </div>
-                        {% endif %}
-                        <hr>
-                        <div class="trick__description px-1 px-md-5">
-                            <p>{{ trick.description |nl2br }}</p>
-                        </div>
-                        <hr>
-                        <ul class="list-inline text-center">
-                            <li class="list-inline-item">
-                                De : 
-                                <a href="{{ path('app_user_profile', {username: trick.author.username}) }}" class="text-decoration-none">
-                                    {{ trick.author.username }}
-                                </a>
-                            </li> | 
-                            <li class="list-inline-item">
-                                {{ 'Créé le : ' ~ trick.createdAt |date("d/m/Y") ~ ' à ' ~ trick.createdAt |date("H:i") }}
-                            </li> | 
-                            {% if trick.updatedAt is not null %}
-                                <li class="list-inline-item">
-                                    {{ 'Dernière modification le : ' ~ trick.updatedAt |date("d/m/Y") ~ ' à ' ~ trick.createdAt |date("H:i") }}
-                                </li> | 
+        <div class="my-5">
+            <article class="container m-sm-auto">
+                <div class="row">
+                    <div class="col-12 col-sm-10 m-auto bg-light shadow-lg rounded p-0">
+                        <div class="trick-main-picture-container position-relative">
+                            {% if trick.mainPicture is not null %}
+                                {% set picture = trick.mainPicture %}
+                                <img src="{{ asset('img/uploads/tricks/' ~ trick.mainPicture.source ) }}" class="trick-image-container__image" alt="{{ trick.mainPicture.alternateText }}">
+                            {% else %}
+                                <img src="{{ asset('img/static/default-picture.jpg') }}" class="trick-image-container__image" alt="default image">
                             {% endif %}
-                            {% if trick.category is not null %}
-                                <li class="list-inline-item">
-                                    {{'Catégorie : ' ~ trick.category.name }}
-                                </li> | 
-                            {% endif %}
-                            <li class="list-inline-item">
-                                Messages : 
-                                {{ trick.comments |length}} <small>{{ pages > 1 ? '(page ' ~ page ~ ' sur ' ~ pages ~ ')' }}</small>
-                            </li>
-                        </ul>
-                        <hr>
-                        {% if app.user %}
-                            <div class="trick__comment-form">
-                                {{ form_start(form)}}
-                                    <div class="form-group mb-3 d-flex p-2 justify-content-center">
-                                        {{ form_widget(form.content) }}
-                                        <button type="submit" class="btn btn-sm btn-primary m-auto mx-2">commenter</button>
-                                    </div>  
-                                {{ form_end(form)}}
+                            {% if app.user %}
+                            <div class="position-absolute trick-edit-buttons-container top-0 end-0 shadow-lg m-2 rounded">
+                                <a href="{{ path('app_trick_edit', {id: trick.id}) }}" class="text-decoration-none link-dark trick-link shake mx-1 fs-3"><i class="bx bx-pencil"></i></a>
+                                
+                                <form action="{{ path('app_trick_delete', {id: trick.id}) }}" method="post" class="trick-link" id="{{'trick_' ~ trick.id ~ '_delete_form'}}">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ trick.id) }}">
+                                    <button 
+                                        type="button"
+                                        class="btn-delete btn-modal-delete delete-trick trick-link shake fs-3"
+                                        data-modal="{{'trick_' ~ trick.id ~ '_delete_modal'}}"
+                                        data-form="{{'trick_' ~ trick.id ~ '_delete_form'}}"
+                                    >
+                                        <i class="bx bx-trash"></i>
+                                    </button>
+                                </form>
                             </div>
-                        {% else %}
-                            <p class="text-center">Vous devez vous <a href="{{ path('app_login') }}">connecter</a> pour pouvoir poster des messages</p>
-                        {% endif %}
-                        <hr>
-                        <div class="trick-content__comments">
-                            <div class="row d-flex justify-content-center">
-                                <div class="col-11 col-lg-8">
-                                    {% if comments is not empty %}
-                                        {% for comment in comments %}
-                                            <div class="card comment-card mb-3">
-                                                <div class="row g-0">
-                                                    <div class="col-3 comment-card__author-picture p-sm-1 p-lg-2">
-                                                        <a href="{{ path('app_user_profile', {username: comment.author.username}) }}" class="text-decoration-none">
-                                                            {% if comment.author.avatar is not null %}
-                                                                <img src="{{ asset('img/uploads/avatars/' ~ comment.author.avatar.source) }}" class="shadow" alt="{{ comment.author.avatar.alternateText }}">
-                                                            {% else %}
-                                                                <img src="{{ asset('img/static/default-avatar.jpg') }}" class="shadow" alt="default avatar">
-                                                            {% endif %}
-                                                        </a>
-                                                    </div>
-                                                    <div class="col-9 comment-card__content shadow-sm">
-                                                        <div class="card-body">
-                                                            <h5 class="card-title d-inline-block">
-                                                                <a href="{{ path('app_user_profile', {username: comment.author.username}) }}" class="text-decoration-none link-dark">
-                                                                    {{ comment.author.username }}
-                                                                </a>
-                                                            </h5>
-                                                            <p class="card-text d-inline-block ms-1">
-                                                                <small class="text-muted">{{ 'le : ' ~ comment.createdAt |date("d/m/Y") ~ ' à ' ~ comment.createdAt |date("H:i") }}</small>
-                                                            </p>
-                                                            <p class="card-text">
-                                                                {{ comment.content }}
-                                                            </p>        
-                                                        </div>
-                                                    </div>
+                            {% endif %}                        
+                        </div>
+                        <div class="trick-content p-1 p-md-3">
+                            <h2 class="text-center">{{ trick.title }}</h2>
+                            <div class="row trick-medias my-4">
+                                <div id="trick-pictures" class="col-sm-6">
+                                    <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 collectionHolder"> 
+                                        {% for picture in trick.pictures %}
+                                            <div class="collectionItem dynamic-show d-none d-sm-flex col flex-column">
+                                                <div id="{{ 'picture_' ~ picture.id ~ '_card' }}" class="card shadow-sm m-2 m-lg-1">
+                                                    <img
+                                                        class="card-img-top"
+                                                        src="{{ asset('img/uploads/tricks/' ~ picture.source) }}"
+                                                        alt="{{ picture.alternateText |default(trick.title ~ 'picture') }}"
+                                                        data-modal="{{ 'picture_' ~ picture.id ~ '_modal' }}"
+                                                    >
                                                 </div>
                                             </div>
                                         {% endfor %}
-                                    {% elseif trick.comments is empty %}
-                                        <p class="text-center">Aucun message posté pour ce trick</p>
-                                    {% endif %}
+                                    </div>   
+                                </div>
+                                <div id="trick-videos" class="col-sm-6">
+                                    <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 collectionHolder">
+                                        {% for video in trick.videos %}
+                                            <div class="collectionItem dynamic-show d-none d-sm-flex col flex-column">
+                                                <div id="{{ 'video_' ~ video.id ~ '_card' }}" class="card shadow-sm m-2 m-lg-1">
+                                                    <iframe  class="card-img-top" src="{{ video.source }}" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
                                 </div>
                             </div>
-                            <div class="trick-content__comments-pagination row mt-3">
-                                {% if pages > 1 %}
-                                    {{ include('trick/_pagination.html.twig') }}
-                                {% endif %}
+                            {% if trick.pictures is not empty or trick.videos is not empty %}
+                                <div class="row d-flex d-sm-none">
+                                    <hr>
+                                    <div class="col-12 d-flex justify-content-center">
+                                        <button type="button" id="showMedias" class="btn btn-primary mx-2">Afficher les médias</button>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="row">
+                                    <hr>
+                                    <div class="col-12 d-flex justify-content-center">
+                                        <span>Aucun média n'est associé à ce trick pour le momement <i class='bx bx-sad bx-fw'></i></span>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            <hr>
+                            <div class="trick__description px-1 px-md-5">
+                                <p>{{ trick.description |nl2br }}</p>
                             </div>
-                        </div>                        
+                            <hr>
+                            <ul class="list-inline text-center">
+                                <li class="list-inline-item">
+                                    De : 
+                                    <a href="{{ path('app_user_profile', {username: trick.author.username}) }}" class="text-decoration-none">
+                                        {{ trick.author.username }}
+                                    </a>
+                                </li> | 
+                                <li class="list-inline-item">
+                                    {{ 'Créé le : ' ~ trick.createdAt |date("d/m/Y") ~ ' à ' ~ trick.createdAt |date("H:i") }}
+                                </li> | 
+                                {% if trick.updatedAt is not null %}
+                                    <li class="list-inline-item">
+                                        {{ 'Dernière modification le : ' ~ trick.updatedAt |date("d/m/Y") ~ ' à ' ~ trick.createdAt |date("H:i") }}
+                                    </li> | 
+                                {% endif %}
+                                {% if trick.category is not null %}
+                                    <li class="list-inline-item">
+                                        {{'Catégorie : ' ~ trick.category.name }}
+                                    </li> | 
+                                {% endif %}
+                                <li class="list-inline-item">
+                                    Messages : 
+                                    {{ trick.comments |length}} <small>{{ pages > 1 ? '(page ' ~ page ~ ' sur ' ~ pages ~ ')' }}</small>
+                                </li>
+                            </ul>
+                            <hr>
+                            {% if app.user %}
+                                <div class="trick__comment-form">
+                                    {{ form_start(form)}}
+                                        <div class="form-group mb-3 d-flex p-2 justify-content-center">
+                                            {{ form_widget(form.content) }}
+                                            <button type="submit" class="btn btn-sm btn-primary m-auto mx-2">commenter</button>
+                                        </div>  
+                                    {{ form_end(form)}}
+                                </div>
+                            {% else %}
+                                <p class="text-center">Vous devez vous <a href="{{ path('app_login') }}">connecter</a> pour pouvoir poster des messages</p>
+                            {% endif %}
+                            <hr>
+                            <div class="trick-content__comments">
+                                <div class="row d-flex justify-content-center">
+                                    <div class="col-11 col-lg-8">
+                                        {% if comments is not empty %}
+                                            {% for comment in comments %}
+                                                <div class="card comment-card mb-3">
+                                                    <div class="row g-0">
+                                                        <div class="col-3 comment-card__author-picture p-sm-1 p-lg-2">
+                                                            <a href="{{ path('app_user_profile', {username: comment.author.username}) }}" class="text-decoration-none">
+                                                                {% if comment.author.avatar is not null %}
+                                                                    <img src="{{ asset('img/uploads/avatars/' ~ comment.author.avatar.source) }}" class="shadow" alt="{{ comment.author.avatar.alternateText }}">
+                                                                {% else %}
+                                                                    <img src="{{ asset('img/static/default-avatar.jpg') }}" class="shadow" alt="default avatar">
+                                                                {% endif %}
+                                                            </a>
+                                                        </div>
+                                                        <div class="col-9 comment-card__content shadow-sm">
+                                                            <div class="card-body">
+                                                                <h5 class="card-title d-inline-block">
+                                                                    <a href="{{ path('app_user_profile', {username: comment.author.username}) }}" class="text-decoration-none link-dark">
+                                                                        {{ comment.author.username }}
+                                                                    </a>
+                                                                </h5>
+                                                                <p class="card-text d-inline-block ms-1">
+                                                                    <small class="text-muted">{{ 'le : ' ~ comment.createdAt |date("d/m/Y") ~ ' à ' ~ comment.createdAt |date("H:i") }}</small>
+                                                                </p>
+                                                                <p class="card-text">
+                                                                    {{ comment.content }}
+                                                                </p>        
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        {% elseif trick.comments is empty %}
+                                            <p class="text-center">Aucun message posté pour ce trick</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="trick-content__comments-pagination row mt-3">
+                                    {% if pages > 1 %}
+                                        {{ include('trick/_pagination.html.twig') }}
+                                    {% endif %}
+                                </div>
+                            </div>                        
+                        </div>
                     </div>
                 </div>
-            </div>
-        </article>
-    </div>
+            </article>
+        </div>
     {{ include('_modal_delete_template.html.twig') }}
     {{ include('_modal_image_template.twig') }}
+    {# </div> #}
+
 {% endblock %}
 
 {% block javascripts %}

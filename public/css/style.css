@@ -16,6 +16,10 @@ body, html {
     position: relative;
 }
 
+nav .bg-dark {
+    --bs-bg-opacity: .6;
+}
+
 .alert-row {
     z-index: 1;
 }

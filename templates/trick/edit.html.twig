@@ -1,45 +1,47 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Modification Trick {{ trick.id }}{% endblock %}
+{% block title %}Modification Trick {{ trick.title }}{% endblock %}
 
 {% set onEditMode = true %}
 
 {% block body %}
-    <div class="container-sm-fluid hero-bg py-md-5">   
-        <article class="container m-sm-auto my-3">
-            <div class="row">
-                <div class="col-12 col-lg-10 m-auto bg-light shadow-lg rounded p-0">
-                    <div class="trick-main-picture-container position-relative">
-                        {% if trick.mainPicture is not null %}
-                            <img id="mainPicture" src="{{ asset('img/uploads/tricks/' ~ trick.mainPicture.source ) }}" class="trick-image-container__image" alt="{{ trick.mainPicture.alternateText }}">
-                            <div class="position-absolute trick-edit-buttons-container top-0 end-0 shadow-lg m-2 rounded">
-                                <button 
-                                    type="button"
-                                    class="main-picture-button shake mx-1 fs-3"
-                                    title="modifier l'image"
-                                    data-role="edit"
-                                >
-                                    <i class="bx bx-pencil"></i>
-                                </button>                                
-                                <button 
-                                    type="button"
-                                    class="main-picture-button shake fs-3"
-                                    title="supprimer l'image"
-                                    data-role="delete"
-                                >
-                                    <i class="bx bx-trash"></i>
-                                </button>
-                            </div>                        
-                        {% else %}
-                            <img id="mainPicture" src="{{ asset('img/static/default-picture.jpg') }}" class="trick-image-container__image" alt="default image">
-                        {% endif %}
+    <div class="container-sm-fluid hero-bg py-md-5">
+        <div class="my-5">
+            <article class="container m-sm-auto my-3">
+                <div class="row">
+                    <div class="col-12 col-lg-10 m-auto bg-light shadow-lg rounded p-0">
+                        <div class="trick-main-picture-container position-relative">
+                            {% if trick.mainPicture is not null %}
+                                <img id="mainPicture" src="{{ asset('img/uploads/tricks/' ~ trick.mainPicture.source ) }}" class="trick-image-container__image" alt="{{ trick.mainPicture.alternateText }}">
+                                <div class="position-absolute trick-edit-buttons-container top-0 end-0 shadow-lg m-2 rounded">
+                                    <button 
+                                        type="button"
+                                        class="main-picture-button shake mx-1 fs-3"
+                                        title="modifier l'image"
+                                        data-role="edit"
+                                    >
+                                        <i class="bx bx-pencil"></i>
+                                    </button>                                
+                                    <button 
+                                        type="button"
+                                        class="main-picture-button shake fs-3"
+                                        title="supprimer l'image"
+                                        data-role="delete"
+                                    >
+                                        <i class="bx bx-trash"></i>
+                                    </button>
+                                </div>                        
+                            {% else %}
+                                <img id="mainPicture" src="{{ asset('img/static/default-picture.jpg') }}" class="trick-image-container__image" alt="default image">
+                            {% endif %}
 
+                        </div>
+                        <div class="trick-content p-1 p-md-3">
+                            {{ include('trick/_form.html.twig', {button_label: 'Enregister'}) }}
+                        </div>
                     </div>
-                    <div class="trick-content p-1 p-md-3">
-                        {{ include('trick/_form.html.twig', {button_label: 'Enregister'}) }}
-                    </div>
-                </div>
-            </div>         
-        </article>
-    </div>
+                </div>         
+            </article>
+        </div>
+    {# </div> #}
 {% endblock %}
