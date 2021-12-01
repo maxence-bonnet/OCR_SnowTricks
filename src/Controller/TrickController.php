@@ -95,10 +95,6 @@ class TrickController extends AbstractController
             return $this->redirectToRoute('app_home');
         }
 
-        if ($trick->getAuthor() !== $this->getUser()) {
-            throw $this->createAccessDeniedException();
-        }
-
         // customized pictures tracking to ensure file deletion
         $originalPictures = new ArrayCollection();
         foreach ($trick->getPictures() as $picture) {
