@@ -1,0 +1,11 @@
+{% extends 'base_hero.html.twig' %}
+
+{% block content %}
+    <h1 class="h3 mb-3 font-weight-normal text-center">403 : Accès interdit</h1>
+
+    <p class="text-center">
+        Vous ne respectez pas les conditions requises pour accéder à cette page.
+        <br>
+        <a href="{{ path('app_home') }}">Retourner à l'Accueil</a>
+    </p>
+{% endblock %}

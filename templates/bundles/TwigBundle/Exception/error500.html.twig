@@ -1,0 +1,11 @@
+{% extends 'base_hero.html.twig' %}
+
+{% block content %}
+    <h1 class="h3 mb-3 font-weight-normal text-center">500 :  Erreur interne</h1>
+
+    <p class="text-center">
+        Une erreur interne au serveur est survenue, veuillez réessayer plus tard. Nous nous excusons pour la gène occasionnée.
+        <br>
+        <a href="{{ path('app_home') }}">Retourner à l'Accueil</a>
+    </p>
+{% endblock %}

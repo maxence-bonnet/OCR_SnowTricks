@@ -1,0 +1,11 @@
+{% extends 'base_hero.html.twig' %}
+
+{% block content %}
+    <h1 class="h3 mb-3 font-weight-normal text-center">404 : La page n'existe pas</h1>
+
+    <p class="text-center">
+        La page que vous avez demandé n'existe pas ou pas. Vérifiez les éventuelles erreurs dans l'URL. 
+        <br>
+        <a href="{{ path('app_home') }}">Retourner à l'Accueil</a>
+    </p>
+{% endblock %}
