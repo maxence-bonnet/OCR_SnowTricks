@@ -57,7 +57,8 @@ class TrickType extends AbstractType
             ->add('category', EntityType::class, [
                 'class' => Category::class,
                 'label' => 'Catégorie',
-                'choice_label' => 'name'
+                'choice_label' => 'name',
+                'placeholder' => '- Aucune -'
             ])
         ;
     }
