@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 #[Route('/trick')]
 class TrickController extends AbstractController
@@ -86,6 +87,18 @@ class TrickController extends AbstractController
     #[IsGranted('ROLE_VERIFIED_USER', statusCode: 403, message: 'Vous devez être connecté et avoir une adresse email vérifiée pour accéder à cette page')]
     public function edit(Trick $trick, Request $request): Response
     {
+        // allows access for trick author (or admin) only
+        try {
+            $this->denyAccessUnlessGranted('edit', $trick, 'Vous n\'avez pas l\'autorisation de modifier ce trick');
+        } catch (AccessDeniedException $e) {
+            $this->addFlash('danger', $e->getMessage());
+            return $this->redirectToRoute('app_home');
+        }
+
+        if ($trick->getAuthor() !== $this->getUser()) {
+            throw $this->createAccessDeniedException();
+        }
+
         // customized pictures tracking to ensure file deletion
         $originalPictures = new ArrayCollection();
         foreach ($trick->getPictures() as $picture) {
@@ -186,6 +199,13 @@ class TrickController extends AbstractController
     #[IsGranted('ROLE_VERIFIED_USER', statusCode: 403, message: 'Vous devez être connecté et avoir une adresse email vérifiée pour accéder à cette page')]
     public function delete(Trick $trick, Request $request): Response
     {
+        try {
+            $this->denyAccessUnlessGranted('edit', $trick, 'Vous n\'avez pas l\'autorisation de supprimer ce trick');
+        } catch (AccessDeniedException $e) {
+            $this->addFlash('danger', $e->getMessage());
+            return $this->redirectToRoute('app_home');
+        }
+
         if ($this->isCsrfTokenValid('delete_' . $trick->getId(), $request->get('_token'))) {
             $pictures = $trick->getPictures();
             if ($pictures) {
