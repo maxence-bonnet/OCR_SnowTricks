@@ -16,8 +16,7 @@
                                     data-modal="{{ 'picture_' ~ picture.vars.value.id ~ '_modal' }}"
                                 >
                                 <div class="position-absolute media-edit-buttons-container bottom-0 end-0 shadow-lg m-2 d-flex rounded">
-                                    {# custom integration of main picture choice #}
-                                    {% if picture.vars.value.id in form.mainPicture|keys %}
+                                    {% if picture.vars.value.id in form.mainPicture|keys %} {# custom integration of main picture choice #}
                                         {{ form_row(form.mainPicture[picture.vars.value.id], {
                                             'row_attr': {'class': 'd-inline-block'},
                                             'label_attr': {'class': 'd-none'}, 
@@ -50,11 +49,7 @@
                     {% else %} {# if error feedback : error subforms + other valid new subforms sent #}
                         <div class="collectionItem subform errorSubForm col d-flex flex-column"  id="{{ 'trick_pictures_' ~ loop.index0 ~ '_item'}}">
                             <div id="{{ 'trick_pictures_' ~ loop.index0 ~ '_card' }}" class="card shadow-sm m-2 m-lg-1">
-                                <img
-                                    class="card-img-top"
-                                    src="{{ asset('img/static/default-image-error.png') }}"
-                                    alt="file error"
-                                >
+                                <img class="card-img-top" src="{{ asset('img/static/default-image-error.png') }}" alt="file error">
                             </div>
                             {{ form_row(picture.source) }}
                             {{ form_row(picture.alternateText, {'row_attr': {'class': 'mb-3 form-row'}}) }}
@@ -141,9 +136,12 @@
             <div class="trick__description px-1 px-md-5">
                 {{ form_row(form.description) }}
             </div>
-            <div class="trick-meta-data px-1 px-md-5">
-                <div class="col-12 col-sm-6 col-lg-4">
+            <div class="row trick-meta-data px-1 px-md-5 d-flex">
+                <div class="col-12 col-sm-6 col-lg-4 mx-auto">
                     {{ form_row(form.category) }}
+                </div>
+                <div class="col-12 col-sm-6 col-lg-4 mx-auto">
+                    {{ form_row(form.usersWhiteList) }}
                 </div>
             </div>
             <div class="trick-form-buttons-container px-1 px-md-5 d-flex justify-content-end">
@@ -174,8 +172,26 @@
 {{ include('_modal_delete_template.html.twig') }}
 {{ include('_modal_image_template.twig') }}
 
+{% block stylesheets %}
+    <link href='{{ asset('css/multi-select.css') }}' rel='stylesheet'>
+{% endblock stylesheets %}
+
 {% block javascripts %}
     <script src="{{ asset('js/addCollectionForm.js')}}"></script>
     <script src="{{ asset('js/showMediaForm.js')}}"></script>
     <script src="{{ asset('js/dynamicMainPicture.js')}}"></script>
+    <script src="{{ asset('js/multi-select-min.js')}}"></script>
+    <script src="{{ asset('js/multi-select-bind.js')}}"></script>
+    <script>
+        window.addEventListener('load', () => {
+            var multiSelect = new IconicMultiSelect({
+                select: "#trick_usersWhiteList",
+                placeholder: "Un ou plusieurs éditeurs...",
+                noData: "Aucun éditeur disponible",
+                noResults: "Aucun résultat",
+            })
+            multiSelect.init();
+            bindMySelect("#trick_usersWhiteList", '.multiselect__options > ul');
+        });
+    </script>
 {% endblock javascripts %}

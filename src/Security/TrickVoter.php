@@ -22,7 +22,7 @@ class TrickVoter extends Voter
 
     protected function supports(string $attribute, $subject): bool
     {
-        if (!in_array($attribute, [self::EDIT])) {
+        if (!in_array($attribute, [self::EDIT, self::DELETE])) {
             return false;
         }
 
@@ -63,11 +63,8 @@ class TrickVoter extends Voter
         if ($this->canDelete($trick, $user)) {
             return true;
         }
-
-        return $user === $trick->getAuthor();
-
-        // Later ? Add whitelist that user can customize to let users of his choice be able to edit his Trick
-        // return $trick->getWhiteList()->contains($user);
+        
+        return $trick->getUsersWhiteList()->contains($user);
     }
 
     private function canDelete(Trick $trick, User $user): bool

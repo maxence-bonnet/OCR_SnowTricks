@@ -79,11 +79,17 @@ class Trick
      */
     private $mainPicture;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="allowedTricks")
+     */
+    private $usersWhiteList;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
         $this->videos = new ArrayCollection();
         $this->pictures = new ArrayCollection();
+        $this->usersWhiteList = new ArrayCollection();
     }
 
     public function getSlug()
@@ -278,6 +284,30 @@ class Trick
     public function setMainPicture(?Picture $mainPicture): self
     {
         $this->mainPicture = $mainPicture;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getUsersWhiteList(): Collection
+    {
+        return $this->usersWhiteList;
+    }
+
+    public function addUsersWhiteList(User $usersWhiteList): self
+    {
+        if (!$this->usersWhiteList->contains($usersWhiteList)) {
+            $this->usersWhiteList[] = $usersWhiteList;
+        }
+
+        return $this;
+    }
+
+    public function removeUsersWhiteList(User $usersWhiteList): self
+    {
+        $this->usersWhiteList->removeElement($usersWhiteList);
 
         return $this;
     }

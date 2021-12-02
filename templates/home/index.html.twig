@@ -46,50 +46,7 @@
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xxl-5">
                 {% for trick in tricks %}
                     <div class="col mb-3 trick-card-container {{ loop.index > displayParameters.minTricksShown|default(10) ? 'd-none' : 'smooth-show'}}">
-                        <div class="card shadow h-100">
-                            {% if trick.mainPicture is not null %}
-                                {% set picture = trick.mainPicture %}
-                                    <img src="{{ asset('img/uploads/tricks/' ~ picture.source ) }}" class="card-img-top" alt="img">
-                                {% else %}
-                                    <img src="{{ asset('img/static/default-picture.jpg') }}" class="card-img-top" alt="default image">
-                                {% endif %}                                
-                            <div class="card-body">
-                                <h5 class="card-title d-flex justify-content-between">
-                                    <a href="{{ path('app_trick_show', {id: trick.id, slug: trick.title |slug('-')|lower}) }}" class="text-decoration-none link-dark card-link trick-link shake">
-                                        {{ trick.title }}
-                                    </a>
-                                    {% if app.user %}
-                                    <div class="d-flex justify-content-center">
-                                        <a href="{{ path('app_trick_edit', {id: trick.id}) }}" class="btn-edit link-dark card-link trick-link shake ms-1 ms-xl-2" title="update"><i class="bx bx-pencil"></i></a>
-                                        <form action="{{ path('app_trick_delete', {id: trick.id}) }}" method="post" class="ms-1 ms-xl-2" id="{{'trick_' ~ trick.id ~ '_delete_form'}}">
-                                            <input type="hidden" name="_method" value="DELETE">
-                                            <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ trick.id) }}">
-                                            <button 
-                                                type="button"
-                                                class="btn-delete btn-modal-delete delete-trick trick-link shake"
-                                                data-modal="{{'trick_' ~ trick.id ~ '_delete_modal'}}"
-                                                data-form="{{'trick_' ~ trick.id ~ '_delete_form'}}"
-                                            >
-                                                <i class="bx bx-trash"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                    {% endif %}
-                                </h5>
-                                {% if trick.category %}
-                                <p class="card-text">Catégorie : {{ trick.category.name }}</p>
-                                {% endif %}
-                            </div>
-                            <div class="card-footer">
-                                <small class="text-muted text-center">
-                                    {% if trick.updatedAt %}
-                                        {{ 'Mis à jour le : ' ~ trick.updatedAt |date("d/m/Y") }}
-                                    {% else %}
-                                        {{ 'Créé le : ' ~ trick.createdAt |date("d/m/Y") ~ ' à ' ~ trick.createdAt |date("H:i") }}
-                                    {% endif %}
-                                </small>
-                            </div>
-                        </div>                
+                        {{ include('home/_trick_card.html.twig') }}    
                     </div>
                 {% endfor %}
             </div>
@@ -104,7 +61,6 @@
             <a href="#tricks" class="m-2 link-dark"><i class='bx bxs-up-arrow-square bx-lg bx-flip-horizontal-hover bx-fade-down-hover'></i></a>
         </div>    
     </div>
-
     {{ include('_modal_delete_template.html.twig') }}
 {% endblock %}
 

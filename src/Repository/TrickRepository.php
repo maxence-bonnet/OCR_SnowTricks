@@ -23,11 +23,13 @@ class TrickRepository extends ServiceEntityRepository
     /**
      * @return Trick[] Returns an array of Trick objects
      */
-    public function findAllJoinPictures()
+    public function findAllJoinAll()
     {
         $tricks = $this->createQueryBuilder('t')
-            ->select('t', 'p')
+            ->select('t', 'p', 'c', 'u')
             ->leftJoin('t.pictures', 'p')
+            ->leftJoin('t.category', 'c')
+            ->leftjoin('t.usersWhiteList', 'u')
             ->getQuery()
             ->getResult();
 
@@ -36,15 +38,38 @@ class TrickRepository extends ServiceEntityRepository
 
     /**
      * @return Trick[] Returns an array of Trick objects
-     * 
+     * @param User $user
      */
-    public function findAllFromUserJoinPictures(User $user)
+    public function findAllJoinAllFromUser(User $user)
     {
         $tricks = $this->createQueryBuilder('t')
-            ->select('t', 'p')
+            ->select('t', 'p', 'c', 'u')
             ->where('t.author = :user')
             ->setParameter('user', $user)
             ->leftJoin('t.pictures', 'p')
+            ->leftJoin('t.category', 'c')
+            ->leftjoin('t.usersWhiteList', 'u')
+            ->getQuery()
+            ->getResult();
+
+        return $tricks;
+    }
+    
+    /**
+     * @return Trick[] Returns an array of Trick objects
+     * @param User $user
+     */
+    public function findAllAllowedTricksFromUser(User $user)
+    {
+        $tricks = $this->createQueryBuilder('t')
+            ->select('t', 'p', 'c', 'u')
+            ->where('t.author = :user')
+            ->setParameter('user', $user)
+            ->orWhere(':user MEMBER OF t.usersWhiteList')
+            ->setParameter('user', $user)
+            ->leftJoin('t.category', 'c')
+            ->leftJoin('t.pictures', 'p')
+            ->leftjoin('t.usersWhiteList', 'u')
             ->getQuery()
             ->getResult();
 

@@ -141,17 +141,17 @@ class TrickController extends AbstractController
     */
     #[Route('/{id}/{slug}', name: 'app_trick_show', methods: ['GET','POST'])]
     public function show(Trick $trick, string $slug = null, Request $request, CommentRepository $commentRepository): Response
-    {
-        $comment = new Comment;
-
-        $form = $this->createForm(CommentType::class, $comment);
-        
+    {    
         if ((string)$trick->getSlug() !== $slug) {
             return $this->redirectToRoute('app_trick_show', [
                 'id' => $trick->getId(),
                 'slug' => $trick->getSlug()
             ]);
         }
+
+        $comment = new Comment;
+
+        $form = $this->createForm(CommentType::class, $comment);
 
         $form->handleRequest($request);
 

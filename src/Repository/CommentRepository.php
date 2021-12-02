@@ -30,9 +30,12 @@ class CommentRepository extends ServiceEntityRepository
     public function getPaginatedComments(int $page, int $limit, Trick $trick)
     {
         $comments = $this->createQueryBuilder('c')
+            ->select('c', 'u', 'p')
             ->where('c.trick = :trick')
             ->setParameter('trick', $trick)
             ->orderBy('c.createdAt', 'DESC')
+            ->leftjoin('c.author', 'u')
+            ->leftjoin('u.avatar', 'p')
             ->setFirstResult(($page * $limit) - $limit)
             ->setMaxResults($limit)
             ->getQuery()
