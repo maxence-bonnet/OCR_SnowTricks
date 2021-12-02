@@ -21,7 +21,7 @@ class HomeController extends AbstractController
             'defaultStepTimer' => 200 // delay between each tricks display (ms)
         ];
 
-        $tricks = $repository->findAllJoinPictures();
+        $tricks = $repository->findAllJoinAll();
         
         return $this->render('home/index.html.twig', [
             'current_nav' => 'home',

@@ -70,10 +70,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $avatar;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Trick::class, mappedBy="usersWhiteList")
+     */
+    private $allowedTricks;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
         $this->tricks = new ArrayCollection();
+        $this->allowedTricks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -263,6 +269,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAvatar(?Picture $avatar): self
     {
         $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Trick[]
+     */
+    public function getAllowedTricks(): Collection
+    {
+        return $this->allowedTricks;
+    }
+
+    public function addAllowedTrick(Trick $allowedTrick): self
+    {
+        if (!$this->allowedTricks->contains($allowedTrick)) {
+            $this->allowedTricks[] = $allowedTrick;
+            $allowedTrick->addUsersWhiteList($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAllowedTrick(Trick $allowedTrick): self
+    {
+        if ($this->allowedTricks->removeElement($allowedTrick)) {
+            $allowedTrick->removeUsersWhiteList($this);
+        }
 
         return $this;
     }

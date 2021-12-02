@@ -65,7 +65,7 @@ class UserController extends AbstractController
         }
 
         // limiting n+1 queries
-        $tricks = $this->getDoctrine()->getRepository(Trick::class)->findAllFromUserJoinPictures($user);
+        $tricks = $this->getDoctrine()->getRepository(Trick::class)->findAllAllowedTricksFromUser($user);
         $comments = $this->getDoctrine()->getRepository(Comment::class)->findLastsFromUser(10, $user);
 
         return $this->render('user/profile.html.twig', [
@@ -85,7 +85,7 @@ class UserController extends AbstractController
     public function profile(User $user): Response
     {
         // limiting n+1 queries
-        $tricks = $this->getDoctrine()->getRepository(Trick::class)->findAllFromUserJoinPictures($user);
+        $tricks = $this->getDoctrine()->getRepository(Trick::class)->findAllJoinAllFromUser($user);
         $comments = $this->getDoctrine()->getRepository(Comment::class)->findLastsFromUser(10, $user);
 
         return $this->render('user/profile.html.twig', [

@@ -5,9 +5,10 @@ namespace App\Form;
 use App\Entity\Trick;
 use App\Entity\Category;
 use App\Entity\Picture;
+use App\Entity\User;
 use App\Form\PictureType;
 use App\Form\VideoType;
-use App\Repository\PictureRepository;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -20,7 +21,6 @@ class TrickType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-
         $trick = $builder->getData();
         $builder
             ->add('mainPicture', EntityType::class, [
@@ -50,7 +50,7 @@ class TrickType extends AbstractType
             ->add('title', TextType::class, [
                 'label' => 'Nom du trick'
             ])
-            ->add('description',  TextareaType::class, [
+            ->add('description', TextareaType::class, [
                 'label' => 'Description du trick',
                 'attr' => ['rows' => 10]
             ])
@@ -58,7 +58,23 @@ class TrickType extends AbstractType
                 'class' => Category::class,
                 'label' => 'Catégorie',
                 'choice_label' => 'name',
-                'placeholder' => '- Aucune -'
+                'placeholder' => '- Aucune -',
+                'invalid_message' => 'La catégorie sélectionnée est invalide'
+            ])
+            ->add('usersWhiteList', EntityType::class, [
+                'class' => User::class,
+                'multiple' => true,
+                'label' => 'Éditeurs autorisés',
+                'choice_label' => 'username',
+                'query_builder' => function(EntityRepository $er) use ($trick) {
+                    return $er->createQueryBuilder('u')
+                        ->where('u.isVerified = 1')
+                        ->andWhere('u != :user')
+                        ->setParameter('user', $trick->getAuthor() ?: 0)
+                        ->andWhere('u.roles != :admin')
+                        ->setParameter('admin', '["ROLE_ADMIN"]');
+                },
+                'invalid_message' => 'L\'utilisateur saisi est invalide'
             ])
         ;
     }
