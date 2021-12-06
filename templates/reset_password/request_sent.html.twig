@@ -8,7 +8,7 @@
     <p>
         Si votre nom d'utilisateur saisi est valide, un email vous a été envoyé. Il contient un lien qui vous permettra
         de réinitialiser votre mot de passe. Attention ce lien expirera dans : 
-        {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+        {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle', 'fr_FR') }}.
     </p>
     <p>
         Si vous n'avez pas reçu d'email, regardez dans vos spams ou <a href="{{ path('app_forgot_password_request') }}">réessayez</a>.

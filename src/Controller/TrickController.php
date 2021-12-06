@@ -66,10 +66,7 @@ class TrickController extends AbstractController
 
             $this->addflash('success', 'Le trick : ' . $trick->getTitle() . ' a bien été créé');
 
-            return $this->redirectToRoute('app_trick_show', [
-                'id' => $trick->getId(),
-                'slug' => $trick->getSlug()
-            ]);
+            return $this->redirectToRoute('app_home');
         }
 
         return $this->render('trick/new.html.twig', [
@@ -87,11 +84,11 @@ class TrickController extends AbstractController
     #[IsGranted('ROLE_VERIFIED_USER', statusCode: 403, message: 'Vous devez être connecté et avoir une adresse email vérifiée pour accéder à cette page')]
     public function edit(Trick $trick, Request $request): Response
     {
-        // allows access for trick author (or admin) only
+        // allows access for trick author & whitelist (or admin) only
         try {
             $this->denyAccessUnlessGranted('edit', $trick, 'Vous n\'avez pas l\'autorisation de modifier ce trick');
-        } catch (AccessDeniedException $e) {
-            $this->addFlash('danger', $e->getMessage());
+        } catch (AccessDeniedException $exception) {
+            $this->addFlash('danger', $exception->getMessage());
             return $this->redirectToRoute('app_home');
         }
 
@@ -123,10 +120,7 @@ class TrickController extends AbstractController
 
             $this->addflash('success', 'Le trick : ' . $trick->getTitle() . ' a bien été modifié');
 
-            return $this->redirectToRoute('app_trick_show', [
-                'id' => $trick->getId(),
-                'slug' => $trick->getSlug()
-            ]);
+            return $this->redirectToRoute('app_home');
         }
 
         return $this->render('trick/edit.html.twig', [
@@ -173,8 +167,11 @@ class TrickController extends AbstractController
 
         $limit = 10;
         $page = (int)$request->get('page', 1) ?: 1;
-        $comments = $commentRepository->getPaginatedComments($page, $limit, $trick);
         $commentsCount = $trick->getComments()->count();
+        if ((($page - 1) * $limit) > $commentsCount) {
+            $page = 1;
+        }
+        $comments = $commentRepository->getPaginatedComments($page, $limit, $trick);
         $pages = (int)ceil($commentsCount / $limit);
 
         return $this->render('trick/show.html.twig', [ 
@@ -196,12 +193,12 @@ class TrickController extends AbstractController
     public function delete(Trick $trick, Request $request): Response
     {
         try {
-            $this->denyAccessUnlessGranted('edit', $trick, 'Vous n\'avez pas l\'autorisation de supprimer ce trick');
-        } catch (AccessDeniedException $e) {
-            $this->addFlash('danger', $e->getMessage());
+            $this->denyAccessUnlessGranted('delete', $trick, 'Vous n\'avez pas l\'autorisation de supprimer ce trick');
+        } catch (AccessDeniedException $exception) {
+            $this->addFlash('danger', $exception->getMessage());
             return $this->redirectToRoute('app_home');
         }
-
+        
         if ($this->isCsrfTokenValid('delete_' . $trick->getId(), $request->get('_token'))) {
             $pictures = $trick->getPictures();
             if ($pictures) {

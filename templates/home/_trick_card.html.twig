@@ -1,7 +1,7 @@
 <div class="card shadow h-100">
     {% if trick.mainPicture is not null %}
         {% set picture = trick.mainPicture %}
-            <img src="{{ asset('img/uploads/tricks/' ~ picture.source ) }}" class="card-img-top" alt="img">
+            <img src="{{ asset('img/uploads/tricks/' ~ picture.source ) }}" class="card-img-top" alt="{{ picture.alternateText}} ">
         {% else %}
             <img src="{{ asset('img/static/default-picture.jpg') }}" class="card-img-top" alt="default image">
         {% endif %}                                
@@ -41,4 +41,4 @@
             {% endif %}
         </small>
     </div>
-</div>      
+</div>

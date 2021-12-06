@@ -4,48 +4,7 @@
             <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 collectionHolder">
                 {% for picture in form.pictures %}
                     {% if picture.vars.value.id is not null %} {# original pictures only #}
-                        <div 
-                            id="{{ picture.vars.id ~ '_item'}}"
-                            class="collectionItem {{ trick.mainPicture is not null and trick.mainPicture.id is same as(picture.vars.value.id) ? 'main-picture-subform' }} subform col d-flex flex-column"
-                        >
-                            <div id="{{ picture.vars.id ~ '_card' }}" class="card shadow-sm m-2 m-lg-1 position-relative">
-                                <img
-                                    class="card-img-top"
-                                    src="{{ asset('img/uploads/tricks/' ~ picture.source.vars.value) }}"
-                                    alt="{{ picture.alternateText.vars.value|default(trick.title ~ 'picture') }}"
-                                    data-modal="{{ 'picture_' ~ picture.vars.value.id ~ '_modal' }}"
-                                >
-                                <div class="position-absolute media-edit-buttons-container bottom-0 end-0 shadow-lg m-2 d-flex rounded">
-                                    {% if picture.vars.value.id in form.mainPicture|keys %} {# custom integration of main picture choice #}
-                                        {{ form_row(form.mainPicture[picture.vars.value.id], {
-                                            'row_attr': {'class': 'd-inline-block'},
-                                            'label_attr': {'class': 'd-none'}, 
-                                            'attr': {
-                                                'class': 'mainPicture-radio',
-                                                'title': 'désigner cette image "à la une"'
-                                                }
-                                            })
-                                        }}
-                                    {% endif %}
-                                    <button type="button" data-id="{{ picture.vars.id }}" class="btn btn-edit edit-picture shake" title="modifier">
-                                        <i class="bx bx-pencil"></i>
-                                    </button>
-                                    <button 
-                                        type="button"
-                                        class="btn btn-modal-delete delete-picture shake"
-                                        title="Supprimer définitivement"
-                                        data-modal="{{picture.vars.id ~ '_modal'}}"
-                                        data-element-remove="{{ picture.vars.id ~ '_item'}}"
-                                    >
-                                        <i class="bx bx-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            {{ form_row(picture.source) }}
-                            {{ form_row(picture.alternateText, {'row_attr': {'class': 'mb-3 d-none form-row'}}) }}
-                            {{ form_row(picture.file, {'row_attr': {'class': 'mb-3 d-none form-row'}}) }}
-                            <button type="button" id="{{ picture.vars.id ~ '_cancel' }}" class='btn btn-danger m-auto mb-1 d-none'>Annuler <i class='bx bx-x bx-fw'></i></button>
-                        </div>
+                        {{ include('trick/form_components/_original_picture.html.twig') }}
                     {% else %} {# if error feedback : error subforms + other valid new subforms sent #}
                         <div class="collectionItem subform errorSubForm col d-flex flex-column"  id="{{ 'trick_pictures_' ~ loop.index0 ~ '_item'}}">
                             <div id="{{ 'trick_pictures_' ~ loop.index0 ~ '_card' }}" class="card shadow-sm m-2 m-lg-1">
@@ -60,48 +19,22 @@
                 {% endfor %}
             </div>
             <hr>
-            <div class="d-flex justify-content-center">
-                <span
-                    id="trick-pictures-form-prototype"
-                    data-prototype=
-                        "<div id='trick_pictures___name___card' class='card shadow-sm m-2 m-lg-1 position-relative'>
-                            <img class='card-img-top' src='{{ asset('img/static/default-upload.png') }}' alt='waiting for file input' data-modal='trick_pictures___name___modal'>
-                        </div>
-                        {{ form_row(form.pictures.vars.prototype)|e('html_attr') }}
-                        <button type='button' class='btn btn-danger m-auto mb-1'>Annuler <i class='bx bx-x bx-fw'></i></button>"
-                ></span>
-                <button type="button" data-target="trick-pictures" class="btn btn-primary addSubformButton">Ajouter une image <i class='bx bx-image-add bx-fw'></i></button>
-            </div>
+            {{ include('trick/form_components/_add_picture.html.twig') }}
         </div>
         <div id="trick-videos" class="col-sm-6">
             <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 collectionHolder">
                 {% for video in form.videos %}
                     {% if video.vars.value.id is not null %} {# original videos only #}
-                    <div class="collectionItem subform col d-flex flex-column" id="{{ video.vars.id ~ '_item'}}">
-                        <div id="{{ video.vars.id ~ '_card' }}" class="card shadow-sm m-2 m-lg-1">
-                            <iframe  class="card-img-top" src="{{ video.source.vars.value }}" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                            <div class="position-absolute media-edit-buttons-container bottom-0 end-0 shadow-lg m-2 rounded">
-                                <button type="button" data-id="{{ video.vars.id }}" class="btn btn-edit edit-video shake" title="modifier">
-                                    <i class="bx bx-pencil"></i>
-                                </button>
-                                <button
-                                    type="button"
-                                    class="btn btn-modal-delete delete-video shake"
-                                    title="supprimer définitivement"
-                                    data-modal="{{ video.vars.id ~ '_modal'}}"                              
-                                    data-element-remove="{{ video.vars.id ~ '_item'}}"
-                                >
-                                    <i class="bx bx-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                        {{ form_row(video.source, {'row_attr': {'class': 'mb-3 d-none'}}) }}
-                        <button type="button" id="{{ video.vars.id ~ '_cancel' }}" class='btn btn-danger m-auto mb-1 d-none'>Annuler <i class='bx bx-x bx-fw'></i></button>
-                    </div>
+                        {{ include('trick/form_components/_original_video.html.twig') }}
                     {% else %}
                         <div class="collectionItem subform errorSubForm col d-flex flex-column"  id="{{ 'trick_videos_' ~ loop.index0 ~ '_item'}}">
                             <div id="{{ 'trick_videos_' ~ loop.index0 ~ '_card' }}" class="card shadow-sm m-2 m-lg-1">
-                                <iframe  class="card-img-top" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                <iframe
+                                    class="card-img-top"
+                                    title="YouTube video player"
+                                    frameborder="0"
+                                    allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen></iframe>
                             </div>
                             {{ form_row(video.source, {'row_attr': {'class': 'mb-3'}}) }}
                             <button type="button" class='btn btn-danger m-auto mb-1'>Annuler <i class='bx bx-x bx-fw'></i></button>
@@ -110,22 +43,24 @@
                 {% endfor %}
             </div>
             <hr>
-            <div class="d-flex justify-content-center">
-                <span id="trick-videos-form-prototype"
-                      data-prototype=
-                          "<div id='trick_videos___name___card' class='card shadow-sm m-2 m-lg-1'>
-                              <iframe class='card-img-top bg-dark' src='' title='YouTube video player' frameborder='0' allowfullscreen></iframe>
-                          </div>
-                          {{ form_row(form.videos.vars.prototype)|e('html_attr') }}
-                          <button type='button' class='btn btn-danger m-auto mb-1'>Annuler <i class='bx bx-x bx-fw'></i></button>"
-                ></span>
-                <button type="button" data-target="trick-videos" class="btn btn-primary addSubformButton" title="url de la vidéo youtube (exemple : https://www.youtube.com/watch?v=DT_qdbMdJeU)">
-                    Ajouter une vidéo
-                    <i class='bx bxl-youtube bx-fw'></i>
-                </button>
-            </div>
+            {{ include('trick/form_components/_add_video.html.twig') }}
         </div>
     </div>
+                            {% if form.pictures is not empty or form.videos is not empty %}
+                                <div class="row d-flex d-sm-none">
+                                    <hr>
+                                    <div class="col-12 d-flex justify-content-center">
+                                        <button type="button" id="showMedias" class="btn btn-primary mx-2">Afficher les médias</button>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="row">
+                                    <hr>
+                                    <div class="col-12 d-flex justify-content-center">
+                                        <span>Aucun média n'est associé à ce trick pour le momement <i class='bx bx-sad bx-fw'></i></span>
+                                    </div>
+                                </div>
+                            {% endif %}
     <div class="row d-flex justify-content-center">
         <div class="col-sm-11 col-lg-10">
             <div class="trick__title px-1 px-md-5 mt-4">
@@ -170,7 +105,7 @@
 {% endif %}
 
 {{ include('_modal_delete_template.html.twig') }}
-{{ include('_modal_image_template.twig') }}
+{{ include('_modal_image_template.html.twig') }}
 
 {% block stylesheets %}
     <link href='{{ asset('css/multi-select.css') }}' rel='stylesheet'>
@@ -179,6 +114,7 @@
 {% block javascripts %}
     <script src="{{ asset('js/addCollectionForm.js')}}"></script>
     <script src="{{ asset('js/showMediaForm.js')}}"></script>
+    <script src="{{ asset('js/showMediasButton.js')}}"></script>
     <script src="{{ asset('js/dynamicMainPicture.js')}}"></script>
     <script src="{{ asset('js/multi-select-min.js')}}"></script>
     <script src="{{ asset('js/multi-select-bind.js')}}"></script>

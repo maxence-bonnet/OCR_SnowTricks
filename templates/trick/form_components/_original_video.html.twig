@@ -1,0 +1,44 @@
+<div 
+    id="{{ video.vars.id ~ '_item'}}"
+    class="
+        collectionItem
+        subform
+        col
+        dynamic-show
+        d-none
+        d-sm-flex
+        flex-column"
+>
+    <div id="{{ video.vars.id ~ '_card' }}" class="card shadow-sm m-2 m-lg-1">
+        <iframe 
+            class="card-img-top"
+            src="{{ video.source.vars.value }}"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+        ></iframe>
+        <div class="position-absolute media-edit-buttons-container bottom-0 end-0 shadow-lg m-2 rounded">
+            <button type="button" data-id="{{ video.vars.id }}" class="btn btn-edit edit-video shake" title="modifier">
+                <i class="bx bx-pencil"></i>
+            </button>
+            <button
+                type="button"
+                class="btn btn-modal-delete delete-video shake"
+                title="supprimer définitivement"
+                data-modal="{{ video.vars.id ~ '_modal'}}"                              
+                data-element-remove="{{ video.vars.id ~ '_item'}}"
+            >
+                <i class="bx bx-trash"></i>
+            </button>
+        </div>
+    </div>
+    {{ form_row(video.source, {'row_attr': {'class': 'mb-3 d-none'}}) }}
+    <button
+        type="button"
+        id="{{ video.vars.id ~ '_cancel' }}"
+        class='btn btn-danger m-auto mb-1 d-none'
+    >
+        Annuler <i class='bx bx-x bx-fw'></i>
+    </button>
+</div>

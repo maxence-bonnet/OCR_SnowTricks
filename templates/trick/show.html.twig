@@ -50,7 +50,7 @@
                                 <div id="trick-pictures" class="col-sm-6">
                                     <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 collectionHolder"> 
                                         {% for picture in trick.pictures %}
-                                            <div class="collectionItem dynamic-show d-none d-sm-flex col flex-column">
+                                            <div class="collectionItem col dynamic-show d-none d-sm-flex flex-column">
                                                 <div id="{{ 'picture_' ~ picture.id ~ '_card' }}" class="card shadow-sm m-2 m-lg-1">
                                                     <img
                                                         class="card-img-top"
@@ -124,10 +124,13 @@
                             {% if app.user %}
                                 <div class="trick__comment-form">
                                     {{ form_start(form)}}
-                                        <div class="form-group mb-3 d-flex p-2 justify-content-center">
-                                            {{ form_widget(form.content) }}
+                                        <div class="form-group d-flex p-2 justify-content-center">
+                                            {{ form_widget(form.content, {'attr': {'placeholder': 'Votre message ...'}}) }}
                                             <button type="submit" class="btn btn-sm btn-primary m-auto mx-2">commenter</button>
-                                        </div>  
+                                        </div>
+                                        <div class="form-group mb-3 px-4">
+                                            {{ form_errors(form.content) }}
+                                        </div>
                                     {{ form_end(form)}}
                                 </div>
                             {% else %}
@@ -185,7 +188,7 @@
             </article>
         </div>
     {{ include('_modal_delete_template.html.twig') }}
-    {{ include('_modal_image_template.twig') }}
+    {{ include('_modal_image_template.html.twig') }}
     {# </div> #}
 
 {% endblock %}

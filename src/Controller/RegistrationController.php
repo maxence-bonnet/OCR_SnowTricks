@@ -13,6 +13,7 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
+use App\Repository\UserRepository;
 
 class RegistrationController extends AbstractController
 {
@@ -52,45 +53,53 @@ class RegistrationController extends AbstractController
                     ->to($user->getEmail())
                     ->subject('Confirmation de l\'adresse mail')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
+                    ->context([
+                        'username' => $user->getUserIdentifier(),
+                    ])
             );
-            $this->addFlash('success', 'Votre inscription est réussie, vous devez confirmer votre
-                                        adresse en cliquant sur le lien reçu à l\'adresse : '
-                                        . $user->getEmail() . ' pour utiliser le site à son plein potentiel.');
+            $this->addFlash('success', "Votre inscription est réussie! Pour utiliser le site à son plein potentiel, vous devez confirmer 
+                                        votre adresse en cliquant sur le lien reçu à l'adresse suivante : \n
+                                        " . $user->getEmail());
 
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('app_home');
+            // return $userAuthenticator->authenticateUser($user, $appAuthenticator, $request);
         }
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
-                'current_nav' => 'register'
+            'current_nav' => 'register'
         ]);
     }
 
     #[Route('/verify/email', name: 'app_verify_email')]
-    public function verifyUserEmail(Request $request): Response
+    public function verifyUserEmail(Request $request, UserRepository $userRepository): Response
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        // $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
-        // validate email confirmation link, sets User::isVerified=true and persists
+        $id = $request->get('id'); // retrieve the user id from the url
+
+        // Verify the user id exists and is not null
+        if (null === $id) {
+            return $this->redirectToRoute('app_home');
+        }
+
+        $user = $userRepository->find($id);
+
+        // Ensure the user exists in persistence
+        if (null === $user) {
+            return $this->redirectToRoute('app_home');
+        }
+
         try {
-            $this->emailVerifier->handleEmailConfirmation($request, $this->getUser());
+            $this->emailVerifier->handleEmailConfirmation($request, $user);
         } catch (VerifyEmailExceptionInterface $exception) {
             $this->addFlash('verify_email_error', $exception->getReason());
 
             return $this->redirectToRoute('app_register');
         }
 
-        $this->addFlash('success', 'Votre adresse email a bien été confirmée, vous pouvez désormais utiliser le site à son plein potentiel !');
+        $this->addFlash('success', 'Votre adresse email a bien été confirmée, connectez-vous pour pouvoir utiliser le site à son plein potentiel !');
 
-        return $this->redirectToRoute('app_email_confirmed');
+        return $this->redirectToRoute('app_login');
     }
-
-    #[Route('/verify/email/confirmed', name: 'app_email_confirmed')]
-    public function emailConfirmed(): Response
-    {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-
-        return $this->render('registration/email_confirmed.html.twig');
-    }
-
 }

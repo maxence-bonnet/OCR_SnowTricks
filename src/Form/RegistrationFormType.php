@@ -24,7 +24,8 @@ class RegistrationFormType extends AbstractType
                         'message' => 'Vous devez saisir un email',
                     ])
                 ],
-                'label' => 'Votre email'
+                'label' => 'Votre email',
+                'label_attr' => ['class' => 'w-100 text-center text-md-start']
             ])
             ->add('username', TextType::class, [
                 'constraints' => [
@@ -32,7 +33,8 @@ class RegistrationFormType extends AbstractType
                         'message' => 'Vous devez saisir un nom d\'utilisateur',
                     ])
                 ],
-                'label' => 'Votre nom d\'utilisateur'
+                'label' => 'Votre nom d\'utilisateur',
+                'label_attr' => ['class' => 'w-100 text-center text-md-start']
             ])
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
@@ -50,10 +52,12 @@ class RegistrationFormType extends AbstractType
                         ]),
                     ],
                     'label' => 'Mot de passe',
+                    'label_attr' => ['class' => 'w-100 text-center text-md-start']
                 ],
                 'second_options' => [
                     'attr' => ['autocomplete' => 'new-password'],
                     'label' => 'Répéter le mot de passe',
+                    'label_attr' => ['class' => 'w-100 text-center text-md-start']
                 ],
                 'invalid_message' => 'Les mots de passe sasis ne correspondent pas',
                 // Instead of being set onto the object directly,

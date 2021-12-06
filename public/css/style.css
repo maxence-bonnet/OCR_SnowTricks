@@ -21,7 +21,9 @@ nav .bg-dark {
 }
 
 .alert-row {
-    z-index: 1;
+    width: 80%;
+    position: relative;
+    z-index: 10;
 }
 
 .hero-text {
@@ -138,7 +140,7 @@ nav .bg-dark {
     opacity: .9;
 }
 
-.collectionHolder {
+.collectionHolder, .alert-row {
     --bs-gutter-x: 0;
 }
 

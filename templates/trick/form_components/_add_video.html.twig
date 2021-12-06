@@ -1,0 +1,20 @@
+<div class="d-flex justify-content-center">
+    <span id="trick-videos-form-prototype"
+            data-prototype=
+                "<div id='trick_videos___name___card' class='card shadow-sm m-2 m-lg-1'>
+                    <iframe class='card-img-top bg-dark' src='' title='YouTube video player' frameborder='0' allowfullscreen></iframe>
+                </div>
+                {{ form_row(form.videos.vars.prototype)|e('html_attr') }}
+                <button type='button' class='btn btn-danger m-auto mb-1'>
+                    Annuler <i class='bx bx-x bx-fw'></i>
+                </button>"
+    ></span>
+    <button
+        type="button"
+        data-target="trick-videos"
+        class="btn btn-primary addSubformButton"
+        title="url de la vidéo youtube (exemple : https://www.youtube.com/watch?v=DT_qdbMdJeU)"
+    >
+            Ajouter une vidéo <i class='bx bxl-youtube bx-fw'></i>
+    </button>
+</div>
