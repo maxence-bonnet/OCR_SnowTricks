@@ -62,7 +62,6 @@ class RegistrationController extends AbstractController
                                         " . $user->getEmail());
 
             return $this->redirectToRoute('app_home');
-            // return $userAuthenticator->authenticateUser($user, $appAuthenticator, $request);
         }
 
         return $this->render('registration/register.html.twig', [
@@ -74,8 +73,6 @@ class RegistrationController extends AbstractController
     #[Route('/verify/email', name: 'app_verify_email')]
     public function verifyUserEmail(Request $request, UserRepository $userRepository): Response
     {
-        // $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-
         $id = $request->get('id'); // retrieve the user id from the url
 
         // Verify the user id exists and is not null
