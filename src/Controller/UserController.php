@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use App\Form\ChangePasswordFormType;
 
 #[Route('/user')]
 class UserController extends AbstractController
@@ -54,7 +56,7 @@ class UserController extends AbstractController
                 $newFilename = $fileManager->upload($file, 'avatar');
                 $picture = (new Picture())
                     ->setSource($newFilename)
-                    ->setAlternateText('avatar-' . $user->getUsername());
+                    ->setAlternateText('avatar-' . $user->getUserIdentifier());
                 $user->setAvatar($picture);
             }
  
@@ -91,6 +93,30 @@ class UserController extends AbstractController
         return $this->render('user/profile.html.twig', [
             'user' => $user,
             'comments' => $comments,
+        ]);
+    }
+
+    #[Route('/change-password', name: 'app_user_change_password')]
+    #[IsGranted('ROLE_USER', statusCode: 403, message: 'Vous devez être connecté pour accéder à cette page')]
+    public function changePassword(Request $request, UserPasswordHasherInterface $hasher): Response
+    {
+        $user = $this->getUser();
+
+        $form = $this->createForm(ChangePasswordFormType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user->setPassword($hasher->hashPassword($user, $form->get('newPassword')->getData()));
+
+            $this->getDoctrine()->getManager()->flush();
+
+            $this->addFlash('success', 'Votre mot passe a bien été modifié! Vous devez maintenant vous reconnecter');
+
+            return $this->redirectToRoute('app_logout');
+        }
+
+        return $this->render('user/change_password.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
 }

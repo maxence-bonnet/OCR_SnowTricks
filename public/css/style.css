@@ -21,6 +21,7 @@ nav .bg-dark {
 }
 
 .alert-row {
+    margin: auto;
     width: 80%;
     position: relative;
     z-index: 10;
