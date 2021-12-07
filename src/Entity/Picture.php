@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\PictureRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
 
 /**
  * @ORM\Entity(repositoryClass=PictureRepository::class)
@@ -29,6 +30,7 @@ class Picture
 
     /**
      * @ORM\ManyToOne(targetEntity=Trick::class, inversedBy="pictures")
+     * @JoinColumn(onDelete="CASCADE")
      */
     private $trick;
 
