@@ -83,9 +83,16 @@ class UserController extends AbstractController
      * @param User $user
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    #[Route('/profile/{username}', name: 'app_user_profile')]
-    public function profile(User $user): Response
+    #[Route('/profile/{id}-{slug}', name: 'app_user_profile')]
+    public function profile(User $user, string $slug = null): Response
     {
+        if ((string)$user->getSluggedUsername() !== $slug) {
+            return $this->redirectToRoute('app_user_profile', [
+                'id' => $user->getId(),
+                'slug' => $user->getSluggedUsername()
+            ]);
+        }
+
         // limiting n+1 queries
         $tricks = $this->getDoctrine()->getRepository(Trick::class)->findAllJoinAllFromUser($user);
         $comments = $this->getDoctrine()->getRepository(Comment::class)->findLastsFromUser(10, $user);

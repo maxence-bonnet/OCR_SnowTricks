@@ -133,9 +133,9 @@ class TrickController extends AbstractController
     * @param Trick $trick
     * @return \Symfony\Component\HttpFoundation\Response
     */
-    #[Route('/{id}/{slug}', name: 'app_trick_show', methods: ['GET','POST'])]
+    #[Route('/{id}-{slug}', name: 'app_trick_show', methods: ['GET','POST'])]
     public function show(Trick $trick, string $slug = null, Request $request, CommentRepository $commentRepository): Response
-    {    
+    {   
         if ((string)$trick->getSlug() !== $slug) {
             return $this->redirectToRoute('app_trick_show', [
                 'id' => $trick->getId(),

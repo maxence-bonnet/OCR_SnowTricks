@@ -13,7 +13,7 @@
     } 
 %}
 
-{% block title %}{{ myProfile ? 'Mon profil' : 'Profil de' ~ user.username }}{% endblock %}
+{% block title %}{{ myProfile ? 'Mon profil' : 'Profil de ' ~ user.username }}{% endblock %}
 
 {% block body %}
     <div class="container-sm-fluid hero-bg py-md-5">
@@ -21,7 +21,7 @@
             <article class="container m-sm-auto my-3">
                 <div class="row">
                     <div class="col-12 col-lg-10 m-auto bg-light shadow-lg rounded p-2">
-                        <h1 class="text-center">{{ myProfile ? 'Mon profil' : 'Profil de' ~ user.username }}</h1>
+                        <h1 class="text-center">{{ myProfile ? 'Mon profil' : 'Profil de ' ~ user.username }}</h1>
                         {% if myProfile %}
                             <div class="col-12 col-sm-10 m-auto">
                                 {% for message in app.flashes('success') %}
@@ -162,7 +162,7 @@
     {% if myProfile %}
         <script src="{{ asset('js/profilePicturePreview.js')}}"></script>
     {% endif %}
-    {% if user.tricks|length > displayParameters.minTricksShown|default(4) %}
+    {% if user.tricks|length + user.allowedTricks|length > displayParameters.minTricksShown|default(4) %}
     <script>
         var minTricksShown = {{ displayParameters.minTricksShown }};
         var maxToggleSteps = {{ displayParameters.maxToggleSteps }};

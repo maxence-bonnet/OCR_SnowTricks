@@ -51,17 +51,18 @@ class Trick
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="tricks")
-     * @ORM\JoinColumn(nullable=false)
+     * @JoinColumn(onDelete="CASCADE")
      */
     private $author;
 
     /**
-     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="trick", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="trick", orphanRemoval=true, cascade={"persist", "remove"})
      */
     private $comments;
 
     /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="tricks")
+     * @JoinColumn(onDelete="SET NULL")
      */
     private $category;
 

@@ -9,6 +9,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\String\Slugger\AsciiSlugger;
+use Doctrine\ORM\Mapping\JoinColumn;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -57,6 +59,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\OneToMany(targetEntity=Trick::class, mappedBy="author")
+     * @JoinColumn(onDelete="CASCADE")
      */
     private $tricks;
 
@@ -67,6 +70,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\OneToOne(targetEntity=Picture::class, cascade={"persist", "remove"})
+     * @JoinColumn(onDelete="CASCADE")
      */
     private $avatar;
 
@@ -93,6 +97,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUsername(): string
     {
         return (string) $this->username;
+    }
+
+    public function getSluggedUsername()
+    {
+        $slugger = new AsciiSlugger();
+        return $slugger->slug(strtolower($this->getUserIdentifier()));
     }
 
     public function setUsername(string $username): self

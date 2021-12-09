@@ -41,13 +41,23 @@
                                     >
                                             <i class="bx bx-pencil"></i> Nouveau Trick
                                     </a>
-                                </li>                           
+                                </li>
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <li class="nav-item">
+                                        <a 
+                                            class="nav-link {{ current_nav is defined and current_nav is same as('admin_categories') ? 'active' }}" 
+                                            href="{{ path('app_admin_category') }}"
+                                        >
+                                                <i class='bx bx-category'></i> Catégories
+                                        </a>
+                                    </li>
+                                {% endif %}                        
                                 <li class="nav-item ms-md-auto">
                                     <a class="nav-link {{ current_nav is defined and current_nav is same as('my_profile') ? 'active' }}" href="{{ path('app_user_myprofile')}}"><i class="bx bx-user"></i> {{ app.user.username }}</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link {{ false ? 'active' }}" href="{{ path('app_logout') }}"><i class="bx bx-log-out-circle"></i> Déconnexion</a>
-                                </li> 
+                                </li>
                             {% else %}
                                 <li class="nav-item ms-md-auto">
                                     <a class="nav-link  {{ current_nav is defined and current_nav is same as('register') ? 'active' }}" href="{{ path('app_register') }}"><i class="bx bx-user"></i> Inscription</a>

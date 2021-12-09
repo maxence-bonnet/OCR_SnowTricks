@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\VideoRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
 
 /**
  * @ORM\Entity(repositoryClass=VideoRepository::class)
@@ -24,7 +25,7 @@ class Video
 
     /**
      * @ORM\ManyToOne(targetEntity=Trick::class, inversedBy="videos")
-     * @ORM\JoinColumn(nullable=false)
+     * @JoinColumn(onDelete="CASCADE")
      */
     private $trick;
 
