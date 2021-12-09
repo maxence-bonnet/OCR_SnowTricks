@@ -19,4 +19,14 @@ class CategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Category::class);
     }
 
+    public function findAllJoinTricks()
+    {
+        $categories = $this->createQueryBuilder('c')
+        ->select('c', 't')
+        ->leftJoin('c.tricks', 't')
+        ->getQuery()
+        ->getResult();
+
+        return $categories;
+    }
 }

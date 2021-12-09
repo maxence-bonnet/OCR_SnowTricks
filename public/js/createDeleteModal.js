@@ -29,6 +29,8 @@ const createModalSkeleton = (button, template) => {
         modalBody.textContent = modalText + 'une image !';
     } else if (button.classList.contains('delete-video')) {
         modalBody.textContent = modalText + 'une video !';
+    } else if (button.classList.contains('delete-category')) {
+        modalBody.textContent = modalText + 'une catégorie !';
     } else if (button.classList.contains('delete-trick')) {
         modalBody.textContent = modalText + 'ce trick ! Vous serez redirigé vers l\'accueil après la suppression.';
     }
