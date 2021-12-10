@@ -150,7 +150,7 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
+            $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
             $comment
                 ->setCreatedAt(new \DateTimeImmutable())
                 ->setAuthor($this->getUser())
