@@ -22,24 +22,26 @@
 ---
 
 ## Frontend dependencies (integrated)
-<table>
-  <tr>
-    <td>
-      <ul>
-        <li>CSS / JS: <a href="https://getbootstrap.com/" target="_blank">Bootstrap 5.1.3</a></li>
-        <li>CSS : <a href="https://boxicons.com/" target="_blank">Boxicons 2.0.9</a></li>
-        <li>JS : <a href="https://github.com/sidneywm/iconic-multiselect" target="_blank">iconic-multiselect</a></li>
-        <li>Fonts : <a href="https://www.dafont.com/boycott.font" target="_blank">boycott</a></li>
-        <li>image : <a href="https://unsplash.com/photos/xqO2r9QUyvo" target="_blank">sven-piek-unsplash.jpg</a> for hero</li>
-      </ul>
-    </td>
-    <td>
-     <a href="https://unsplash.com/photos/xqO2r9QUyvo" target="_blank">
-      <img src="https://images.unsplash.com/photo-1583598251027-fda841054458?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"     width="300">
-      </a>
-    </td>
-  </tr> 
-</table>
+<div align="center">
+  <table>
+    <tr>
+      <td>
+        <ul>
+          <li>CSS / JS: <a href="https://getbootstrap.com/" target="_blank">Bootstrap 5.1.3</a></li>
+          <li>CSS : <a href="https://boxicons.com/" target="_blank">Boxicons 2.0.9</a></li>
+          <li>JS : <a href="https://github.com/sidneywm/iconic-multiselect" target="_blank">iconic-multiselect</a></li>
+          <li>Fonts : <a href="https://www.dafont.com/boycott.font" target="_blank">boycott</a></li>
+          <li>image : <a href="https://unsplash.com/photos/xqO2r9QUyvo" target="_blank">sven-piek-unsplash.jpg</a> for hero</li>
+        </ul>
+      </td>
+      <td>
+       <a href="https://unsplash.com/photos/xqO2r9QUyvo" target="_blank">
+        <img src="https://images.unsplash.com/photo-1583598251027-fda841054458?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"     width="300">
+        </a>
+      </td>
+    </tr> 
+  </table>
+</div>
 
 ## Install (local developpement purpose)
 
