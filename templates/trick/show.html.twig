@@ -101,19 +101,23 @@
                                     <a href="{{ path('app_user_profile', {id: trick.author.id, slug: trick.author.username |slug('-')|lower}) }}" class="text-decoration-none">
                                         {{ trick.author.username }}
                                     </a>
-                                </li> | 
+                                     | 
+                                </li>
                                 <li class="list-inline-item">
                                     {{ 'Créé le : ' ~ trick.createdAt |date("d/m/Y") ~ ' à ' ~ trick.createdAt |date("H:i") }}
-                                </li> | 
+                                     | 
+                                </li>
                                 {% if trick.updatedAt is not null %}
                                     <li class="list-inline-item">
                                         {{ 'Dernière modification le : ' ~ trick.updatedAt |date("d/m/Y") ~ ' à ' ~ trick.createdAt |date("H:i") }}
-                                    </li> | 
+                                         | 
+                                    </li>
                                 {% endif %}
                                 {% if trick.category is not null %}
                                     <li class="list-inline-item">
                                         {{'Catégorie : ' ~ trick.category.name }}
-                                    </li> | 
+                                         | 
+                                    </li>
                                 {% endif %}
                                 <li class="list-inline-item">
                                     Messages : 
