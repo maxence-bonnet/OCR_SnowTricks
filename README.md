@@ -55,7 +55,7 @@ or [`download .zip`](https://github.com/maxence-bonnet/OCR_SnowTricks/archive/re
 
 ---
 
-### 2. Install depencies via composer
+### 2. Install dependencies via composer
 
 In project folder :
 
@@ -100,7 +100,7 @@ DATABASE_URL="mysql://my_user_identifier:my_user_pass@127.0.0.1:3306/my_db_name?
 
 ### 4. Generating database
 
-you can use `symfony` instead of `php bin/console` if you have [Symfony cli](https://symfony.com/download) installed (like I did)
+you can use `symfony console` instead of `php bin/console` if you have [Symfony cli](https://symfony.com/download) installed (like I did)
 
 #### a. Create database
 
