@@ -160,7 +160,7 @@ notice that you can also [simulate TLS](https://symfony.com/doc/current/setup/sy
 
 ## Website preview 
 
-You can check the demonstration [here](http://s893507180.onlinehome.fr/)
+You can check the demonstration [here](https://snowtricks.maxence-bonnet.fr/)
 
 Feel free to register, connect and try it, data will be reset 3 times a day.
 
